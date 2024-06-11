@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #pragma once
 
 
@@ -42,7 +45,8 @@ typedef struct gallus_task_record *gallus_task_t;
 
 
 typedef gallus_result_t (*gallus_task_main_proc_t)(gallus_task_t *tptr);
-typedef void (*gallus_task_finalize_proc_t)(gallus_task_t *tptr, bool is_cancelled);
+typedef void (*gallus_task_finalize_proc_t)(gallus_task_t *tptr,
+    bool is_cancelled);
 typedef void (*gallus_task_freeup_proc_t)(gallus_task_t *tptr);
 
 
@@ -51,9 +55,16 @@ typedef void (*gallus_task_freeup_proc_t)(gallus_task_t *tptr);
 
 gallus_result_t
 gallus_task_create(gallus_task_t *tptr, size_t sz, const char *name,
-                gallus_task_main_proc_t main_func,
-                gallus_task_finalize_proc_t finalize_func,
-		gallus_task_freeup_proc_t freeup_func);
+                   gallus_task_main_proc_t main_func,
+                   gallus_task_finalize_proc_t finalize_func,
+                   gallus_task_freeup_proc_t freeup_func);
+
+gallus_result_t
+gallus_task_set_cpu_affinity(const gallus_task_t *tptr, int cpu);
+
+
+gallus_result_t
+gallus_task_set_numa_node_affinity(const gallus_task_t *tptr, int node);
 
 
 gallus_result_t
@@ -74,7 +85,7 @@ gallus_task_get_exit_code(gallus_task_t *tptr);
 
 gallus_result_t
 gallus_task_get_state(gallus_task_t *tptr,
-		   gallus_task_state_t *stptr);
+                      gallus_task_state_t *stptr);
 
 
 void

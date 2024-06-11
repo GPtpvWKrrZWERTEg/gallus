@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 #include "unity.h"
@@ -30,13 +33,13 @@ s_main(const gallus_thread_t *tptr, void *arg) {
       shutdown_grace_level_t l;
 
       gallus_msg_debug(1, "waiting for the world changes to "
-                        "GLOBAL_STATE_STARTED ...\n");
+                       "GLOBAL_STATE_STARTED ...\n");
 
       while ((ret = global_state_wait_for(GLOBAL_STATE_STARTED, &s, &l,
                                           1000LL * 1000LL * 100LL)) ==
              GALLUS_RESULT_TIMEDOUT) {
         gallus_msg_debug(1, "still waiting for the world changes to "
-                          "GLOBAL_STATE_STARTED ...\n");
+                         "GLOBAL_STATE_STARTED ...\n");
       }
 
       if (ret != GALLUS_RESULT_OK) {
@@ -87,7 +90,7 @@ s_finalize(const gallus_thread_t *tptr, bool is_canceled, void *arg) {
     if (nptr != NULL) {
 
       gallus_msg_debug(1, "called, %s.\n",
-                        (is_canceled == true) ? "canceled" : "exit");
+                       (is_canceled == true) ? "canceled" : "exit");
       if (is_canceled == true) {
         global_state_cancel_janitor();
       }
@@ -114,8 +117,8 @@ s_null_create(null_thread_t *nptr, shutdown_grace_level_t l) {
     }
 
     if ((ret = gallus_thread_create((gallus_thread_t *)&nt,
-                                     s_main, s_finalize, NULL,
-                                     "null", NULL)) == GALLUS_RESULT_OK) {
+                                    s_main, s_finalize, NULL,
+                                    "null", NULL)) == GALLUS_RESULT_OK) {
       if (*nptr == NULL) {
         (void)gallus_thread_free_when_destroy((gallus_thread_t *)&nt);
         *nptr = nt;

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 #include "gallus_poolable_internal.h"
@@ -35,8 +38,8 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
     bool do_name = false;
     gallus_task_t t = NULL;
     global_state_t gst = GLOBAL_STATE_UNKNOWN;
-    shutdown_grace_level_t lvl = GLOBAL_STATE_UNKNOWN;
-    
+    shutdown_grace_level_t lvl = SHUTDOWN_UNKNOWN;
+
     /*
      * Wait for the gala opening.
      */
@@ -101,14 +104,15 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
           (void)gallus_mutex_lock(&t->m_lck);
           {
 
+            t->m_tr = tr;
             t->m_is_started = true;
             t->m_state = GALLUS_TASK_STATE_RUNNING;
-	    do_autodelete =
-                ((t->m_flag & GALLUS_TASK_DELETE_CONTEXT_AFTER_EXEC) != 0) ?
-                true : false;
+            do_autodelete =
+              ((t->m_flag & GALLUS_TASK_DELETE_CONTEXT_AFTER_EXEC) != 0) ?
+              true : false;
             do_autorelease =
-                ((t->m_flag & GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC) != 0) ?
-                true : false;
+              ((t->m_flag & GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC) != 0) ?
+              true : false;
             do_name = (IS_VALID_STRING(t->m_name) == true) ? true : false;
 
           }
@@ -116,6 +120,18 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
 
         }
         (void)gallus_mutex_unlock(&tr->m_lck);
+
+        /*
+         * Set core/numa node affinity
+         */
+        if (t->m_numa_node_num != -1) {
+          (void)gallus_thread_set_numa_node_affinity(tptr, t->m_numa_node_num);
+        } else {
+          (void)gallus_thread_set_cpu_affinity(tptr, -1);
+          if (t->m_core_num != -1) {
+            (void)gallus_thread_set_cpu_affinity(tptr, t->m_core_num);
+          }
+        }
 
         /*
          * Execute the task.
@@ -131,7 +147,7 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
         gallus_msg_debug(5, "task \"%s\" start...\n", tmp_name);
         ret = t->m_main(&t);
         gallus_msg_debug(5, "task \"%s\" done.\n", tmp_name);
-        
+
         if (do_name == true) {
           (void)gallus_thread_set_name(tptr, org_thd_name);
         }
@@ -140,7 +156,7 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
          * Execution done.
          */
         gallus_msg_debug(5, "update \"%s\" status, return code %ld.\n",
-                      tmp_name, ret);
+                         tmp_name, ret);
         (void)gallus_mutex_lock(&tr->m_lck);
         {
 
@@ -151,6 +167,7 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
           (void)gallus_mutex_lock(&t->m_lck);
           {
 
+            t->m_tr = NULL;
             t->m_exit_code = ret;
             t->m_is_clean_finished = true;
             t->m_state = GALLUS_TASK_STATE_CLEAN_FINISHED;
@@ -163,13 +180,18 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
 
         gallus_task_finalize(&t, false);
 
+        /*
+         * Reset core affinity
+         */
+        (void)gallus_thread_set_cpu_affinity_any(tptr);
+
         if (do_autodelete == true) {
           gallus_task_destroy(&t);
         }
         if (do_autorelease == true) {
           gallus_pool_release_poolable(&pobj);
         }
-        
+
       } else {
         if (do_shutdown == true) {
 
@@ -186,7 +208,7 @@ s_task_runner_main(const gallus_thread_t *tptr, void *arg) {
             (void)gallus_mutex_unlock(&t->m_lck);
 
           }
-          
+
           ret = GALLUS_RESULT_OK;
 
           break;
@@ -221,11 +243,11 @@ s_task_runner_finalize(const gallus_thread_t *tptr, bool is_cancelled,
   gallus_poolable_t pobj = NULL;
   gallus_task_runner_thread_t tr = NULL;
   gallus_task_t t = NULL;
-  
+
   (void)arg;
 
   gallus_msg_debug(5, "called, cancelled %s.\n",
-                (is_cancelled == true) ? "yes" : "no");
+                   (is_cancelled == true) ? "yes" : "no");
 
   if (likely(tptr != NULL && *tptr != NULL &&
              (tr = (gallus_task_runner_thread_t)*tptr) != NULL &&
@@ -250,7 +272,7 @@ s_task_runner_finalize(const gallus_thread_t *tptr, bool is_cancelled,
         } else {
           t->m_state = GALLUS_TASK_STATE_HALTED;
         }
-        
+
       }
       (void)gallus_mutex_unlock(&t->m_lck);
 
@@ -304,19 +326,19 @@ s_pooled_thread_construct(gallus_poolable_t *pptr, void *args) {
   gallus_pooled_thread_t ptptr = NULL;
   gallus_task_runner_thread_t tr = NULL;
   bool is_thread_created = false;
-  
+
   (void)args;
 
   if (likely(pptr != NULL && (ptptr = (gallus_pooled_thread_t)*pptr) != NULL &&
              (tr = &ptptr->m_trthd) != NULL)) {
     /* thread creation */
     ret = gallus_thread_create_with_size((gallus_thread_t *)&tr,
-                                      0,
-                                      s_task_runner_main,
-                                      s_task_runner_finalize,
-                                      s_task_runner_freeup,
-                                      "pooled_thread",
-                                      NULL);
+                                         0,
+                                         s_task_runner_main,
+                                         s_task_runner_finalize,
+                                         s_task_runner_freeup,
+                                         "pooled_thread",
+                                         NULL);
     if (likely(ret == GALLUS_RESULT_OK)) {
 
       is_thread_created = true;
@@ -388,7 +410,8 @@ s_pooled_thread_setup(gallus_poolable_t *pptr) {
 
 
 static gallus_result_t
-s_pooled_thread_shutdown(gallus_poolable_t *pptr, shutdown_grace_level_t lvl) {
+s_pooled_thread_shutdown(gallus_poolable_t *pptr,
+                         shutdown_grace_level_t lvl) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pooled_thread_t ptptr = NULL;
   gallus_task_runner_thread_t tr = NULL;
@@ -459,7 +482,7 @@ s_pooled_thread_teardown(gallus_poolable_t *pptr, bool is_cancelled) {
   gallus_task_runner_thread_t tr = NULL;
 
   gallus_msg_debug(5, "called, cancelled %s.\n",
-                (is_cancelled == true) ? "yes" : "no");
+                   (is_cancelled == true) ? "yes" : "no");
 
   if (likely(pptr != NULL && (ptptr = (gallus_pooled_thread_t)*pptr) != NULL &&
              (tr = &ptptr->m_trthd) != NULL)) {
@@ -531,24 +554,25 @@ static gallus_poolable_methods_record s_methods = {
 
 
 gallus_result_t
-gallus_thread_pool_create(gallus_thread_pool_t *pptr, const char *name, size_t n) {
+gallus_thread_pool_create(gallus_thread_pool_t *pptr, const char *name,
+                          size_t n) {
   return gallus_pool_create((gallus_pool_t *)pptr,
-                         sizeof(gallus_thread_pool_record),
-                         name,
-                         GALLUS_POOL_TYPE_QUEUE,	/* queue type */
-                         true,			/* executor */
-                         n,
-                         sizeof(gallus_pooled_thread_record),
-			 &s_methods);
+                            sizeof(gallus_thread_pool_record),
+                            name,
+                            GALLUS_POOL_TYPE_QUEUE,	/* queue type */
+                            true,			/* executor */
+                            n,
+                            sizeof(gallus_pooled_thread_record),
+                            &s_methods);
 }
 
 
 gallus_result_t
 gallus_thread_pool_acquire_thread(gallus_thread_pool_t *pptr,
-                               gallus_pooled_thread_t *ptptr,
-                               gallus_chrono_t to) {
+                                  gallus_pooled_thread_t *ptptr,
+                                  gallus_chrono_t to) {
   return gallus_pool_acquire_poolable((gallus_pool_t *)pptr, to,
-                                   (gallus_poolable_t *)ptptr);
+                                      (gallus_poolable_t *)ptptr);
 }
 
 
@@ -572,8 +596,8 @@ gallus_thread_pool_wakeup(gallus_thread_pool_t *pptr, gallus_chrono_t to) {
 
 gallus_result_t
 gallus_thread_pool_shutdown_all(gallus_thread_pool_t *pptr,
-			     shutdown_grace_level_t lvl,
-			     gallus_chrono_t to) {
+                                shutdown_grace_level_t lvl,
+                                gallus_chrono_t to) {
   return gallus_pool_shutdown((gallus_pool_t *)pptr, lvl, to);
 }
 
@@ -598,6 +622,6 @@ gallus_thread_pool_destroy(gallus_thread_pool_t *pptr) {
 
 gallus_result_t
 gallus_thread_pool_get(const char *name, gallus_thread_pool_t *pptr) {
-  return gallus_pool_get_pool(name, (gallus_pool_t *)pptr);  
+  return gallus_pool_get_pool(name, (gallus_pool_t *)pptr);
 }
 

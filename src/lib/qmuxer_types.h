@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __QMUXER_TYPES_H__
 #define __QMUXER_TYPES_H__
 

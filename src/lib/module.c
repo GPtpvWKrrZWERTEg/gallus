@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -25,7 +28,7 @@ typedef enum {
   MODULE_GLOBAL_STATE_FINALIZED
 } s_module_global_state_t;
 
-  
+
 typedef enum {
   MODULE_STATE_UNKNOWN = 0,
   MODULE_STATE_REGISTERED,
@@ -55,7 +58,8 @@ typedef struct {
 
 
 
-static volatile s_module_global_state_t s_gstate = MODULE_GLOBAL_STATE_UNKNOWN;
+static volatile s_module_global_state_t s_gstate =
+  MODULE_GLOBAL_STATE_UNKNOWN;
 static pthread_t s_initializer_tid = GALLUS_INVALID_THREAD;
 
 static size_t s_n_modules = 0;
@@ -103,7 +107,7 @@ s_once_proc(void) {
   (void)__sync_add_and_fetch(&s_is_exit_handler_called, 0);
   (void)memset((void *)s_modules, 0, sizeof(s_modules));
   mbar();
-  
+
   if ((r = gallus_mutex_create(&s_lck)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize a mutex.\n");
@@ -217,9 +221,9 @@ s_atexit_handler(void) {
 
       if (s_n_modules > 0) {
 
-     recheck:
+      recheck:
         mbar();
-	if (s_gstate == MODULE_GLOBAL_STATE_UNKNOWN) {
+        if (s_gstate == MODULE_GLOBAL_STATE_UNKNOWN) {
           is_finished_cleanly = true;
         } else if (s_gstate == MODULE_GLOBAL_STATE_STARTED) {
           (void)global_state_request_shutdown(SHUTDOWN_RIGHT_NOW);
@@ -590,8 +594,8 @@ s_finalize_module(a_module *mptr) {
       return;
     } else {
       gallus_msg_warning("the module \"%s\" seems to be still running, "
-                          "won't destruct it for safe.\n",
-                          mptr->m_name);
+                         "won't destruct it for safe.\n",
+                         mptr->m_name);
     }
   }
 }
@@ -611,13 +615,13 @@ s_usage_module(a_module *mptr, FILE *fd) {
 
 gallus_result_t
 gallus_module_register(const char *name,
-                        gallus_module_initialize_proc_t init_proc,
-                        void *extarg,
-                        gallus_module_start_proc_t start_proc,
-                        gallus_module_shutdown_proc_t shutdown_proc,
-                        gallus_module_stop_proc_t stop_proc,
-                        gallus_module_finalize_proc_t finalize_proc,
-                        gallus_module_usage_proc_t usage_proc) {
+                       gallus_module_initialize_proc_t init_proc,
+                       void *extarg,
+                       gallus_module_start_proc_t start_proc,
+                       gallus_module_shutdown_proc_t shutdown_proc,
+                       gallus_module_stop_proc_t stop_proc,
+                       gallus_module_finalize_proc_t finalize_proc,
+                       gallus_module_usage_proc_t usage_proc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   s_lock();
@@ -682,7 +686,7 @@ gallus_module_initialize_all(int argc, const char *const argv[]) {
         if (ret != GALLUS_RESULT_OK) {
           gallus_perror(ret);
           gallus_msg_error("can't initialize module \"%s\".\n",
-                            mptr->m_name);
+                           mptr->m_name);
         }
       }
     } else {
@@ -722,7 +726,7 @@ gallus_module_start_all(void) {
         if (ret != GALLUS_RESULT_OK) {
           gallus_perror(ret);
           gallus_msg_error("can't start module \"%s\".\n",
-                            mptr->m_name);
+                           mptr->m_name);
         }
       }
     } else {
@@ -765,7 +769,7 @@ gallus_module_shutdown_all(shutdown_grace_level_t level) {
           if (ret != GALLUS_RESULT_OK) {
             gallus_perror(ret);
             gallus_msg_error("can't shutdown module \"%s\".\n",
-                              mptr->m_name);
+                             mptr->m_name);
             if (first_err == GALLUS_RESULT_OK) {
               first_err = ret;
             }
@@ -816,7 +820,7 @@ gallus_module_stop_all(void) {
         if (ret != GALLUS_RESULT_OK) {
           gallus_perror(ret);
           gallus_msg_error("can't stop module \"%s\".\n",
-                            mptr->m_name);
+                           mptr->m_name);
           if (first_err == GALLUS_RESULT_OK) {
             first_err = ret;
           }
@@ -866,7 +870,7 @@ gallus_module_wait_all(gallus_chrono_t nsec) {
           if (ret != GALLUS_RESULT_OK) {
             gallus_perror(ret);
             gallus_msg_error("can't wait module \"%s\".\n",
-                              mptr->m_name);
+                             mptr->m_name);
             if (first_err == GALLUS_RESULT_OK) {
               first_err = ret;
             }
@@ -891,7 +895,7 @@ gallus_module_wait_all(gallus_chrono_t nsec) {
           if (ret != GALLUS_RESULT_OK) {
             gallus_perror(ret);
             gallus_msg_error("can't wait module \"%s\".\n",
-                              mptr->m_name);
+                             mptr->m_name);
             if (first_err == GALLUS_RESULT_OK) {
               first_err = ret;
             }

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_SIGNAL_H__
 #define __GALLUS_SIGNAL_H__
 

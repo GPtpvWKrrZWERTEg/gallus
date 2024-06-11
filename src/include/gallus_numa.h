@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_NUMA_H__
 #define __GALLUS_NUMA_H__
 
@@ -22,7 +25,7 @@
  *	@retval	!=NULL		Succeeded, the allocated memory.
  *	@retval NULL		Failed.
  */
-void *	gallus_malloc_on_numanode(size_t sz, unsigned int node);
+void 	*gallus_malloc_on_numanode(size_t sz, unsigned int node);
 
 
 /**
@@ -38,7 +41,7 @@ void *	gallus_malloc_on_numanode(size_t sz, unsigned int node);
  *	@retval	!=NULL		Succeeded, the allocated memory.
  *	@retval NULL		Failed.
  */
-void *	gallus_malloc_on_cpu(size_t sz, int cpu);
+void 	*gallus_malloc_on_cpu(size_t sz, int cpu);
 
 
 /**

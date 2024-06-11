@@ -1,8 +1,11 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
 int
-main(int argc, const char * const argv[]) {
+main(int argc, const char *const argv[]) {
   size_t n_workers = 1;
 
   if (IS_VALID_STRING(argv[1]) == true) {
@@ -15,7 +18,7 @@ main(int argc, const char * const argv[]) {
 
   (void)gallus_mainloop_set_callout_workers_number(n_workers);
   (void)gallus_mainloop_with_callout(argc, argv, NULL, NULL,
-                                    false, false, true);
+                                     false, false, true);
   (void)global_state_request_shutdown(SHUTDOWN_GRACEFULLY);
   gallus_mainloop_wait_thread();
 

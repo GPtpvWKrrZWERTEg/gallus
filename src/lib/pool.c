@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_pool_internal.h"
 #include "gallus_poolable_internal.h"
@@ -44,11 +47,11 @@ gallus_pool_get_pool(const char *name, gallus_pool_t *pptr) {
 
 gallus_result_t
 gallus_pool_create(gallus_pool_t *pptr, size_t sz, const char *name,
-                gallus_pool_type_t type,
-                bool is_executor,
-                size_t n_max_objs,
-                size_t pobj_size,
-                gallus_poolable_methods_t m) {
+                   gallus_pool_type_t type,
+                   bool is_executor,
+                   size_t n_max_objs,
+                   size_t pobj_size,
+                   gallus_poolable_methods_t m) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pool_t p = NULL;
 
@@ -108,7 +111,7 @@ gallus_pool_create(gallus_pool_t *pptr, size_t sz, const char *name,
     p->m_n_free = n_max_objs;
 
     p->m_objs = (gallus_poolable_t *)malloc(sizeof(gallus_poolable_t) *
-                                         n_max_objs);
+                                            n_max_objs);
     if (likely(p->m_objs != NULL)) {
       (void)memset(p->m_objs, 0, sizeof(gallus_poolable_t) * n_max_objs);
     } else {
@@ -133,12 +136,12 @@ gallus_pool_create(gallus_pool_t *pptr, size_t sz, const char *name,
       }
     } else {
       ret = gallus_bbq_create(&p->m_free_q, gallus_poolable_t,
-                           (int64_t)(n_max_objs + 1),
-                           s_poolable_freeup);
+                              (int64_t)(n_max_objs + 1),
+                              s_poolable_freeup);
       if (unlikely(ret != GALLUS_RESULT_OK)) {
         gallus_perror(ret);
         gallus_msg_error("can't allocalte a poolable obj. free "
-                      "queue for a pool.\n");
+                         "queue for a pool.\n");
         goto done;
       }
     }
@@ -147,7 +150,7 @@ gallus_pool_create(gallus_pool_t *pptr, size_t sz, const char *name,
     ret = gallus_hashmap_add(&s_pools, name, &add, false);
 
     *pptr = p;
-    
+
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -169,7 +172,8 @@ done:
 
 
 gallus_result_t
-gallus_pool_add_poolable_by_index(gallus_pool_t *pptr, uint64_t index, void *args) {
+gallus_pool_add_poolable_by_index(gallus_pool_t *pptr, uint64_t index,
+                                  void *args) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pool_t p = NULL;
 
@@ -182,13 +186,13 @@ gallus_pool_add_poolable_by_index(gallus_pool_t *pptr, uint64_t index, void *arg
     gallus_mutex_lock(&p->m_lck);
     {
       ret = gallus_poolable_create_with_size(&pobj, p->m_is_executor, &p->m_m,
-                                          args, p->m_pobj_size);
+                                             args, p->m_pobj_size);
       if (likely(ret == GALLUS_RESULT_OK)) {
         ret = gallus_poolable_setup(&pobj);
         if (likely(ret == GALLUS_RESULT_OK)) {
           p->m_objs[index] = pobj;
           pobj->m_obj_idx = index;
-	  pobj->m_pool = p;
+          pobj->m_pool = p;
           if (p->m_obj_idx < index) {
             p->m_obj_idx = index;
           }
@@ -218,7 +222,7 @@ gallus_pool_add_poolable_by_index(gallus_pool_t *pptr, uint64_t index, void *arg
 
 gallus_result_t
 gallus_pool_acquire_poolable_by_index(gallus_pool_t *pptr, uint64_t index,
-				   gallus_chrono_t to, gallus_poolable_t *pobjptr) {
+                                      gallus_chrono_t to, gallus_poolable_t *pobjptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pool_t p = NULL;
   gallus_poolable_t pobj = NULL;
@@ -235,7 +239,7 @@ gallus_pool_acquire_poolable_by_index(gallus_pool_t *pptr, uint64_t index,
     {
 
       n_waiters = __atomic_fetch_add(&p->m_n_waiters, 1, __ATOMIC_ACQ_REL);
-      
+
       while (true) {
         if (pobj->m_is_used == false) {
           ret = GALLUS_RESULT_OK;
@@ -290,7 +294,7 @@ gallus_pool_acquire_poolable_by_index(gallus_pool_t *pptr, uint64_t index,
 
 gallus_result_t
 gallus_pool_acquire_poolable(gallus_pool_t *pptr, gallus_chrono_t to,
-			  gallus_poolable_t *pobjptr) {
+                             gallus_poolable_t *pobjptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pool_t p = NULL;
 
@@ -365,7 +369,7 @@ gallus_pool_acquire_poolable(gallus_pool_t *pptr, gallus_chrono_t to,
       {
 
         n = gallus_bbq_size(&p->m_free_q);
-        
+
         if (n > 0) {
 
           /*
@@ -385,15 +389,15 @@ gallus_pool_acquire_poolable(gallus_pool_t *pptr, gallus_chrono_t to,
            */
 
           ret = gallus_poolable_create_with_size(&pobj, p->m_is_executor, &p->m_m,
-                                              NULL, p->m_pobj_size);
+                                                 NULL, p->m_pobj_size);
           if (likely(ret == GALLUS_RESULT_OK)) {
             pobj->m_obj_idx = p->m_obj_idx;
             ret = gallus_poolable_setup(&pobj);
             if (likely(ret == GALLUS_RESULT_OK)) {
               p->m_objs[p->m_obj_idx++] = pobj;
               p->m_n_cur = p->m_obj_idx;
-	      pobj->m_pool = p;
-	      found = true;
+              pobj->m_pool = p;
+              found = true;
             } else {
               gallus_poolable_destroy(&pobj);
             }
@@ -460,12 +464,12 @@ gallus_pool_release_poolable(gallus_poolable_t *pobjptr) {
   gallus_poolable_t pobj = NULL;
 
   if (likely(pobjptr != NULL && (pobj = *pobjptr) != NULL &&
-	     (p = pobj->m_pool) != NULL &&
+             (p = pobj->m_pool) != NULL &&
              p->m_state == GALLUS_POOL_STATE_OPERATIONAL)) {
 
     if (likely(p->m_type == GALLUS_POOL_TYPE_INDEX)) {
       size_t i = pobj->m_obj_idx;
-      
+
       if (likely(p->m_objs[i] == pobj)) {
 
         gallus_mutex_lock(&p->m_lck);
@@ -473,7 +477,7 @@ gallus_pool_release_poolable(gallus_poolable_t *pobjptr) {
 
           if (likely(pobj->m_is_used == true)) {
             pobj->m_is_used = false;
-	    p->m_n_free++;
+            p->m_n_free++;
             ret = gallus_cond_notify(&p->m_cnd, true);
           } else {
             ret = GALLUS_RESULT_INVALID_OBJECT;
@@ -484,7 +488,7 @@ gallus_pool_release_poolable(gallus_poolable_t *pobjptr) {
 
       } else {
         ret = GALLUS_RESULT_INVALID_STATE;
-      }        
+      }
 
     } else if (likely(p->m_type == GALLUS_POOL_TYPE_QUEUE)) {
 
@@ -493,7 +497,7 @@ gallus_pool_release_poolable(gallus_poolable_t *pobjptr) {
 
         pobj->m_is_used = false;
         ret = gallus_bbq_put(&p->m_free_q, &pobj, gallus_poolable_t, -1LL);
-	if (likely(ret == GALLUS_RESULT_OK)) {
+        if (likely(ret == GALLUS_RESULT_OK)) {
           p->m_n_free++;
         }
 
@@ -570,9 +574,9 @@ gallus_pool_wakeup(gallus_pool_t *pptr, gallus_chrono_t to) {
     } else if (likely(p->m_type == GALLUS_POOL_TYPE_QUEUE)) {
 
       ret = gallus_bbq_wakeup(&p->m_free_q, to);
-      
+
     }
-      
+
   } else {
     if (p != NULL &&
         p->m_state != GALLUS_POOL_STATE_OPERATIONAL &&
@@ -589,7 +593,7 @@ gallus_pool_wakeup(gallus_pool_t *pptr, gallus_chrono_t to) {
 
 gallus_result_t
 gallus_pool_shutdown(gallus_pool_t *pptr,  shutdown_grace_level_t lvl,
-                  gallus_chrono_t to) {
+                     gallus_chrono_t to) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pool_t p = NULL;
 
@@ -599,7 +603,7 @@ gallus_pool_shutdown(gallus_pool_t *pptr,  shutdown_grace_level_t lvl,
     gallus_result_t first_err = GALLUS_RESULT_ANY_FAILURES;
     gallus_poolable_t pobj = NULL;
     bool got_err = false;
-    
+
     (void)gallus_mutex_lock(&p->m_lck);
     {
 
@@ -620,7 +624,7 @@ gallus_pool_shutdown(gallus_pool_t *pptr,  shutdown_grace_level_t lvl,
 
     }
     (void)gallus_mutex_unlock(&p->m_lck);
-    
+
     if (got_err == true) {
       ret = first_err;
     }
@@ -643,9 +647,9 @@ gallus_pool_cancel(gallus_pool_t *pptr) {
   gallus_pool_t p = NULL;
 
   if (likely(pptr != NULL && (p = *pptr) != NULL &&
-	     p->m_is_cancelled == false &&
+             p->m_is_cancelled == false &&
              (p->m_state == GALLUS_POOL_STATE_OPERATIONAL ||
-	      p->m_state == GALLUS_POOL_STATE_SHUTTINGDOWN))) {
+              p->m_state == GALLUS_POOL_STATE_SHUTTINGDOWN))) {
     size_t i;
     gallus_result_t first_err = GALLUS_RESULT_ANY_FAILURES;
     gallus_poolable_t pobj = NULL;
@@ -667,7 +671,7 @@ gallus_pool_cancel(gallus_pool_t *pptr) {
 
     }
     (void)gallus_mutex_unlock(&p->m_lck);
-    
+
     if (got_err == true) {
       ret = first_err;
     }
@@ -714,7 +718,7 @@ gallus_pool_wait(gallus_pool_t *pptr, gallus_chrono_t to) {
         do {
           n_errs = 0;
           WHAT_TIME_IS_IT_NOW_IN_NSEC(now);
-          
+
           for (i = 0; i < p->m_obj_idx; i++) {
             pobj = p->m_objs[i];
             /* 1 msec polling. */
@@ -738,7 +742,7 @@ gallus_pool_wait(gallus_pool_t *pptr, gallus_chrono_t to) {
 
       (void)gallus_mutex_lock(&p->m_lck);
       {
-      
+
         do {
           n_errs = 0;
 
@@ -777,8 +781,8 @@ gallus_pool_destroy(gallus_pool_t *pptr) {
     gallus_poolable_t pobj = NULL;
 
     gallus_msg_debug(5, "deleteing pool \"%s\"...\n",
-                  (IS_VALID_STRING(p->m_name) == true) ?
-                  p->m_name : "???");
+                     (IS_VALID_STRING(p->m_name) == true) ?
+                     p->m_name : "???");
 
     if (p->m_name != NULL) {
       key = p->m_name;
@@ -833,7 +837,7 @@ gallus_pool_destroy(gallus_pool_t *pptr) {
     if (p->m_lck != NULL) {
       gallus_mutex_destroy(&(p->m_lck));
     }
-    
+
     if (p->m_total_obj_size > 0) {
       free(p);
     }
@@ -865,7 +869,7 @@ s_once_proc(void) {
   gallus_result_t st = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely((st = gallus_hashmap_create(&s_pools, GALLUS_HASHMAP_TYPE_STRING,
-                                      s_pool_destroy_hashmap))
+                                         s_pool_destroy_hashmap))
              == GALLUS_RESULT_OK)) {
     s_is_inited = true;
   } else {
@@ -907,7 +911,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The pool module is finalized.\n");
     } else {
       gallus_msg_debug(10, "The pool module is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }

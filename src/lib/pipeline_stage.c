@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 #include "gallus_pipeline_stage_internal.h"
@@ -56,13 +59,13 @@ s_once_proc(void) {
   gallus_result_t r;
 
   if ((r = gallus_hashmap_create(&s_ps_name_tbl, GALLUS_HASHMAP_TYPE_STRING,
-                                  NULL)) != GALLUS_RESULT_OK) {
+                                 NULL)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the name - pipeline stage table.\n");
   }
 
   if ((r = gallus_hashmap_create(&s_ps_obj_tbl, GALLUS_HASHMAP_TYPE_ONE_WORD,
-                                  NULL)) != GALLUS_RESULT_OK) {
+                                 NULL)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the pipeline stage table.\n");
   }
@@ -98,13 +101,13 @@ static void
 s_dtors(void) {
   if (s_is_inited == true) {
     if (gallus_module_is_unloading() &&
-      gallus_module_is_finalized_cleanly()) {
+        gallus_module_is_finalized_cleanly()) {
       s_final();
 
       gallus_msg_debug(10, "The pipeline stage module is finalized.\n");
     } else {
       gallus_msg_debug(10, "The pipeline stage module is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }
@@ -120,7 +123,7 @@ s_add_stage(gallus_pipeline_stage_t ps) {
   if (ps != NULL && IS_VALID_STRING(ps->m_name) == true) {
     void *val = (void *)ps;
     if ((ret = gallus_hashmap_add(&s_ps_name_tbl,
-                                   (void *)(ps->m_name), &val, false)) ==
+                                  (void *)(ps->m_name), &val, false)) ==
         GALLUS_RESULT_OK) {
       val = (void *)true;
       ret = gallus_hashmap_add(&s_ps_obj_tbl, (void *)ps, &val, true);
@@ -139,7 +142,7 @@ s_delete_stage(gallus_pipeline_stage_t ps) {
     (void)gallus_hashmap_delete(&s_ps_obj_tbl, (void *)ps, NULL, true);
     if (IS_VALID_STRING(ps->m_name) == true) {
       (void)gallus_hashmap_delete(&s_ps_name_tbl,
-                                   (void *)(ps->m_name), NULL, true);
+                                  (void *)(ps->m_name), NULL, true);
     }
   }
 }
@@ -575,24 +578,24 @@ s_init_stage(gallus_pipeline_stage_t *sptr,
 
 gallus_result_t
 gallus_pipeline_stage_create(gallus_pipeline_stage_t *sptr,
-                              size_t alloc_size,
-                              const char *name,
-                              size_t n_workers,
-                              size_t event_size,
-                              size_t max_batch_size,
-                              gallus_pipeline_stage_pre_pause_proc_t
-                              pre_pause_proc,
-                              gallus_pipeline_stage_sched_proc_t sched_proc,
-                              gallus_pipeline_stage_setup_proc_t setup_proc,
-                              gallus_pipeline_stage_fetch_proc_t fetch_proc,
-                              gallus_pipeline_stage_main_proc_t main_proc,
-                              gallus_pipeline_stage_throw_proc_t throw_proc,
-                              gallus_pipeline_stage_shutdown_proc_t
-                              shutdown_proc,
-                              gallus_pipeline_stage_finalize_proc_t
-                              final_proc,
-                              gallus_pipeline_stage_freeup_proc_t
-                              freeup_proc) {
+                             size_t alloc_size,
+                             const char *name,
+                             size_t n_workers,
+                             size_t event_size,
+                             size_t max_batch_size,
+                             gallus_pipeline_stage_pre_pause_proc_t
+                             pre_pause_proc,
+                             gallus_pipeline_stage_sched_proc_t sched_proc,
+                             gallus_pipeline_stage_setup_proc_t setup_proc,
+                             gallus_pipeline_stage_fetch_proc_t fetch_proc,
+                             gallus_pipeline_stage_main_proc_t main_proc,
+                             gallus_pipeline_stage_throw_proc_t throw_proc,
+                             gallus_pipeline_stage_shutdown_proc_t
+                             shutdown_proc,
+                             gallus_pipeline_stage_finalize_proc_t
+                             final_proc,
+                             gallus_pipeline_stage_freeup_proc_t
+                             freeup_proc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_pipeline_stage_t ps = NULL;
   gallus_pipeline_stage_t checked_ps = NULL;
@@ -806,7 +809,7 @@ gallus_pipeline_stage_cancel(const gallus_pipeline_stage_t *sptr) {
 
 gallus_result_t
 gallus_pipeline_stage_shutdown(const gallus_pipeline_stage_t *sptr,
-                                shutdown_grace_level_t lvl) {
+                               shutdown_grace_level_t lvl) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL) {
@@ -857,7 +860,7 @@ gallus_pipeline_stage_shutdown(const gallus_pipeline_stage_t *sptr,
 
 gallus_result_t
 gallus_pipeline_stage_wait(const gallus_pipeline_stage_t *sptr,
-                            gallus_chrono_t nsec) {
+                           gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL) {
@@ -899,14 +902,14 @@ gallus_pipeline_stage_wait(const gallus_pipeline_stage_t *sptr,
 
             } else {
               gallus_exit_fatal("must not happen, waiting for all the worker "
-                                 "exit succeeded but the number of the exited "
-                                 "workers and the number of succeeded API "
-                                 "calls differ on stage '%s', "
-                                 "workers " PFSZ(u) ", "
-                                 "shutdown " PFSZ(u) ", "
-                                 "cancel " PFSZ(u) "\n",
-                                 ps->m_name,
-                                 ps->m_n_workers, n_shutdown, n_canceled);
+                                "exit succeeded but the number of the exited "
+                                "workers and the number of succeeded API "
+                                "calls differ on stage '%s', "
+                                "workers " PFSZ(u) ", "
+                                "shutdown " PFSZ(u) ", "
+                                "cancel " PFSZ(u) "\n",
+                                ps->m_name,
+                                ps->m_n_workers, n_shutdown, n_canceled);
             }
 
             ps->m_do_loop = false;
@@ -964,9 +967,9 @@ gallus_pipeline_stage_set_worker_cpu_affinity(
 
 gallus_result_t
 gallus_pipeline_stage_submit(const gallus_pipeline_stage_t *sptr,
-                              void *evbuf,
-                              size_t n_evs,
-                              void *hint) {
+                             void *evbuf,
+                             size_t n_evs,
+                             void *hint) {
   if (sptr != NULL && *sptr != NULL) {
     if ((*sptr)->m_sched_proc != NULL) {
       return ((*sptr)->m_sched_proc)(sptr, evbuf, n_evs, hint);
@@ -981,7 +984,7 @@ gallus_pipeline_stage_submit(const gallus_pipeline_stage_t *sptr,
 
 gallus_result_t
 gallus_pipeline_stage_pause(const gallus_pipeline_stage_t *sptr,
-                             gallus_chrono_t nsec) {
+                            gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL) {
@@ -1207,7 +1210,7 @@ gallus_pipeline_stage_schedule_maintenance(
 
 gallus_result_t
 gallus_pipeline_stage_find(const char *name,
-                            gallus_pipeline_stage_t *retptr) {
+                           gallus_pipeline_stage_t *retptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(name) == true && retptr != NULL) {
@@ -1277,7 +1280,7 @@ gallus_pipeline_stage_get_worker_nubmer(gallus_pipeline_stage_t *sptr) {
 
 gallus_result_t
 gallus_pipeline_stage_get_worker_event_buffer(gallus_pipeline_stage_t *sptr,
-                                               size_t index, void **buf) {
+    size_t index, void **buf) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL && buf != NULL &&
@@ -1294,9 +1297,9 @@ gallus_pipeline_stage_get_worker_event_buffer(gallus_pipeline_stage_t *sptr,
 
 gallus_result_t
 gallus_pipeline_stage_set_worker_event_buffer(
-    gallus_pipeline_stage_t *sptr,
-    size_t index, void *buf,
-    gallus_pipeline_stage_event_buffer_freeup_proc_t freeup_proc) {
+  gallus_pipeline_stage_t *sptr,
+  size_t index, void *buf,
+  gallus_pipeline_stage_event_buffer_freeup_proc_t freeup_proc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL && buf != NULL &&
@@ -1318,7 +1321,7 @@ gallus_pipeline_stage_set_worker_event_buffer(
 
 gallus_result_t
 gallus_pipeline_stage_get_name(const gallus_pipeline_stage_t *sptr,
-                                const char **name) {
+                               const char **name) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (sptr != NULL && *sptr != NULL && name != NULL) {

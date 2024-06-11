@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 
 
 
@@ -71,10 +74,10 @@ s_base_put_n(gallus_bbq_t *q, int64_t *vals, size_t n) {
 
     do {
       ret = gallus_bbq_put_n(q,
-                              (void **)(vals + n_total_puts),
-                              n - n_total_puts,
-                              int64_t,
-                              -1LL, &n_puts);
+                             (void **)(vals + n_total_puts),
+                             n - n_total_puts,
+                             int64_t,
+                             -1LL, &n_puts);
       if (likely(ret >= 0)) {
         n_total_puts += (size_t)ret;
         continue;
@@ -102,7 +105,7 @@ s_base_put_n(gallus_bbq_t *q, int64_t *vals, size_t n) {
 
 static inline gallus_result_t
 s_base_get_n(gallus_bbq_t *q, int64_t *vals, size_t n,
-        gallus_chrono_t to) {
+             gallus_chrono_t to) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(q != NULL && *q != NULL &&
@@ -110,7 +113,7 @@ s_base_get_n(gallus_bbq_t *q, int64_t *vals, size_t n,
     size_t n_gets = 0;
 
     ret = gallus_bbq_get_n(q, (void **)vals, n, 1,
-                            int64_t, to, &n_gets);
+                           int64_t, to, &n_gets);
     if (likely(ret >= 0)) {
       return ret;
     } else {
@@ -169,7 +172,7 @@ s_base_setup(const gallus_pipeline_stage_t *sptr) {
     if (bs->m_stg_idx < (bs->m_n_stgs - 1)) {
       if (likely(IS_VALID_STRING(bs->m_basename) == true)) {
         const char *name = s_base_get_stage_name(bs->m_basename,
-                                                 bs->m_stg_idx + 1);
+                           bs->m_stg_idx + 1);
 
         if (likely(IS_VALID_STRING(name) == true)) {
           gallus_pipeline_stage_t nbs = NULL;
@@ -178,7 +181,7 @@ s_base_setup(const gallus_pipeline_stage_t *sptr) {
           if (ret == GALLUS_RESULT_OK) {
             bs->m_next_stg = (base_stage_t)nbs;
             gallus_msg_debug(1, "this is '%s', found the next stage '%s'.\n",
-                              myname, name);
+                             myname, name);
           } else {
             gallus_perror(ret);
             gallus_msg_error("can't find the next stage '%s'.\n", name);
@@ -250,7 +253,7 @@ s_base_sched_hint(const gallus_pipeline_stage_t *sptr,
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
-          
+
   return ret;
 }
 
@@ -322,7 +325,7 @@ s_base_sched_rr_para(const gallus_pipeline_stage_t *sptr,
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
-          
+
   return ret;
 }
 
@@ -347,7 +350,7 @@ s_base_fetch_single(const gallus_pipeline_stage_t *sptr,
     base_stage_t bs = (base_stage_t)(*sptr);
 
     ret = s_base_get_n(&(bs->m_qs[0]), (int64_t *)buf, max,
-                  bs->m_to);
+                       bs->m_to);
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -377,19 +380,19 @@ s_base_fetch_hint(const gallus_pipeline_stage_t *sptr,
 
 static gallus_result_t
 s_base_fetch_rr(const gallus_pipeline_stage_t *sptr,
-           size_t idx, void *buf, size_t max) {
+                size_t idx, void *buf, size_t max) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(sptr != NULL && *sptr != NULL &&
              buf != NULL && max > 0)) {
     base_stage_t bs = (base_stage_t)(*sptr);
-    size_t baseidx = __sync_fetch_and_add(&(bs->m_get_next_q_idx), 0) + 
+    size_t baseidx = __sync_fetch_and_add(&(bs->m_get_next_q_idx), 0) +
                      bs->m_n_qs - 1;
     size_t curidx = baseidx;
     size_t i = 0;
     bool is_first_wait = true;
 
- recheck:
+  recheck:
     do {
 
       idx = baseidx + i++;
@@ -401,7 +404,7 @@ s_base_fetch_rr(const gallus_pipeline_stage_t *sptr,
          * overwritten by the bigest index.
          */
         gallus_atomic_update_max(size_t, &(bs->m_get_next_q_idx),
-                                  baseidx, curidx);
+                                 baseidx, curidx);
 
         return ret;
       } else if (ret < 0) {
@@ -451,7 +454,7 @@ s_base_fetch_rr(const gallus_pipeline_stage_t *sptr,
 
 static gallus_result_t
 s_base_throw(const gallus_pipeline_stage_t *sptr,
-        size_t idx, void *buf, size_t n) {
+             size_t idx, void *buf, size_t n) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(sptr != NULL && *sptr != NULL &&
@@ -460,7 +463,7 @@ s_base_throw(const gallus_pipeline_stage_t *sptr,
 
     if (likely(bs->m_next_stg != NULL)) {
       ret = gallus_pipeline_stage_submit(
-          (gallus_pipeline_stage_t *)&(bs->m_next_stg), buf, n, (void *)idx);
+              (gallus_pipeline_stage_t *)&(bs->m_next_stg), buf, n, (void *)idx);
     } else {
       ret = 0;
     }
@@ -477,11 +480,11 @@ s_base_throw(const gallus_pipeline_stage_t *sptr,
 
 static gallus_result_t
 s_base_shutdown(const gallus_pipeline_stage_t *sptr,
-           shutdown_grace_level_t l) {
+                shutdown_grace_level_t l) {
   (void)sptr;
 
   gallus_msg_debug(1, "called with \"%s\".\n",
-                    (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
+                   (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
 
   return GALLUS_RESULT_OK;
 }
@@ -492,11 +495,11 @@ s_base_shutdown(const gallus_pipeline_stage_t *sptr,
 
 static void
 s_base_finalize(const gallus_pipeline_stage_t *sptr,
-           bool is_canceled) {
+                bool is_canceled) {
   (void)sptr;
 
   gallus_msg_debug(1, "%s.\n",
-                    (is_canceled == false) ? "exit normally" : "canceled");
+                   (is_canceled == false) ? "exit normally" : "canceled");
 }
 
 
@@ -541,7 +544,7 @@ s_base_create(base_stage_t *bsptr,
               size_t max_stage,
               size_t n_workers,
               size_t n_qs,
-	      size_t q_len,
+              size_t q_len,
               size_t batch_size,
               gallus_chrono_t to,
               gallus_pipeline_stage_sched_proc_t sched_proc,
@@ -575,7 +578,7 @@ s_base_create(base_stage_t *bsptr,
         for (i = 0; i < n_qs; i++) {
           qs[i] = NULL;
           ret = gallus_bbq_create(&(qs[i]), int64_t,
-                                   (int64_t)q_len, NULL);
+                                  (int64_t)q_len, NULL);
           if (unlikely(ret != GALLUS_RESULT_OK)) {
             size_t j;
 
@@ -590,25 +593,25 @@ s_base_create(base_stage_t *bsptr,
     }
 
     if (likely(
-            ((ret = gallus_mutex_create(&lock)) == GALLUS_RESULT_OK) &&
-            ((ret = gallus_cond_create(&cond)) == GALLUS_RESULT_OK))) {
+          ((ret = gallus_mutex_create(&lock)) == GALLUS_RESULT_OK) &&
+          ((ret = gallus_cond_create(&cond)) == GALLUS_RESULT_OK))) {
       base_stage_t bs = NULL;
 
       ret = gallus_pipeline_stage_create(
-          (gallus_pipeline_stage_t *)&bs,
-          (alloc_size == 0) ? sizeof(base_stage_record) : alloc_size,
-          name, n_workers,
-          sizeof(uint64_t), batch_size,
-          s_base_pre_pause,		/* pre_pause */
-          sched_proc,			/* sched */
-          s_base_setup,			/* setup */
-          fetch_proc,			/* fetch */
-          main_proc,			/* main */
-          throw_proc,			/* throw */
-          s_base_shutdown,		/* shutdown */
-          s_base_finalize,		/* final */
-          (freeup_proc != NULL) ? freeup_proc : s_base_freeup
-          				/* freeup */);
+              (gallus_pipeline_stage_t *)&bs,
+              (alloc_size == 0) ? sizeof(base_stage_record) : alloc_size,
+              name, n_workers,
+              sizeof(uint64_t), batch_size,
+              s_base_pre_pause,		/* pre_pause */
+              sched_proc,			/* sched */
+              s_base_setup,			/* setup */
+              fetch_proc,			/* fetch */
+              main_proc,			/* main */
+              throw_proc,			/* throw */
+              s_base_shutdown,		/* shutdown */
+              s_base_finalize,		/* final */
+              (freeup_proc != NULL) ? freeup_proc : s_base_freeup
+              /* freeup */);
       if (likely(ret == GALLUS_RESULT_OK)) {
         bs->m_setup_proc = NULL;
         bs->m_basename = basename;
@@ -633,7 +636,7 @@ s_base_create(base_stage_t *bsptr,
     free((void *)name);
     name = NULL;
 
- bailout:
+  bailout:
     if (ret != GALLUS_RESULT_OK) {
       free((void *)name);
       free((void *)basename);

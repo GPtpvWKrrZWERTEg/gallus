@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_MODULE_APIS_H__
 #define __GALLUS_MODULE_APIS_H__
 
@@ -56,9 +59,9 @@ __BEGIN_DECLS
  */
 typedef gallus_result_t
 (*gallus_module_initialize_proc_t)(int argc,
-                                    const char *const argv[],
-                                    void *extarg,
-                                    gallus_thread_t **thdptr);
+                                   const char *const argv[],
+                                   void *extarg,
+                                   gallus_thread_t **thdptr);
 
 
 /**
@@ -174,13 +177,13 @@ typedef void
  */
 gallus_result_t
 gallus_module_register(const char *name,
-                        gallus_module_initialize_proc_t init_proc,
-                        void *extarg,
-                        gallus_module_start_proc_t start_proc,
-                        gallus_module_shutdown_proc_t shutdown_proc,
-                        gallus_module_stop_proc_t stop_proc,
-                        gallus_module_finalize_proc_t finalize_proc,
-                        gallus_module_usage_proc_t usage_proc);
+                       gallus_module_initialize_proc_t init_proc,
+                       void *extarg,
+                       gallus_module_start_proc_t start_proc,
+                       gallus_module_shutdown_proc_t shutdown_proc,
+                       gallus_module_stop_proc_t stop_proc,
+                       gallus_module_finalize_proc_t finalize_proc,
+                       gallus_module_usage_proc_t usage_proc);
 
 
 /**

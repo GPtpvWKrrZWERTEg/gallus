@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_PIPELINE_STAGE_FUNCS_H__
 #define __GALLUS_PIPELINE_STAGE_FUNCS_H__
 
@@ -64,9 +67,9 @@ typedef gallus_result_t
  */
 typedef gallus_result_t
 (*gallus_pipeline_stage_fetch_proc_t)(const gallus_pipeline_stage_t *sptr,
-                                       size_t idx,
-                                       void *evbuf,
-                                       size_t max_n_evs);
+                                      size_t idx,
+                                      void *evbuf,
+                                      size_t max_n_evs);
 
 
 /**
@@ -93,9 +96,9 @@ typedef gallus_result_t
  */
 typedef gallus_result_t
 (*gallus_pipeline_stage_main_proc_t)(const gallus_pipeline_stage_t *sptr,
-                                      size_t idx,
-                                      void *evbuf,
-                                      size_t n_evs);
+                                     size_t idx,
+                                     void *evbuf,
+                                     size_t n_evs);
 
 
 /**
@@ -116,9 +119,9 @@ typedef gallus_result_t
  */
 typedef gallus_result_t
 (*gallus_pipeline_stage_throw_proc_t)(const gallus_pipeline_stage_t *sptr,
-                                       size_t idx,
-                                       void *evbuf,
-                                       size_t n_evs);
+                                      size_t idx,
+                                      void *evbuf,
+                                      size_t n_evs);
 
 
 /**
@@ -192,9 +195,9 @@ typedef void
  */
 typedef gallus_result_t
 (*gallus_pipeline_stage_sched_proc_t)(const gallus_pipeline_stage_t *sptr,
-                                       void *evbuf,
-                                       size_t n_evs,
-                                       void *hint);
+                                      void *evbuf,
+                                      size_t n_evs,
+                                      void *hint);
 
 
 /**

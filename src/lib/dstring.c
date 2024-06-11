@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_dstring.h"
 
@@ -111,7 +114,7 @@ gallus_dstring_clear(gallus_dstring_t *ds) {
 
 gallus_result_t
 gallus_dstring_vappendf(gallus_dstring_t *ds, const char *format,
-                         va_list *args) {
+                        va_list *args) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   va_list cpy_args;
   int pre_size, size;
@@ -167,7 +170,7 @@ gallus_dstring_appendf(gallus_dstring_t *ds, const char *format, ...) {
 
 gallus_result_t
 gallus_dstring_vprependf(gallus_dstring_t *ds, const char *format,
-                          va_list *args) {
+                         va_list *args) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   va_list cpy_args;
   int pre_size, size;
@@ -237,9 +240,9 @@ gallus_dstring_prependf(gallus_dstring_t *ds, const char *format, ...) {
 
 gallus_result_t
 gallus_dstring_vinsertf(gallus_dstring_t *ds,
-                         size_t offset,
-                         const char *format,
-                         va_list *args) {
+                        size_t offset,
+                        const char *format,
+                        va_list *args) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   va_list cpy_args;
   int pre_size, size;
@@ -297,8 +300,8 @@ gallus_dstring_vinsertf(gallus_dstring_t *ds,
 
 gallus_result_t
 gallus_dstring_insertf(gallus_dstring_t *ds,
-                        size_t offset,
-                        const char *format, ...) {
+                       size_t offset,
+                       const char *format, ...) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   va_list args;
 
@@ -315,7 +318,7 @@ gallus_dstring_insertf(gallus_dstring_t *ds,
 
 gallus_result_t
 gallus_dstring_concat(gallus_dstring_t *dst_ds,
-                       const gallus_dstring_t *src_ds) {
+                      const gallus_dstring_t *src_ds) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (dst_ds != NULL && *dst_ds != NULL &&

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -14,7 +17,7 @@ gallus_chrono_now(void) {
 
 gallus_result_t
 gallus_chrono_to_timespec(struct timespec *dstptr,
-                           gallus_chrono_t nsec) {
+                          gallus_chrono_t nsec) {
   if (dstptr != NULL) {
     NSEC_TO_TS(nsec, *dstptr);
     return GALLUS_RESULT_OK;
@@ -26,7 +29,7 @@ gallus_chrono_to_timespec(struct timespec *dstptr,
 
 gallus_result_t
 gallus_chrono_to_timeval(struct timeval *dstptr,
-                          gallus_chrono_t nsec) {
+                         gallus_chrono_t nsec) {
   if (dstptr != NULL) {
     NSEC_TO_TV(nsec, *dstptr);
     return GALLUS_RESULT_OK;
@@ -38,7 +41,7 @@ gallus_chrono_to_timeval(struct timeval *dstptr,
 
 gallus_result_t
 gallus_chrono_from_timespec(gallus_chrono_t *dstptr,
-                             const struct timespec *specptr) {
+                            const struct timespec *specptr) {
   if (dstptr != NULL &&
       specptr != NULL) {
     *dstptr = TS_TO_NSEC(*specptr);
@@ -51,7 +54,7 @@ gallus_chrono_from_timespec(gallus_chrono_t *dstptr,
 
 gallus_result_t
 gallus_chrono_from_timeval(gallus_chrono_t *dstptr,
-                            const struct timeval *specptr) {
+                           const struct timeval *specptr) {
   if (dstptr != NULL &&
       specptr != NULL) {
     *dstptr = TV_TO_NSEC(*specptr);
@@ -64,7 +67,7 @@ gallus_chrono_from_timeval(gallus_chrono_t *dstptr,
 
 gallus_result_t
 gallus_chrono_nanosleep(gallus_chrono_t nsec,
-                         gallus_chrono_t *remptr) {
+                        gallus_chrono_t *remptr) {
   struct timespec t;
   struct timespec r;
 
@@ -75,7 +78,7 @@ gallus_chrono_nanosleep(gallus_chrono_t nsec,
   NSEC_TO_TS(nsec, t);
 
   if (remptr == NULL) {
- retry:
+  retry:
     errno = 0;
     if (nanosleep(&t, &r) == 0) {
       return GALLUS_RESULT_OK;

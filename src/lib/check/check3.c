@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 static gallus_result_t
@@ -23,7 +26,7 @@ static void
 s_finalize_proc(gallus_thread_t *selfptr,
                 bool is_canceled, void *arg) {
   gallus_msg("Called with (%p, %s, %p)\n",
-              *selfptr, BOOL_TO_STR(is_canceled), arg);
+             *selfptr, BOOL_TO_STR(is_canceled), arg);
 }
 
 static void

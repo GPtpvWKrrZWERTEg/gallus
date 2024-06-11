@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #pragma once
 
 

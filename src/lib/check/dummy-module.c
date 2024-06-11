@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -31,7 +34,7 @@ s_dummy_thd_finalize(const gallus_thread_t *tptr, bool is_canceled,
   }
 
   gallus_msg_debug(5, "called, %s.\n",
-                    (is_canceled == true) ? "canceled" : "exited");
+                   (is_canceled == true) ? "canceled" : "exited");
 }
 
 
@@ -58,7 +61,7 @@ s_dummy_thd_main(const gallus_thread_t *tptr, void *arg) {
   }
 
   gallus_msg_debug(5, "waiting for the gala opening...\n");
-  
+
   ret = global_state_wait_for(GLOBAL_STATE_STARTED, &s, &l, -1LL);
   if (ret == GALLUS_RESULT_OK &&
       s == GLOBAL_STATE_STARTED) {
@@ -124,7 +127,7 @@ s_unlock(void) {
 
 
 static inline gallus_result_t
-s_parse_args(int argc, const char * const argv[]) {
+s_parse_args(int argc, const char *const argv[]) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   (void)argc;
@@ -152,7 +155,7 @@ s_parse_args(int argc, const char * const argv[]) {
     argv++;
   }
   ret = GALLUS_RESULT_OK;
-  
+
 bailout:
   return ret;
 }
@@ -190,12 +193,12 @@ dummy_module_initialize(int argc,
       for (i = 0; i < argc; i++) {
         gallus_msg_debug(5, "%5d: '%s'\n", i, argv[i]);
       }
-      
+
       ret = gallus_thread_create(&s_thd,
-                                  s_dummy_thd_main,
-                                  s_dummy_thd_finalize,
-                                  s_dummy_thd_destroy,
-                                  "dummy", NULL);
+                                 s_dummy_thd_main,
+                                 s_dummy_thd_finalize,
+                                 s_dummy_thd_destroy,
+                                 "dummy", NULL);
       if (ret == GALLUS_RESULT_OK) {
         s_is_initialized = true;
         if (thdptr != NULL) {
@@ -345,12 +348,12 @@ s_once_proc(void) {
   }
 
   if ((r = gallus_module_register(MY_MOD_NAME,
-                                   dummy_module_initialize, NULL,
-                                   dummy_module_start,
-                                   dummy_module_shutdown,
-                                   dummy_module_stop,
-                                   dummy_module_finalize,
-                                   dummy_module_usage)) != GALLUS_RESULT_OK) {
+                                  dummy_module_initialize, NULL,
+                                  dummy_module_start,
+                                  dummy_module_shutdown,
+                                  dummy_module_stop,
+                                  dummy_module_finalize,
+                                  dummy_module_usage)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't register the %s module.\n", MY_MOD_NAME);
   }

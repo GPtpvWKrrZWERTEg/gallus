@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_SESSION_H__
 #define __GALLUS_SESSION_H__
 
@@ -112,7 +115,8 @@ session_is_alive(gallus_session_t session);
  *
  */
 gallus_result_t
-session_connect(gallus_session_t s, gallus_ip_address_t *daddr, uint16_t dport,
+session_connect(gallus_session_t s, gallus_ip_address_t *daddr,
+                uint16_t dport,
                 gallus_ip_address_t *saddr, uint16_t sport);
 
 /**
@@ -197,7 +201,7 @@ session_sockfd_set(gallus_session_t s, int sock);
  *
  */
 void
-session_write_set(gallus_session_t s, ssize_t (*write)(gallus_session_t ,
+session_write_set(gallus_session_t s, ssize_t (*write)(gallus_session_t,
                   void *, size_t));
 
 /**

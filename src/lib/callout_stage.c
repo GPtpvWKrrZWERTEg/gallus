@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 
 
 
@@ -39,10 +42,10 @@ s_callout_worker_sched(const gallus_pipeline_stage_t *sptr,
 
       while (n_total_puts < n_evs) {
         ret = gallus_bbq_put_n(&(cs->m_qs[idx]),
-                                (void **)(tasks + n_total_puts),
-                                n_evs - n_total_puts,
-                                gallus_callout_task_t,
-                                -1LL, &n_puts);
+                               (void **)(tasks + n_total_puts),
+                               n_evs - n_total_puts,
+                               gallus_callout_task_t,
+                               -1LL, &n_puts);
         if (likely(ret >= 0)) {
           n_total_puts += (size_t)ret;
         } else {
@@ -64,7 +67,7 @@ s_callout_worker_sched(const gallus_pipeline_stage_t *sptr,
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
-          
+
   return ret;
 }
 
@@ -81,11 +84,11 @@ s_callout_worker_fetch(const gallus_pipeline_stage_t *sptr,
     size_t n_puts = 0;
 
     ret = gallus_bbq_get_n(&(cs->m_qs[idx]),
-                            (void **)evbuf,
-                            max_n_evs, 1,
-                            gallus_callout_task_t,
-                            1000LL * 1000LL * 1000LL, /* 1 sec. */
-                            &n_puts);
+                           (void **)evbuf,
+                           max_n_evs, 1,
+                           gallus_callout_task_t,
+                           1000LL * 1000LL * 1000LL, /* 1 sec. */
+                           &n_puts);
     switch (ret) {
       case GALLUS_RESULT_WAKEUP_REQUESTED: {
         ret = (gallus_result_t)n_puts;
@@ -196,8 +199,8 @@ s_create_callout_stage(size_t n_workers) {
   if (likely(n_workers > 0)) {
     size_t i;
     gallus_pipeline_stage_t s = (gallus_pipeline_stage_t)&s_cs;
-    gallus_bbq_t *qs = (gallus_bbq_t *)malloc(sizeof(gallus_bbq_t) * 
-                                                n_workers);
+    gallus_bbq_t *qs = (gallus_bbq_t *)malloc(sizeof(gallus_bbq_t) *
+                       n_workers);
 
     if (likely(qs != NULL)) {
       (void)memset((void *)qs, 0,
@@ -205,7 +208,7 @@ s_create_callout_stage(size_t n_workers) {
 
       for (i = 0; i < n_workers; i++) {
         ret = gallus_bbq_create(&(qs[i]), gallus_callout_task_t,
-                                 CALLOUT_TASK_MAX, s_task_freeup);
+                                CALLOUT_TASK_MAX, s_task_freeup);
         if (unlikely(ret != GALLUS_RESULT_OK)) {
           break;
         }
@@ -213,18 +216,18 @@ s_create_callout_stage(size_t n_workers) {
 
       if (likely(ret == GALLUS_RESULT_OK)) {
         ret = gallus_pipeline_stage_create(
-            &s, 0, "c.o.worker", n_workers,
-            sizeof(gallus_callout_task_t), CALLOUT_TASK_MAX,
-            NULL,			/* pre_pause */
-            s_callout_worker_sched,	/* sched */
-            NULL,			/* setup */
-            s_callout_worker_fetch,	/* fetch */
-            s_callout_worker_main,	/* main */
-            NULL,			/* throw */
-            NULL,			/* shutdown */
-            s_callout_worker_final,	/* final */
-            s_callout_worker_free	/* freeup */
-                                            );
+                &s, 0, "c.o.worker", n_workers,
+                sizeof(gallus_callout_task_t), CALLOUT_TASK_MAX,
+                NULL,			/* pre_pause */
+                s_callout_worker_sched,	/* sched */
+                NULL,			/* setup */
+                s_callout_worker_fetch,	/* fetch */
+                s_callout_worker_main,	/* main */
+                NULL,			/* throw */
+                NULL,			/* shutdown */
+                s_callout_worker_final,	/* final */
+                s_callout_worker_free	/* freeup */
+              );
         if (likely(ret == GALLUS_RESULT_OK)) {
           s_cs.m_is_initialized = true;
           s_cs.m_n_workers = n_workers;
@@ -267,7 +270,7 @@ s_start_callout_stage(void) {
 
 
 static gallus_result_t
-s_submit_callout_stage(const gallus_callout_task_t * const tasks,
+s_submit_callout_stage(const gallus_callout_task_t *const tasks,
                        gallus_chrono_t start_time,
                        size_t n) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
@@ -323,11 +326,11 @@ s_submit_callout_stage(const gallus_callout_task_t * const tasks,
           n_put = (stride < n_remains) ? stride : n_remains;
           q = (uint32_t)(s_cs.m_last_q % s_cs.m_n_workers);
 
-          last_err = ret = 
-              gallus_pipeline_stage_submit(&s,
-                                            (void *)(tasks + n_total),
-                                            n_put,
-                                            (void *)q);
+          last_err = ret =
+                       gallus_pipeline_stage_submit(&s,
+                           (void *)(tasks + n_total),
+                           n_put,
+                           (void *)q);
           s_cs.m_last_q++;
 
           if (likely(ret >= 0)) {
@@ -341,12 +344,12 @@ s_submit_callout_stage(const gallus_callout_task_t * const tasks,
           ret = last_err;
           gallus_perror(ret);
           gallus_msg_error("Task submission error(s). Only " PFSZ(u) " tasks "
-                            "are submitted for " PFSZ(u) " tasks.\n",
-                            n_total, n);
+                           "are submitted for " PFSZ(u) " tasks.\n",
+                           n_total, n);
         } else if (unlikely(n_total != n)) {
           gallus_msg_warning("can't submit some task, tried " PFSZ(u)
-                              ", but " PFSZ(u) ".\n",
-                              n, n_total);
+                             ", but " PFSZ(u) ".\n",
+                             n, n_total);
         }
       }
     } else {
@@ -413,9 +416,9 @@ s_wait_callout_stage(gallus_chrono_t nsec) {
 
 static inline gallus_result_t
 s_finish_callout_stage(gallus_chrono_t timeout) {
-  gallus_result_t ret = 
-      s_shutdown_callout_stage((timeout == 0) ?
-                               SHUTDOWN_RIGHT_NOW : SHUTDOWN_GRACEFULLY);
+  gallus_result_t ret =
+    s_shutdown_callout_stage((timeout == 0) ?
+                             SHUTDOWN_RIGHT_NOW : SHUTDOWN_GRACEFULLY);
 
   if (likely(ret == GALLUS_RESULT_OK)) {
     ret = s_wait_callout_stage(timeout + 1000LL * 1000LL * 1000LL);

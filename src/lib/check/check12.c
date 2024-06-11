@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_pipeline_stage_internal.h"
 
@@ -138,7 +141,7 @@ s_shutdown(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "called with \"%s\".\n",
-                    (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
+                   (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
 
   return GALLUS_RESULT_OK;
 }
@@ -150,7 +153,7 @@ s_finalize(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "%s.\n",
-                    (is_canceled == false) ? "exit normally" : "canceled");
+                   (is_canceled == false) ? "exit normally" : "canceled");
 }
 
 
@@ -202,18 +205,18 @@ main(int argc, const char *const argv[]) {
   }
 
   st = gallus_pipeline_stage_create((gallus_pipeline_stage_t *)&t,
-                                     sizeof(*t), "a_test",
-                                     nthd,
-                                     sizeof(void *), 1024,
-                                     s_pre_pause,
-                                     s_sched,
-                                     s_setup,
-                                     /* s_fetch, */ NULL,
-                                     s_main,
-                                     /* s_throw, */ NULL,
-                                     s_shutdown,
-                                     s_finalize,
-                                     s_freeup);
+                                    sizeof(*t), "a_test",
+                                    nthd,
+                                    sizeof(void *), 1024,
+                                    s_pre_pause,
+                                    s_sched,
+                                    s_setup,
+                                    /* s_fetch, */ NULL,
+                                    s_main,
+                                    /* s_throw, */ NULL,
+                                    s_shutdown,
+                                    s_finalize,
+                                    s_freeup);
   if (st == GALLUS_RESULT_OK) {
     t->m_n_max_count = c_max;
     t->m_mod = mod;
@@ -227,10 +230,10 @@ main(int argc, const char *const argv[]) {
         if (st == GALLUS_RESULT_OK) {
           sleep(1);
           st = gallus_pipeline_stage_shutdown((gallus_pipeline_stage_t *)&t,
-                                               SHUTDOWN_GRACEFULLY);
+                                              SHUTDOWN_GRACEFULLY);
           if (st == GALLUS_RESULT_OK) {
             st = gallus_pipeline_stage_wait((gallus_pipeline_stage_t *)&t,
-                                             -1LL);
+                                            -1LL);
           }
         }
       }

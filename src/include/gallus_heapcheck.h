@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_HEAPCHECK_H__
 #define __GALLUS_HEAPCHECK_H__
 

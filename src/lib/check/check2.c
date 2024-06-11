@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 
@@ -43,7 +46,7 @@ s_test_thread_finalize(const gallus_thread_t *tptr, bool is_canceled,
       gallus_mutex_unlock(&(tt->m_lock));
 
       gallus_msg_debug(1, "enter (%s).\n",
-                        (is_canceled == true) ? "canceled" : "exited");
+                       (is_canceled == true) ? "canceled" : "exited");
     }
   }
 }
@@ -109,10 +112,10 @@ s_initialize(test_thread_t tt, size_t n) {
         goto initfailure;
       }
       if ((r = gallus_thread_create((gallus_thread_t *)&tt,
-                                     s_test_thread_main,
-                                     s_test_thread_finalize,
-                                     s_test_thread_destroy,
-                                     "test", NULL)) != GALLUS_RESULT_OK) {
+                                    s_test_thread_main,
+                                    s_test_thread_finalize,
+                                    s_test_thread_destroy,
+                                    "test", NULL)) != GALLUS_RESULT_OK) {
         gallus_perror(r);
         goto initfailure;
       }
@@ -275,7 +278,7 @@ main(int argc, const char *const argv[]) {
   gallus_chrono_nanosleep(2LL * 1000LL * 1000LL * 1000LL, NULL);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Heap object, auto deletion: end\n\n");
 
@@ -297,7 +300,7 @@ main(int argc, const char *const argv[]) {
   gallus_chrono_nanosleep(2LL * 1000LL * 1000LL * 1000LL, NULL);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Stack object, auto deletion: end\n\n");
 
@@ -321,7 +324,7 @@ main(int argc, const char *const argv[]) {
   gallus_chrono_nanosleep(2LL * 1000LL * 1000LL * 1000LL, NULL);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Heap object, cancel, auto deletion: end\n\n");
 
@@ -345,7 +348,7 @@ main(int argc, const char *const argv[]) {
   gallus_chrono_nanosleep(2LL * 1000LL * 1000LL * 1000LL, NULL);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Stack object, cancel, auto deletion: end\n\n");
 
@@ -362,7 +365,7 @@ main(int argc, const char *const argv[]) {
     gallus_exit_fatal("Can't start a thread.\n");
   }
   if (gallus_thread_wait((gallus_thread_t *)&tt,
-                          5LL * 1000LL * 1000LL * 1000LL) !=
+                         5LL * 1000LL * 1000LL * 1000LL) !=
       GALLUS_RESULT_TIMEDOUT) {
     gallus_exit_fatal("Must be timed out.\n");
   }
@@ -390,7 +393,7 @@ main(int argc, const char *const argv[]) {
   gallus_thread_destroy((gallus_thread_t *)&tt);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Force destroy: end\n\n");
 
@@ -406,7 +409,7 @@ main(int argc, const char *const argv[]) {
   gallus_thread_destroy((gallus_thread_t *)&tt);
   if (s_is_deleted == false) {
     gallus_exit_fatal("The thread object must be freed and "
-                       "the flag must be true.\n");
+                      "the flag must be true.\n");
   }
   fprintf(stderr, "Force destroy, not started: end\n\n");
 

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -14,15 +17,15 @@
 #define ASM_IDIVQ(devidend, divisor, quot, rem)                         \
   do {                                                                  \
     __asm__ volatile                                                    \
-        ("xor %%rdx, %%rdx;"	/* clear rdx. */                        \
-         "movq %2, %%rax;"	/* copy devidend into rax. */           \
-         "movq %3, %%r10;"	/* copy divisor into r10. */            \
-         "idiv %%r10;"		/* rdx:rax / r10. */                    \
-         "movq %%rax, %0;"	/* copy the quot. */                    \
-         "movq %%rdx, %1;"	/* copy the rem. */                     \
-         : "=r" (quot), "=r" (rem)                                      \
-         : "r" (devidend), "r" (divisor)                                \
-         : "%rdx", "%rax", "%r10");                                     \
+    ("xor %%rdx, %%rdx;"	/* clear rdx. */                        \
+     "movq %2, %%rax;"	/* copy devidend into rax. */           \
+     "movq %3, %%r10;"	/* copy divisor into r10. */            \
+     "idiv %%r10;"		/* rdx:rax / r10. */                    \
+     "movq %%rax, %0;"	/* copy the quot. */                    \
+     "movq %%rdx, %1;"	/* copy the rem. */                     \
+     : "=r" (quot), "=r" (rem)                                      \
+     : "r" (devidend), "r" (divisor)                                \
+     : "%rdx", "%rax", "%r10");                                     \
   } while (0)
 
 

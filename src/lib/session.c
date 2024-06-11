@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_session.h"
 #include "session_internal.h"
@@ -135,7 +138,7 @@ bind_default(gallus_session_t s,
 
   if (s->family != saddr->sa_family) {
     gallus_msg_error("Bad address family (%"PRIu8" != %"PRIu8")\n",
-                      s->family, saddr->sa_family);
+                     s->family, saddr->sa_family);
     free(saddr);
     return -1;
   }
@@ -191,7 +194,7 @@ connect_default(gallus_session_t s,
 
   if (s->family != saddr->sa_family) {
     gallus_msg_error("Bad address family ( %"PRIu8").\n",
-                      saddr->sa_family);
+                     saddr->sa_family);
     free(saddr);
     return GALLUS_RESULT_UNSUPPORTED;
   }
@@ -261,7 +264,7 @@ session_create(session_type_t t, gallus_session_t *session) {
   gallus_session_t s;
 
   if (!(t & (SESSION_PASSIVE | SESSION_ACTIVE |
-            SESSION_ACCEPTED | SESSION_UNIX_STREAM | SESSION_UNIX_DGRAM))) {
+             SESSION_ACCEPTED | SESSION_UNIX_STREAM | SESSION_UNIX_DGRAM))) {
     gallus_msg_warning("illegal session type: 0x%x\n", t);
     return GALLUS_RESULT_INVALID_ARGS;
   }
@@ -321,7 +324,8 @@ session_create(session_type_t t, gallus_session_t *session) {
     if (ret != GALLUS_RESULT_OK) {
       goto err;
     }
-  } else if (t & (SESSION_TCP | SESSION_TCP6 | SESSION_UNIX_STREAM | SESSION_UNIX_DGRAM)) {
+  } else if (t & (SESSION_TCP | SESSION_TCP6 | SESSION_UNIX_STREAM |
+                  SESSION_UNIX_DGRAM)) {
     ret = session_tcp_init(s);
     if (ret != GALLUS_RESULT_OK) {
       goto err;
@@ -603,7 +607,8 @@ done:
 }
 
 gallus_result_t
-session_connect(gallus_session_t s, gallus_ip_address_t *daddr, uint16_t dport,
+session_connect(gallus_session_t s, gallus_ip_address_t *daddr,
+                uint16_t dport,
                 gallus_ip_address_t *saddr, uint16_t sport) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   char *d_addr = NULL;
@@ -716,7 +721,7 @@ session_sockfd_set(gallus_session_t s, int sock) {
 }
 
 void
-session_write_set(gallus_session_t s, ssize_t (*writep)(gallus_session_t ,
+session_write_set(gallus_session_t s, ssize_t (*writep)(gallus_session_t,
                   void *, size_t)) {
   s->write = writep;
 }

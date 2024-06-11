@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_config.h"
 
@@ -103,7 +106,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The mutex/lock APIs are finalized.\n");
     } else {
       gallus_msg_debug(10, "The mutex/lock APIs is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }
@@ -135,7 +138,7 @@ s_create(gallus_mutex_t *mtxptr, gallus_mutex_type_t type) {
         }
         default: {
           gallus_exit_fatal("Invalid gallus mutex type (%d).\n",
-                             (int)type);
+                            (int)type);
           /* not reached. */
           break;
         }
@@ -212,7 +215,7 @@ gallus_mutex_reinitialize(gallus_mutex_t *mtxptr) {
       }
       default: {
         gallus_exit_fatal("Invalid gallus mutex type (%d).\n",
-                           (*mtxptr)->m_type);
+                          (*mtxptr)->m_type);
         /* not reached. */
         break;
       }
@@ -296,7 +299,7 @@ gallus_mutex_trylock(gallus_mutex_t *mtxptr) {
 #ifdef HAVE_PTHREAD_MUTEX_TIMEDLOCK
 gallus_result_t
 gallus_mutex_timedlock(gallus_mutex_t *mtxptr,
-                        gallus_chrono_t nsec) {
+                       gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mtxptr != NULL &&
@@ -406,10 +409,10 @@ gallus_mutex_leave_critical(gallus_mutex_t *mtxptr, int ostate) {
      */
     if ((st = pthread_mutex_unlock(&((*mtxptr)->m_mtx))) == 0) {
       if ((st = pthread_setcancelstate(ostate, NULL)) == 0) {
-          ret = GALLUS_RESULT_OK;
-          if (ostate == PTHREAD_CANCEL_ENABLE) {
-            pthread_testcancel();
-          }
+        ret = GALLUS_RESULT_OK;
+        if (ostate == PTHREAD_CANCEL_ENABLE) {
+          pthread_testcancel();
+        }
       } else {
         errno = st;
         ret = GALLUS_RESULT_POSIX_API_ERROR;
@@ -546,7 +549,7 @@ gallus_rwlock_reader_trylock(gallus_rwlock_t *rwlptr) {
 
 gallus_result_t
 gallus_rwlock_reader_timedlock(gallus_rwlock_t *rwlptr,
-                                gallus_chrono_t nsec) {
+                               gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (rwlptr != NULL &&
@@ -636,7 +639,7 @@ gallus_rwlock_writer_trylock(gallus_rwlock_t *rwlptr) {
 
 gallus_result_t
 gallus_rwlock_writer_timedlock(gallus_rwlock_t *rwlptr,
-                                gallus_chrono_t nsec) {
+                               gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (rwlptr != NULL &&
@@ -705,7 +708,7 @@ gallus_rwlock_unlock(gallus_rwlock_t *rwlptr) {
 
 gallus_result_t
 gallus_rwlock_reader_enter_critical(gallus_rwlock_t *rwlptr,
-                                     int *ostateptr) {
+                                    int *ostateptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (rwlptr != NULL && *rwlptr != NULL &&
@@ -734,7 +737,7 @@ gallus_rwlock_reader_enter_critical(gallus_rwlock_t *rwlptr,
 
 gallus_result_t
 gallus_rwlock_writer_enter_critical(gallus_rwlock_t *rwlptr,
-                                     int *ostateptr) {
+                                    int *ostateptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (rwlptr != NULL && *rwlptr != NULL &&
@@ -846,8 +849,8 @@ gallus_cond_destroy(gallus_cond_t *cndptr) {
 
 gallus_result_t
 gallus_cond_wait(gallus_cond_t *cndptr,
-                  gallus_mutex_t *mtxptr,
-                  gallus_chrono_t nsec) {
+                 gallus_mutex_t *mtxptr,
+                 gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mtxptr != NULL &&
@@ -905,7 +908,7 @@ gallus_cond_wait(gallus_cond_t *cndptr,
 
 gallus_result_t
 gallus_cond_notify(gallus_cond_t *cndptr,
-                    bool for_all) {
+                   bool for_all) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (cndptr != NULL &&

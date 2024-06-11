@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "../session_tls.c"
 #include "unity.h"
@@ -64,8 +67,8 @@ test_match_full(void) {
 void
 test_match_regex_allow_issuer(void) {
   gallus_result_t rc = s_check_certificates("aaa/CN="
-                        "The Evil Genius CA",
-                        NULL);
+                       "The Evil Genius CA",
+                       NULL);
   TEST_ASSERT_EQUAL(rc, GALLUS_RESULT_OK);
 }
 

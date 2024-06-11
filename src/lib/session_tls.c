@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_session.h"
 #include "gallus_session_tls.h"
@@ -13,7 +16,7 @@ static void	s_dtors(void) __attr_destructor__(111);
 
 gallus_result_t session_tls_init(gallus_session_t s);
 static gallus_result_t connect_tls(gallus_session_t s, const char *host,
-                                    const char *port);
+                                   const char *port);
 static void destroy_tls(gallus_session_t s);
 static void close_tls(gallus_session_t s);
 static ssize_t read_tls(gallus_session_t s, void *buf, size_t n);
@@ -119,7 +122,7 @@ get_ssl_ctx_common(char *ca_dir, char *cert, char *key) {
   if (ret != 1) {
     unsigned long n = ERR_get_error();
     gallus_msg_warning("SSL_CTX_use_certificate_file(%s):error (%s:%d).\n", cert,
-                        ERR_error_string(n, NULL), (int) n);
+                       ERR_error_string(n, NULL), (int) n);
     SSL_CTX_free(ssl_ctx);
     return NULL;
   }
@@ -129,7 +132,7 @@ get_ssl_ctx_common(char *ca_dir, char *cert, char *key) {
   if (ret != 1) {
     unsigned long n = ERR_get_error();
     gallus_msg_warning("SSL_CTX_use_PrivateKey_file(%s):error (%s:%d).\n", key,
-                        ERR_error_string(n, NULL), (int) n);
+                       ERR_error_string(n, NULL), (int) n);
     SSL_CTX_free(ssl_ctx);
     return NULL;
   }
@@ -211,8 +214,8 @@ retry:
       goto retry;
     }
     gallus_msg_warning("tls error (%s:%d).\n", ERR_error_string((unsigned long)
-                        SSL_get_error(GET_TLS_CTX(*s2)->ssl, ret), NULL),
-                        (int) SSL_get_error(GET_TLS_CTX(*s2)->ssl, ret));
+                       SSL_get_error(GET_TLS_CTX(*s2)->ssl, ret), NULL),
+                       (int) SSL_get_error(GET_TLS_CTX(*s2)->ssl, ret));
     destroy_tls(*s2);
     return GALLUS_RESULT_TLS_CONN_ERROR;
   }
@@ -517,7 +520,7 @@ gallus_session_tls_set_certcheck_default(gallus_result_t
 /* Assume locked. */
 void
 gallus_session_tls_set_certcheck(gallus_session_t s, gallus_result_t
-                                  (*func)(const char *, const char *)) {
+                                 (*func)(const char *, const char *)) {
   GET_TLS_CTX(s)->check_certificates = func;
 }
 
@@ -778,14 +781,14 @@ connect_tls(gallus_session_t s, const char *host, const char *port) {
              && (SSL_get_error(GET_TLS_CTX(s)->ssl, ret) != SSL_ERROR_WANT_READ
                  && SSL_get_error(GET_TLS_CTX(s)->ssl, ret) != SSL_ERROR_WANT_WRITE)) {
     gallus_msg_warning("tls error (%s:%d).\n", ERR_error_string((unsigned long)
-                        SSL_get_error(GET_TLS_CTX(s)->ssl, ret), NULL),
-                        (int) SSL_get_error(GET_TLS_CTX(s)->ssl, ret));
+                       SSL_get_error(GET_TLS_CTX(s)->ssl, ret), NULL),
+                       (int) SSL_get_error(GET_TLS_CTX(s)->ssl, ret));
     return GALLUS_RESULT_TLS_CONN_ERROR;
   } else if (ret < 0) {
     gallus_msg_info("tls error (%s:%d), but continue.\n",
-                     ERR_error_string((unsigned long)
-                                      SSL_get_error(GET_TLS_CTX(s)->ssl, ret), NULL),
-                     (int) SSL_get_error(GET_TLS_CTX(s)->ssl, ret));
+                    ERR_error_string((unsigned long)
+                                     SSL_get_error(GET_TLS_CTX(s)->ssl, ret), NULL),
+                    (int) SSL_get_error(GET_TLS_CTX(s)->ssl, ret));
     return GALLUS_RESULT_EINPROGRESS;
   } else {
     ret = check_cert_chain(s);
@@ -881,7 +884,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The session/TLS module is finalized.\n");
     } else {
       gallus_msg_debug(10, "The session/TLS module  is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }

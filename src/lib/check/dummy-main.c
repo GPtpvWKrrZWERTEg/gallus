@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -31,8 +34,8 @@ s_term_handler(int sig) {
       }
       if (IS_VALID_SHUTDOWN(l) == true) {
         gallus_msg_debug(5, "About to request shutdown(%s)...\n",
-                          (l == SHUTDOWN_RIGHT_NOW) ?
-                          "RIGHT_NOW" : "GRACEFULLY");
+                         (l == SHUTDOWN_RIGHT_NOW) ?
+                         "RIGHT_NOW" : "GRACEFULLY");
         if ((r = global_state_request_shutdown(l)) == GALLUS_RESULT_OK) {
           gallus_msg_debug(5, "the shutdown request accepted.\n");
         } else {

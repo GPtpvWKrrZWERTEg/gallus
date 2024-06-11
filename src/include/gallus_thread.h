@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_THREAD_H__
 #define __GALLUS_THREAD_H__
 
@@ -45,8 +48,8 @@ typedef struct gallus_thread_record 	*gallus_thread_t;
  */
 typedef void
 (*gallus_thread_finalize_proc_t)(const gallus_thread_t *selfptr,
-                                  bool is_canceled,
-                                  void *arg);
+                                 bool is_canceled,
+                                 void *arg);
 
 
 /**
@@ -59,7 +62,7 @@ typedef void
  */
 typedef void
 (*gallus_thread_freeup_proc_t)(const gallus_thread_t *selfptr,
-                                void *arg);
+                               void *arg);
 
 
 /**
@@ -67,10 +70,11 @@ typedef void
  */
 typedef gallus_result_t
 (*gallus_thread_main_proc_t)(const gallus_thread_t *selfptr,
-                              void *arg);
+                             void *arg);
 
 
 
+
 
 /**
  * Create a thread.
@@ -98,11 +102,11 @@ typedef gallus_result_t
  */
 gallus_result_t
 gallus_thread_create(gallus_thread_t *thdptr,
-                      gallus_thread_main_proc_t mainproc,
-                      gallus_thread_finalize_proc_t finalproc,
-                      gallus_thread_freeup_proc_t freeproc,
-                      const char *name,
-                      void *arg);
+                     gallus_thread_main_proc_t mainproc,
+                     gallus_thread_finalize_proc_t finalproc,
+                     gallus_thread_freeup_proc_t freeproc,
+                     const char *name,
+                     void *arg);
 
 
 /**
@@ -135,12 +139,12 @@ gallus_thread_create(gallus_thread_t *thdptr,
  */
 gallus_result_t
 gallus_thread_create_with_size(gallus_thread_t *thdptr,
-                                size_t alloc_size,
-                                gallus_thread_main_proc_t mainproc,
-                                gallus_thread_finalize_proc_t finalproc,
-                                gallus_thread_freeup_proc_t freeproc,
-                                const char *name,
-                                void *arg);
+                               size_t alloc_size,
+                               gallus_thread_main_proc_t mainproc,
+                               gallus_thread_finalize_proc_t finalproc,
+                               gallus_thread_freeup_proc_t freeproc,
+                               const char *name,
+                               void *arg);
 
 
 /**
@@ -159,7 +163,7 @@ gallus_thread_create_with_size(gallus_thread_t *thdptr,
  */
 gallus_result_t
 gallus_thread_start(const gallus_thread_t *thdptr,
-                     bool autodelete);
+                    bool autodelete);
 
 
 /**
@@ -196,7 +200,7 @@ gallus_thread_cancel(const gallus_thread_t *thdptr);
  */
 gallus_result_t
 gallus_thread_wait(const gallus_thread_t *thdptr,
-                    gallus_chrono_t nsec);
+                   gallus_chrono_t nsec);
 
 
 /**
@@ -240,7 +244,7 @@ gallus_thread_free_when_destroy(gallus_thread_t *thdptr);
  */
 gallus_result_t
 gallus_thread_get_pthread_id(const gallus_thread_t *thdptr,
-                              pthread_t *tidptr);
+                             pthread_t *tidptr);
 
 
 /**
@@ -263,18 +267,63 @@ gallus_thread_get_pthread_id(const gallus_thread_t *thdptr,
  *
  *	@details If \b cpu < 0, clear all the affinity bits.
  *
- *	@details The default affinity mask is acquired from the master
- *	thread. So if users need to set a fresh mask, firstly the
- *	users must call the API with a negative \b cpu value to clear
- *	the default mask, then call the API with appropriate \b cpu
- *	value.
+ *	@details The default affinity mask is set to ~0, thus the
+ *	thread could runs on any CPUs. So if users need to set a
+ *	fresh mask, firstly the users must call the API with a
+ *	negative \b cpu value to clear the default mask, then call
+ *	the API with appropriate \b cpu value.
  *
  *	@details Users can call this API before and after starting the
  *	thread.
  */
 gallus_result_t
 gallus_thread_set_cpu_affinity(const gallus_thread_t *thdptr,
-                                int cpu);
+                               int cpu);
+
+/**
+ * Set a numa node affinity of a thread.
+ *
+ *	@param[in]	thdptr	A pointer to a thread.
+ *	@param[in]	node	A numa node # where the thread is bound to.
+ *
+ *	@retval GALLUS_RESULT_OK		Succeeded.
+ *	@retval GALLUS_RESULT_INVALID_OBJECT	Failed, invalid thread.
+ *	@retval GALLUS_RESULT_POSIX_API_ERROR	Failed, posix API error.
+ *	@retval GALLUS_RESULT_ALREADY_HALTED	Failed, thread already halted.
+ *	@retval GALLUS_RESULT_INVALID_ARGS	Failed, invalid args.
+ *	@retval GALLUS_RESULT_ANY_FAILURES	Failed.
+ *
+ *	@details This API is available only on Linux and eqivalent to
+ *	CPU_SET(3).
+ *
+ *	@details Users can call this API before and after starting the
+ *	thread.
+ */
+gallus_result_t
+gallus_thread_set_numa_node_affinity(const gallus_thread_t *thdptr,
+                                     int node);
+
+
+/**
+ * Set a cpu affinity of a thread to all cpus.
+ *
+ *	@param[in]	thdptr	A pointer to a thread.
+ *
+ *	@retval GALLUS_RESULT_OK		Succeeded.
+ *	@retval GALLUS_RESULT_INVALID_OBJECT	Failed, invalid thread.
+ *	@retval GALLUS_RESULT_POSIX_API_ERROR	Failed, posix API error.
+ *	@retval GALLUS_RESULT_ALREADY_HALTED	Failed, thread already halted.
+ *	@retval GALLUS_RESULT_INVALID_ARGS	Failed, invalid args.
+ *	@retval GALLUS_RESULT_ANY_FAILURES	Failed.
+ *
+ *	@details This API is available only on Linux and eqivalent to
+ *	CPU_SET(3).
+ *
+ *	@details Users can call this API before and after starting the
+ *	thread.
+ */
+gallus_result_t
+gallus_thread_set_cpu_affinity_any(const gallus_thread_t *thdptr);
 
 
 /**
@@ -318,7 +367,7 @@ gallus_thread_get_cpu_affinity(const gallus_thread_t *thdptr);
  */
 gallus_result_t
 gallus_thread_set_result_code(const gallus_thread_t *thdptr,
-                               gallus_result_t code);
+                              gallus_result_t code);
 
 
 /**
@@ -337,8 +386,8 @@ gallus_thread_set_result_code(const gallus_thread_t *thdptr,
  */
 gallus_result_t
 gallus_thread_get_result_code(const gallus_thread_t *thdptr,
-                               gallus_result_t *codeptr,
-                               gallus_chrono_t nsec);
+                              gallus_result_t *codeptr,
+                              gallus_chrono_t nsec);
 
 
 /**
@@ -354,7 +403,7 @@ gallus_thread_get_result_code(const gallus_thread_t *thdptr,
  */
 gallus_result_t
 gallus_thread_is_canceled(const gallus_thread_t *thdptr,
-                           bool *retptr);
+                          bool *retptr);
 
 
 /**
@@ -370,7 +419,7 @@ gallus_thread_is_canceled(const gallus_thread_t *thdptr,
  */
 gallus_result_t
 gallus_thread_is_valid(const gallus_thread_t *thdptr,
-                        bool *retptr);
+                       bool *retptr);
 
 
 /**

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 
@@ -138,7 +141,7 @@ test_gallus_str_tokenize01(void) {
   };
 
   n_tokens = gallus_str_tokenize(str, tokens, TOKEN_MAX + 1,
-                                  ",");
+                                 ",");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -162,7 +165,7 @@ test_gallus_str_tokenize_02(void) {
   };
 
   n_tokens = gallus_str_tokenize(str, tokens, TOKEN_MAX + 1,
-                                        ",.");
+                                 ",.");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -186,7 +189,7 @@ test_gallus_str_tokenize_03(void) {
   };
 
   n_tokens = gallus_str_tokenize(str, tokens, TOKEN_MAX + 1,
-                                  ",.");
+                                 ",.");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -212,7 +215,7 @@ test_gallus_str_tokenize_quote_04(void) {
   };
 
   n_tokens = gallus_str_tokenize(str, tokens, TOKEN_MAX + 1,
-                                  ",.");
+                                 ",.");
   TEST_ASSERT_EQUAL_MESSAGE(TOKEN_MAX + 1, n_tokens,
                             "n_tokens error.");
 
@@ -236,7 +239,7 @@ test_gallus_str_tokenize_with_limit_01(void) {
   };
 
   n_tokens = gallus_str_tokenize_with_limit(str, tokens, TOKEN_MAX + 1,
-                                             limit, ",");
+             limit, ",");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -261,7 +264,7 @@ test_gallus_str_tokenize_with_limit_02(void) {
   };
 
   n_tokens = gallus_str_tokenize_with_limit(str, tokens, TOKEN_MAX + 1,
-                                             limit, ",");
+             limit, ",");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -286,7 +289,7 @@ test_gallus_str_tokenize_with_limit_03(void) {
   };
 
   n_tokens = gallus_str_tokenize_with_limit(str, tokens, TOKEN_MAX + 1,
-                                             limit, ",");
+             limit, ",");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -311,7 +314,7 @@ test_gallus_str_tokenize_with_limit_04(void) {
   };
 
   n_tokens = gallus_str_tokenize_with_limit(str, tokens, TOKEN_MAX + 1,
-                                             limit, ",");
+             limit, ",");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 
@@ -336,7 +339,7 @@ test_gallus_str_tokenize_with_limit_05(void) {
   };
 
   n_tokens = gallus_str_tokenize_with_limit(str, tokens, TOKEN_MAX + 1,
-                                             limit, ",.");
+             limit, ",.");
   TEST_ASSERT_EQUAL_MESSAGE(test_num, n_tokens,
                             "n_tokens error.");
 

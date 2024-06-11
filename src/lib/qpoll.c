@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "qmuxer_types.h"
 #include "qmuxer_internal.h"
@@ -42,8 +45,8 @@ s_poll_destroy(gallus_qmuxer_poll_t mp) {
 
 gallus_result_t
 gallus_qmuxer_poll_create(gallus_qmuxer_poll_t *mpptr,
-                           gallus_bbq_t bbq,
-                           gallus_qmuxer_poll_event_t type) {
+                          gallus_bbq_t bbq,
+                          gallus_qmuxer_poll_event_t type) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mpptr != NULL) {
@@ -94,7 +97,7 @@ gallus_qmuxer_poll_reset(gallus_qmuxer_poll_t *mpptr) {
 
 gallus_result_t
 gallus_qmuxer_poll_set_queue(gallus_qmuxer_poll_t *mpptr,
-                              gallus_bbq_t bbq) {
+                             gallus_bbq_t bbq) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mpptr != NULL &&
@@ -124,7 +127,7 @@ gallus_qmuxer_poll_set_queue(gallus_qmuxer_poll_t *mpptr,
 
 gallus_result_t
 gallus_qmuxer_poll_get_queue(gallus_qmuxer_poll_t *mpptr,
-                              gallus_bbq_t *bbqptr) {
+                             gallus_bbq_t *bbqptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mpptr != NULL &&
@@ -142,7 +145,7 @@ gallus_qmuxer_poll_get_queue(gallus_qmuxer_poll_t *mpptr,
 
 gallus_result_t
 gallus_qmuxer_poll_set_type(gallus_qmuxer_poll_t *mpptr,
-                             gallus_qmuxer_poll_event_t type) {
+                            gallus_qmuxer_poll_event_t type) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (mpptr != NULL &&

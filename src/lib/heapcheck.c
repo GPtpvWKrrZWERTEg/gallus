@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -85,12 +88,12 @@ s_is_in_heap(const void *addr) {
   } else {
 #ifdef __UNDER_SANITIZER__
     gallus_msg_debug(10, "The malloc()'d address is not in "
-                  "sbrk() - end range, "
-                  "could be running under valgrind or -fsanitize.\n");
+                     "sbrk() - end range, "
+                     "could be running under valgrind or -fsanitize.\n");
 #else
     gallus_msg_warning("The malloc()'d address is not in "
-                    "sbrk() - end range, "
-                    "could be running under valgrind or -fsanitize.\n");
+                       "sbrk() - end range, "
+                       "could be running under valgrind or -fsanitize.\n");
 #endif /* __UNDER_SANITIZER__ */
     return false;
   }

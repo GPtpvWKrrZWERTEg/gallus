@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
@@ -84,8 +87,8 @@ s_put(test_bbq_t *qptr) {
   entry *pptr = s_new_entry();
   ret = gallus_bbq_put(qptr, &pptr, entry *, Q_PUTGET_WAIT);
   gallus_msg_debug(10, "put %p %d ... %s\n",
-                    pptr, (pptr == NULL) ? -1 : pptr->num,
-                    gallus_error_get_string(ret));
+                   pptr, (pptr == NULL) ? -1 : pptr->num,
+                   gallus_error_get_string(ret));
   return ret;
 }
 
@@ -95,8 +98,8 @@ s_get(test_bbq_t *qptr) {
   entry *gptr = NULL;
   ret = gallus_bbq_get(qptr, &gptr, entry *, Q_PUTGET_WAIT);
   gallus_msg_debug(10, "get %p %d ... %s\n",
-                    gptr, (gptr == NULL) ? -1 : gptr->num,
-                    gallus_error_get_string(ret));
+                   gptr, (gptr == NULL) ? -1 : gptr->num,
+                   gallus_error_get_string(ret));
   free(gptr);
   return ret;
 }
@@ -191,10 +194,10 @@ s_test_thread_create(test_thread_t *ttptr,
     }
     /* init gallus_thread_t */
     res = gallus_thread_create((gallus_thread_t *)&tt,
-                                s_thread_main,
-                                s_thread_finalize,
-                                s_thread_freeup,
-                                "test", NULL);
+                               s_thread_main,
+                               s_thread_finalize,
+                               s_thread_freeup,
+                               "test", NULL);
     if (res != GALLUS_RESULT_OK) {
       gallus_perror(res);
       goto done;

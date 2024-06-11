@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 
@@ -98,20 +101,20 @@ s_print_t_ret(struct thread_return *t_ret) {
   gallus_msg_debug(1, "  ok      %6d ", t_ret->ok_cnt);
   if (t_ret->ok_cnt != 0) {
     gallus_msg_debug(1, "min: %.10f max: %.10f avg: %.10f\n",
-                      t_ret->ok_min, t_ret->ok_max,
-                      t_ret->ok_sum/t_ret->ok_cnt);
+                     t_ret->ok_min, t_ret->ok_max,
+                     t_ret->ok_sum/t_ret->ok_cnt);
   } else {
     gallus_msg_debug(1, "min: %.10f max: %.10f avg: %.10f\n",
-                      0.0, 0.0, 0.0);
+                     0.0, 0.0, 0.0);
   }
   gallus_msg_debug(1, "  timeout %6d ", t_ret->timeout_cnt);
   if (t_ret->timeout_cnt != 0) {
     gallus_msg_debug(1, "min: %.10f max: %.10f avg: %.10f\n",
-                      t_ret->timeout_min, t_ret->timeout_max,
-                      t_ret->timeout_sum/t_ret->timeout_cnt);
+                     t_ret->timeout_min, t_ret->timeout_max,
+                     t_ret->timeout_sum/t_ret->timeout_cnt);
   } else {
     gallus_msg_debug(1, "min: %.10f max: %.10f avg: %.10f\n",
-                      0.0, 0.0, 0.0);
+                     0.0, 0.0, 0.0);
   }
   gallus_msg_debug(1, "  error   %6d\n", t_ret->error_cnt);
   gallus_msg_debug(1, "  not_ope %6d\n", t_ret->not_op_cnt);
@@ -264,10 +267,10 @@ s_gen_test(int n_entry,
     gallus_msg_debug(1, "\n--------------------\n");
     gallus_msg_debug(1, "m_value[N]: %d\n",  n_entry);
     gallus_msg_debug(1, "PUT: (%d loop * %d thread) TIMED_WAIT = %f\n",
-                      n_loops, put_thread_num, (double)put_timed_wait/1000000000);
+                     n_loops, put_thread_num, (double)put_timed_wait/1000000000);
     s_print_t_ret(&p_result);
     gallus_msg_debug(1, "GET: (%d loop * %d thread) TIMED_WAIT = %f\n",
-                      n_loops, get_thread_num, (double)get_timed_wait/1000000000);
+                     n_loops, get_thread_num, (double)get_timed_wait/1000000000);
     s_print_t_ret(&g_result);
     /* free */
     free(put_threads);

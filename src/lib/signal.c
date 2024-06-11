@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 
@@ -239,7 +242,7 @@ s_finalize(const gallus_thread_t *tptr, bool is_canceled,
   (void)arg;
 
   gallus_msg_debug(5, "called. %s.\n",
-                    (is_canceled == false) ? "finished" : "canceled");
+                   (is_canceled == false) ? "finished" : "canceled");
 }
 
 
@@ -271,11 +274,11 @@ s_create(signal_thread_t *stptr, sigset_t *ssptr, sighandler_t *procs) {
 
   if (stptr != NULL) {
     if ((ret = gallus_thread_create((gallus_thread_t *)stptr,
-                                     s_main,
-                                     s_finalize,
-                                     s_destroy,
-                                     "signal thread",
-                                     NULL)) == GALLUS_RESULT_OK) {
+                                    s_main,
+                                    s_finalize,
+                                    s_destroy,
+                                    "signal thread",
+                                    NULL)) == GALLUS_RESULT_OK) {
       if ((ret = gallus_mutex_create(&((*stptr)->m_lock))) ==
           GALLUS_RESULT_OK) {
         if (ssptr == NULL) {
@@ -401,12 +404,12 @@ s_once_final_proc(void) {
     bool is_valid = false;
     gallus_result_t r =
       gallus_thread_is_valid((const gallus_thread_t *)&s_sigthd,
-                              &is_valid);
+                             &is_valid);
     if (r == GALLUS_RESULT_OK && is_valid == true) {
       pthread_t tid;
 
       r = gallus_thread_get_pthread_id((const gallus_thread_t *)&s_sigthd,
-                                        &tid);
+                                       &tid);
       if (r == GALLUS_RESULT_OK) {
         pthread_t me;
 

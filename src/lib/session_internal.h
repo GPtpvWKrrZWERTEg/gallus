@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __SESSION_INTERNAL_H__
 #define __SESSION_INTERNAL_H__
 
@@ -19,7 +22,7 @@ struct session {
   } rbuf;
   /* function pointers */
   gallus_result_t (*connect)(gallus_session_t s, const char *host,
-                              const char *port);
+                             const char *port);
   gallus_result_t (*accept)(gallus_session_t s1, gallus_session_t *s2);
   ssize_t (*read)(gallus_session_t, void *, size_t);
   ssize_t (*write)(gallus_session_t, void *, size_t);

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "qmuxer_types.h"
 #include "qmuxer_internal.h"
@@ -191,9 +194,9 @@ gallus_qmuxer_destroy(gallus_qmuxer_t *qmxptr) {
 
 gallus_result_t
 gallus_qmuxer_poll(gallus_qmuxer_t *qmxptr,
-                    gallus_qmuxer_poll_t const polls[],
-                    size_t npolls,
-                    gallus_chrono_t nsec) {
+                   gallus_qmuxer_poll_t const polls[],
+                   size_t npolls,
+                   gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (qmxptr != NULL &&
@@ -227,8 +230,8 @@ gallus_qmuxer_poll(gallus_qmuxer_t *qmxptr,
         s_lock(*qmxptr);
         {
           ret = gallus_cond_wait(&((*qmxptr)->m_cond),
-                                  &((*qmxptr)->m_lock),
-                                  nsec);
+                                 &((*qmxptr)->m_lock),
+                                 nsec);
         }
         s_unlock(*qmxptr);
 
@@ -290,8 +293,8 @@ gallus_qmuxer_poll(gallus_qmuxer_t *qmxptr,
         s_lock(*qmxptr);
         {
           ret = gallus_cond_wait(&((*qmxptr)->m_cond),
-                                  &((*qmxptr)->m_lock),
-                                  nsec);
+                                 &((*qmxptr)->m_lock),
+                                 nsec);
         }
         s_unlock(*qmxptr);
       } else {

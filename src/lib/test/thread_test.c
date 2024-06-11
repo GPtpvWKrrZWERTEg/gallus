@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "unity.h"
 
@@ -136,7 +139,7 @@ s_check_create_common(gallus_thread_t *thd_ptr, gallus_result_t require_ret,
   bool result = false;
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   ret = gallus_thread_create(thd_ptr, mproc, finalize_proc, freeup_proc,
-                              name, NULL);
+                             name, NULL);
   if (ret == GALLUS_RESULT_OK) {
     ret = gallus_thread_free_when_destroy(thd_ptr);
     if (ret == require_ret) {
@@ -165,7 +168,8 @@ s_check_create(gallus_thread_t *thd_ptr, gallus_result_t require_ret) {
 
 static inline bool
 s_check_create_long(gallus_thread_t *thd_ptr, gallus_result_t require_ret) {
-  return s_check_create_common(thd_ptr, require_ret, main_proc_long, "create_l");
+  return s_check_create_common(thd_ptr, require_ret, main_proc_long,
+                               "create_l");
 }
 
 static inline bool
@@ -443,7 +447,7 @@ test_thread_create_params(void) {
   TEST_ASSERT_EQUAL_MESSAGE(
     GALLUS_RESULT_INVALID_ARGS,
     gallus_thread_create(NULL, main_proc, finalize_proc,
-                          freeup_proc, "m_thread", NULL),
+                         freeup_proc, "m_thread", NULL),
     "thread is null");
   gallus_thread_destroy(&m_thread);
 
@@ -451,7 +455,7 @@ test_thread_create_params(void) {
   TEST_ASSERT_EQUAL_MESSAGE(
     GALLUS_RESULT_INVALID_ARGS,
     gallus_thread_create(&m_thread, NULL, finalize_proc,
-                          freeup_proc, "m_thread", NULL),
+                         freeup_proc, "m_thread", NULL),
     "main_proc is null");
   gallus_thread_destroy(&m_thread);
 
@@ -459,7 +463,7 @@ test_thread_create_params(void) {
   TEST_ASSERT_EQUAL_MESSAGE(
     GALLUS_RESULT_OK,
     gallus_thread_create(&m_thread, main_proc, NULL,
-                          freeup_proc, "m_thread", NULL),
+                         freeup_proc, "m_thread", NULL),
     "finalize_proc is null");
   gallus_thread_destroy(&m_thread);
 
@@ -467,7 +471,7 @@ test_thread_create_params(void) {
   TEST_ASSERT_EQUAL_MESSAGE(
     GALLUS_RESULT_OK,
     gallus_thread_create(&m_thread, main_proc, finalize_proc,
-                          NULL, "m_thread", NULL),
+                         NULL, "m_thread", NULL),
     "freeup_proc is null");
   gallus_thread_destroy(&m_thread);
 
@@ -475,7 +479,7 @@ test_thread_create_params(void) {
   TEST_ASSERT_EQUAL_MESSAGE(
     GALLUS_RESULT_OK,
     gallus_thread_create(&m_thread, main_proc, finalize_proc,
-                          freeup_proc, NULL, NULL),
+                         freeup_proc, NULL, NULL),
     "thread_name is null");
   gallus_thread_destroy(&m_thread);
 }

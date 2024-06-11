@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_CALLOUT_TASK_STATE_H__
 #define __GALLUS_CALLOUT_TASK_STATE_H__
 

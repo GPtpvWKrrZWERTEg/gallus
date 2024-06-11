@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __PIPLELINE_WORKER_C__
 #define __PIPLELINE_WORKER_C__
 
@@ -227,7 +230,7 @@ s_worker_main(const gallus_thread_t *tptr, void *arg) {
             if (sptr != NULL && (*sptr) != NULL &&
                 (*sptr)->m_post_start_proc != NULL) {
               gallus_msg_debug(10, "call the post-start for " PFSZ(d) ".\n",
-                                w->m_idx);
+                               w->m_idx);
               ((*sptr)->m_post_start_proc)(sptr, w->m_idx,
                                            (*sptr)->m_post_start_arg);
             }
@@ -343,11 +346,11 @@ s_worker_create(gallus_pipeline_worker_t *wptr,
       char buf[16];
       snprintf(buf, sizeof(buf), "%s:%d", (*sptr)->m_name, (int)idx);
       if ((ret = gallus_thread_create((gallus_thread_t *)&w,
-                                       s_worker_main,
-                                       s_worker_finalize,
-                                       s_worker_freeup,
-                                       buf,
-                                       NULL)) == GALLUS_RESULT_OK) {
+                                      s_worker_main,
+                                      s_worker_finalize,
+                                      s_worker_freeup,
+                                      buf,
+                                      NULL)) == GALLUS_RESULT_OK) {
         w->m_stg = *sptr;
         w->m_idx = idx;
         w->m_proc = proc;

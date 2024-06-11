@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -74,7 +77,7 @@ s_once_proc(void) {
 
 
   if ((r = gallus_hashmap_create(&s_mult_tbl,
-                                  GALLUS_HASHMAP_TYPE_STRING, NULL)) !=
+                                 GALLUS_HASHMAP_TYPE_STRING, NULL)) !=
       GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize an SI prefix multiplier table.\n");
@@ -246,7 +249,7 @@ s_dtors(void) {
       gallus_msg_debug(5, "The string utility module finalized.\n");
     } else {
       gallus_msg_debug(10, "The string utility module is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }
@@ -299,42 +302,50 @@ s_get_prefix_multiplier(char *str) {
 
     l_c = len - 1;
     switch ((int)str[l_c]) {
-      case 'K' : case 'k': {
+      case 'K' :
+      case 'k': {
         key = (got_i == true) ? "ki" : "k";
         do_trim_last = true;
         break;
       }
-      case 'M' : case 'm': {
+      case 'M' :
+      case 'm': {
         key = (got_i == true) ? "mi" : "m";
         do_trim_last = true;
         break;
       }
-      case 'G' : case 'g': {
+      case 'G' :
+      case 'g': {
         key = (got_i == true) ? "gi" : "g";
         do_trim_last = true;
         break;
       }
-      case 'T' : case 't': {
+      case 'T' :
+      case 't': {
         key = (got_i == true) ? "ti" : "t";
         do_trim_last = true;
         break;
       }
-      case 'P' : case 'p': {
+      case 'P' :
+      case 'p': {
         key = (got_i == true) ? "pi" : "p";
         do_trim_last = true;
         break;
       }
-      case 'X' : case 'x': {
+      case 'X' :
+      case 'x': {
         key = (got_i == true) ? "xi" : "x";
         do_trim_last = true;
         break;
       }
-      case 'Z' : case 'z': {
+      case 'Z' :
+      case 'z': {
         key = (got_i == true) ? "zi" : "z";
         do_trim_last = true;
         break;
       }
-      case 'Y' : case 'y': {
+      case 'Y' :
+      case 'y': {
         key = (got_i == true) ? "yi" : "y";
         do_trim_last = true;
         break;
@@ -359,7 +370,7 @@ s_get_prefix_multiplier(char *str) {
         ret = val;
       } else {
         gallus_exit_fatal("can't find a multiplier for '%s', "
-                           "must not happen.\n", key);
+                          "must not happen.\n", key);
       }
     } else {
       ret = &s_1;
@@ -591,7 +602,7 @@ s_bignum_2_uint64_t(MP_INT *v) {
 
 gallus_result_t
 gallus_str_parse_int64_by_base(const char *buf, int64_t *val,
-                                unsigned int base) {
+                               unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -621,7 +632,7 @@ gallus_str_parse_int64_by_base(const char *buf, int64_t *val,
 
 gallus_result_t
 gallus_str_parse_uint64_by_base(const char *buf, uint64_t *val,
-                                 unsigned int base) {
+                                unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -710,7 +721,7 @@ gallus_str_parse_uint64(const char *buf, uint64_t *val) {
 
 gallus_result_t
 gallus_str_parse_int32_by_base(const char *buf, int32_t *val,
-                                unsigned int base) {
+                               unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -742,7 +753,7 @@ gallus_str_parse_int32_by_base(const char *buf, int32_t *val,
 
 gallus_result_t
 gallus_str_parse_uint32_by_base(const char *buf, uint32_t *val,
-                                 unsigned int base) {
+                                unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -837,7 +848,7 @@ gallus_str_parse_uint32(const char *buf, uint32_t *val) {
 
 gallus_result_t
 gallus_str_parse_int16_by_base(const char *buf, int16_t *val,
-                                unsigned int base) {
+                               unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -869,7 +880,7 @@ gallus_str_parse_int16_by_base(const char *buf, int16_t *val,
 
 gallus_result_t
 gallus_str_parse_uint16_by_base(const char *buf, uint16_t *val,
-                                 unsigned int base) {
+                                unsigned int base) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(buf) == true &&
@@ -1093,7 +1104,7 @@ gallus_str_parse_bool(const char *buf, bool *val) {
 
 gallus_result_t
 gallus_str_tokenize_with_limit(char *buf, char **tokens,
-                                size_t max, size_t limit, const char *delm) {
+                               size_t max, size_t limit, const char *delm) {
   gallus_result_t n = 0;
   size_t no_delm = 0;
 
@@ -1149,7 +1160,7 @@ done:
 
 gallus_result_t
 gallus_str_tokenize_quote(char *buf, char **tokens,
-                           size_t max, const char *delm, const char *quote) {
+                          size_t max, const char *delm, const char *quote) {
   gallus_result_t n = 0;
   size_t no_delm = 0;
   int cur_quote = 0;
@@ -1269,7 +1280,7 @@ done:
 
 gallus_result_t
 gallus_str_unescape(const char *org, const char *escaped,
-                     char **retptr) {
+                    char **retptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(org) == true &&
@@ -1341,7 +1352,7 @@ gallus_str_unescape(const char *org, const char *escaped,
 
 gallus_result_t
 gallus_str_escape(const char *in_str, const char *escape_chars,
-                   bool *is_escaped, char **out_str) {
+                  bool *is_escaped, char **out_str) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   size_t len = 0;
   size_t escapes_len = 0;
@@ -1423,7 +1434,7 @@ gallus_str_escape(const char *in_str, const char *escape_chars,
 
 gallus_result_t
 gallus_str_trim_right(const char *org, const char *trimchars,
-                       char **retptr) {
+                      char **retptr) {
   gallus_result_t n = GALLUS_RESULT_ANY_FAILURES;
 
   if (IS_VALID_STRING(org) == true &&
@@ -1462,7 +1473,7 @@ gallus_str_trim_right(const char *org, const char *trimchars,
 
 gallus_result_t
 gallus_str_trim_left(const char *org, const char *trimchars,
-                      char **retptr) {
+                     char **retptr) {
   gallus_result_t n = GALLUS_RESULT_ANY_FAILURES;
   char *buf = NULL;
 
@@ -1498,7 +1509,7 @@ gallus_str_trim_left(const char *org, const char *trimchars,
 
 gallus_result_t
 gallus_str_trim(const char *org, const char *trimchars,
-                 char **retptr) {
+                char **retptr) {
   gallus_result_t n = GALLUS_RESULT_ANY_FAILURES;
   char *tmp_str = NULL;
 

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -288,11 +291,11 @@ s_do_log(gallus_log_level_t l, const char *msg) {
 
 void
 gallus_log_emit(gallus_log_level_t lv,
-                 uint64_t debug_level,
-                 const char *file,
-                 int line,
-                 const char *func,
-                 const char *fmt, ...) {
+                uint64_t debug_level,
+                const char *file,
+                int line,
+                const char *func,
+                const char *fmt, ...) {
   if (lv != GALLUS_LOG_LEVEL_DEBUG ||
       (lv == GALLUS_LOG_LEVEL_DEBUG &&
        ((uint16_t)((debug_level & 0xffff)) <= (s_dbg_level)))) {
@@ -340,11 +343,11 @@ gallus_log_emit(gallus_log_level_t lv,
     va_end(args);
 
     hdr_len = (size_t)snprintf(msg, sizeof(msg),
-			       "%s%s%s:%s:%d:%s: ",
-			       date_buf,
-			       s_get_level_str(lv),
-			       thd_info_buf,
-			       file, line, func);
+                               "%s%s%s:%s:%d:%s: ",
+                               date_buf,
+                               s_get_level_str(lv),
+                               thd_info_buf,
+                               file, line, func);
 
     /*
      * hdr_len indicates the buffer length WITHOUT '\0'.
@@ -363,10 +366,10 @@ gallus_log_emit(gallus_log_level_t lv,
 
 gallus_result_t
 gallus_log_initialize(gallus_log_destination_t dst,
-                       const char *arg,
-                       bool multi_process,
-                       bool emit_date,
-                       uint16_t debug_level) {
+                      const char *arg,
+                      bool multi_process,
+                      bool emit_date,
+                      uint16_t debug_level) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   int s_errno = errno;
 
@@ -456,7 +459,7 @@ gallus_log_set_multi_process(bool v) {
     s_do_multi_process = v;
     (void)pthread_mutex_unlock(&s_log_lock);
     gallus_msg_debug(5, "set logger multi-process mode %s.\n",
-                  v == true ? "on" : "off");
+                     v == true ? "on" : "off");
   }
 }
 
@@ -466,7 +469,7 @@ gallus_log_get_multi_process(bool *v) {
   if (v != NULL) {
     (void)pthread_mutex_lock(&s_log_lock);
     *v = s_do_multi_process;
-    (void)pthread_mutex_unlock(&s_log_lock);    
+    (void)pthread_mutex_unlock(&s_log_lock);
   }
 
   return GALLUS_RESULT_OK;
@@ -554,7 +557,7 @@ s_once_proc(void) {
   if (readlink("/proc/self/exe", s_exefile, PATH_MAX) != -1) {
     (void)gallus_set_command_name(s_exefile);
     gallus_msg_debug(10, "set the command name '%s'.\n",
-                      gallus_get_command_name());
+                     gallus_get_command_name());
   }
 #endif /* HAVE_PROCFS_SELF_EXE */
 

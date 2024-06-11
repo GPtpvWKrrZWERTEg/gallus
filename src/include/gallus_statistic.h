@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_STATISTIC_H__
 #define __GALLUS_STATISTIC_H__
 

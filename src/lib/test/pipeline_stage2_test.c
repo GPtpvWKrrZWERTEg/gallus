@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 #include "gallus_pipeline_stage.h"
@@ -169,7 +172,7 @@ pipeline_shutdown(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "called with \"%s\".\n",
-                    (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
+                   (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
   called_func_count(PIPELINE_FUNC_SHUTDOWN, NULL);
 
   return GALLUS_RESULT_OK;
@@ -181,7 +184,7 @@ pipeline_finalize(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "%s.\n",
-                    (is_canceled == false) ? "exit normally" : "canceled");
+                   (is_canceled == false) ? "exit normally" : "canceled");
   called_func_count(PIPELINE_FUNC_FINALIZE, NULL);
 }
 
@@ -242,18 +245,18 @@ pipeline_stage_create(gallus_pipeline_stage_t *sptr,
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   ret = gallus_pipeline_stage_create(sptr, 0,
-                                      "test_gallus_pipeline_stage_create",
-                                      THREAD_NUM,
-                                      sizeof(void *), 1024,
-                                      pre_pause_proc,
-                                      sched_proc,
-                                      setup_proc,
-                                      fetch_proc,
-                                      main_proc,
-                                      throw_proc,
-                                      shutdown_proc,
-                                      finalize_proc,
-                                      freeup_proc);
+                                     "test_gallus_pipeline_stage_create",
+                                     THREAD_NUM,
+                                     sizeof(void *), 1024,
+                                     pre_pause_proc,
+                                     sched_proc,
+                                     setup_proc,
+                                     fetch_proc,
+                                     main_proc,
+                                     throw_proc,
+                                     shutdown_proc,
+                                     finalize_proc,
+                                     freeup_proc);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "gallus_pipeline_stage_create error.");
   TEST_ASSERT_NOT_EQUAL_MESSAGE(NULL, *sptr,

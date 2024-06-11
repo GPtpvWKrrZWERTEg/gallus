@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_BBQ_H__
 #define __GALLUS_BBQ_H__
 
@@ -210,10 +213,10 @@ typedef gallus_cbuffer_t gallus_bbq_t;
  *     guaranteed.
  */
 #define gallus_bbq_put_n(bbqptr, valptr, n_vals, type, nsec,           \
-                          n_actual_put)                                 \
+                         n_actual_put)                                 \
 gallus_cbuffer_put_n((bbqptr), (void **)(valptr),                    \
-                      (n_vals), type, (nsec),                         \
-                      (n_actual_put))
+                     (n_vals), type, (nsec),                         \
+                     (n_actual_put))
 
 
 /**
@@ -282,10 +285,10 @@ gallus_cbuffer_put_n((bbqptr), (void **)(valptr),                    \
  *     *n_actual_get if needed.
  */
 #define gallus_bbq_get_n(bbqptr, valptr, n_vals_max, n_at_least,       \
-                          type, nsec, n_actual_get)                     \
+                         type, nsec, n_actual_get)                     \
 gallus_cbuffer_get_n((bbqptr), (void **)(valptr),                    \
-                      (n_vals_max), (n_at_least),                     \
-                      type, (nsec), (n_actual_get))
+                     (n_vals_max), (n_at_least),                     \
+                     type, (nsec), (n_actual_get))
 
 
 /**
@@ -354,10 +357,10 @@ gallus_cbuffer_get_n((bbqptr), (void **)(valptr),                    \
  *     *n_actual_peek if needed.
  */
 #define gallus_bbq_peek_n(bbqptr, valptr, n_vals_max, n_at_least,      \
-                           type, nsec, n_actual_peek)                   \
+                          type, nsec, n_actual_peek)                   \
 gallus_cbuffer_peek_n((cbptr), (void **)(valptr),                    \
-                       (n_vals_max), (n_at_least),                    \
-                       sizeof(type), (nsec), (n_actual_peek))
+                      (n_vals_max), (n_at_least),                    \
+                      sizeof(type), (nsec), (n_actual_peek))
 
 
 

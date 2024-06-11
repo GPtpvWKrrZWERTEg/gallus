@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_ip_addr.h"
 
@@ -14,7 +17,7 @@ struct ip_address {
 
 gallus_result_t
 gallus_ip_address_create(const char *name, bool is_ipv4_addr,
-                          gallus_ip_address_t **ip) {
+                         gallus_ip_address_t **ip) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   struct addrinfo hints;
   struct addrinfo *addr = NULL;
@@ -108,7 +111,7 @@ gallus_ip_address_destroy(gallus_ip_address_t *ip) {
 
 gallus_result_t
 gallus_ip_address_copy(const gallus_ip_address_t *src,
-                        gallus_ip_address_t **dst) {
+                       gallus_ip_address_t **dst) {
   if (src != NULL && dst != NULL) {
     if (*dst == NULL) {
       *dst = (gallus_ip_address_t *) malloc(sizeof(gallus_ip_address_t));
@@ -125,7 +128,7 @@ gallus_ip_address_copy(const gallus_ip_address_t *src,
 
 bool
 gallus_ip_address_equals(const gallus_ip_address_t *ip1,
-                          const gallus_ip_address_t *ip2) {
+                         const gallus_ip_address_t *ip2) {
   struct sockaddr *sa1 = NULL;
   struct sockaddr *sa2 = NULL;
 
@@ -160,7 +163,7 @@ gallus_ip_address_equals(const gallus_ip_address_t *ip1,
 
 gallus_result_t
 gallus_ip_address_str_get(const gallus_ip_address_t *ip,
-                           char **addr_str) {
+                          char **addr_str) {
   if (ip != NULL && addr_str != NULL) {
     *addr_str = strndup(ip->addr_str, GALLUS_ADDR_STR_MAX + 1);
     if (IS_VALID_STRING(*addr_str) == true) {
@@ -175,7 +178,7 @@ gallus_ip_address_str_get(const gallus_ip_address_t *ip,
 
 gallus_result_t
 gallus_ip_address_sockaddr_get(const gallus_ip_address_t *ip,
-                                struct sockaddr **saddr) {
+                               struct sockaddr **saddr) {
   if (ip != NULL && saddr != NULL) {
     if (ip->saddr_len != 0) {
       if (*saddr == NULL) {
@@ -198,7 +201,7 @@ gallus_ip_address_sockaddr_get(const gallus_ip_address_t *ip,
 
 gallus_result_t
 gallus_ip_address_sockaddr_len_get(const gallus_ip_address_t *ip,
-                                    socklen_t *saddr_len) {
+                                   socklen_t *saddr_len) {
   if (ip != NULL && saddr_len != NULL) {
     *saddr_len = ip->saddr_len;
     return GALLUS_RESULT_OK;
@@ -209,7 +212,7 @@ gallus_ip_address_sockaddr_len_get(const gallus_ip_address_t *ip,
 
 gallus_result_t
 gallus_ip_address_is_ipv4(const gallus_ip_address_t *ip,
-                           bool *is_ipv4) {
+                          bool *is_ipv4) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (ip != NULL && is_ipv4 != NULL) {

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_LOCK_H__
 #define __GALLUS_LOCK_H__
 
@@ -94,7 +97,7 @@ gallus_rwlock_reader_trylock(gallus_rwlock_t *rwlptr);
 
 gallus_result_t
 gallus_rwlock_reader_timedlock(gallus_rwlock_t *rwlptr,
-                                gallus_chrono_t nsec);
+                               gallus_chrono_t nsec);
 
 gallus_result_t
 gallus_rwlock_writer_lock(gallus_rwlock_t *rwlptr);
@@ -104,7 +107,7 @@ gallus_rwlock_writer_trylock(gallus_rwlock_t *rwlptr);
 
 gallus_result_t
 gallus_rwlock_writer_timedlock(gallus_rwlock_t *rwlptr,
-                                gallus_chrono_t nsec);
+                               gallus_chrono_t nsec);
 
 gallus_result_t
 gallus_rwlock_unlock(gallus_rwlock_t *rwlptr);
@@ -131,12 +134,12 @@ gallus_cond_destroy(gallus_cond_t *cndptr);
 
 gallus_result_t
 gallus_cond_wait(gallus_cond_t *cndptr,
-                  gallus_mutex_t *mtxptr,
-                  gallus_chrono_t nsec);
+                 gallus_mutex_t *mtxptr,
+                 gallus_chrono_t nsec);
 
 gallus_result_t
 gallus_cond_notify(gallus_cond_t *cndptr,
-                    bool for_all);
+                   bool for_all);
 
 
 

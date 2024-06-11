@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_ARGV0_H__
 #define __GALLUS_ARGV0_H__
 

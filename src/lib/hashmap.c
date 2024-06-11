@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -153,8 +156,8 @@ gallus_hashmap_set_value(gallus_hashentry_t he, void *val) {
 
 gallus_result_t
 gallus_hashmap_create(gallus_hashmap_t *retptr,
-                       gallus_hashmap_type_t t,
-                       gallus_hashmap_value_freeup_proc_t proc) {
+                      gallus_hashmap_type_t t,
+                      gallus_hashmap_value_freeup_proc_t proc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_hashmap_t hm;
 
@@ -311,7 +314,7 @@ s_find(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_find_no_lock(gallus_hashmap_t *hmptr,
-			 const void *key, void **valptr) {
+                            const void *key, void **valptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -392,8 +395,8 @@ s_add(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_add(gallus_hashmap_t *hmptr,
-		const void *key, void **valptr,
-		bool allow_overwrite) {
+                   const void *key, void **valptr,
+                   bool allow_overwrite) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -417,8 +420,8 @@ gallus_hashmap_add(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_add_no_lock(gallus_hashmap_t *hmptr,
-			const void *key, void **valptr,
-			bool allow_overwrite) {
+                           const void *key, void **valptr,
+                           bool allow_overwrite) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -472,8 +475,8 @@ s_delete(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_delete(gallus_hashmap_t *hmptr,
-		   const void *key, void **valptr,
-		   bool free_value) {
+                      const void *key, void **valptr,
+                      bool free_value) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -496,8 +499,8 @@ gallus_hashmap_delete(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_delete_no_lock(gallus_hashmap_t *hmptr,
-			   const void *key, void **valptr,
-			   bool free_value) {
+                              const void *key, void **valptr,
+                              bool free_value) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -538,8 +541,8 @@ s_iterate(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_iterate(gallus_hashmap_t *hmptr,
-                        gallus_hashmap_iteration_proc_t proc,
-                        void *arg) {
+                       gallus_hashmap_iteration_proc_t proc,
+                       void *arg) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&
@@ -566,8 +569,8 @@ gallus_hashmap_iterate(gallus_hashmap_t *hmptr,
 
 gallus_result_t
 gallus_hashmap_iterate_no_lock(gallus_hashmap_t *hmptr,
-                                gallus_hashmap_iteration_proc_t proc,
-                                void *arg) {
+                               gallus_hashmap_iteration_proc_t proc,
+                               void *arg) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (hmptr != NULL &&

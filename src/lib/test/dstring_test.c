@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include <string.h>
 #include "unity.h"
 #include "gallus_apis.h"
@@ -590,7 +593,7 @@ test_gallus_dstring_prependf_null(void) {
 
 static void
 insert_va_list_test(const char *format, ...) __attribute__((format(printf, 1,
-                                                                   2)));
+    2)));
 
 static void
 insert_va_list_test(const char *format, ...) {
@@ -703,7 +706,7 @@ test_gallus_dstring_insertf_clear_srt_get(void) {
 
   /* insert str. */
   ret = gallus_dstring_insertf(&ds, test_offset5,
-                                "hoge %s %s\n", "foo", "bar");
+                               "hoge %s %s\n", "foo", "bar");
 
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "gallus_dstring_insertf error.");

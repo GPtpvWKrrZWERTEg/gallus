@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_CBUFFER_H__
 #define __GALLUS_CBUFFER_H__
 
@@ -39,9 +42,9 @@ typedef void	(*gallus_cbuffer_value_freeup_proc_t)(void **valptr);
 
 gallus_result_t
 gallus_cbuffer_create_with_size(gallus_cbuffer_t *cbptr,
-                                 size_t elemsize,
-                                 int64_t maxelems,
-                                 gallus_cbuffer_value_freeup_proc_t proc);
+                                size_t elemsize,
+                                int64_t maxelems,
+                                gallus_cbuffer_value_freeup_proc_t proc);
 /**
  * Create a circular buffer.
  *
@@ -68,7 +71,7 @@ gallus_cbuffer_create_with_size(gallus_cbuffer_t *cbptr,
  */
 void
 gallus_cbuffer_shutdown(gallus_cbuffer_t *cbptr,
-                         bool free_values);
+                        bool free_values);
 
 
 /**
@@ -84,7 +87,7 @@ gallus_cbuffer_shutdown(gallus_cbuffer_t *cbptr,
  */
 void
 gallus_cbuffer_destroy(gallus_cbuffer_t *cbptr,
-                        bool free_values);
+                       bool free_values);
 
 
 /**
@@ -103,7 +106,7 @@ gallus_cbuffer_destroy(gallus_cbuffer_t *cbptr,
  */
 gallus_result_t
 gallus_cbuffer_clear(gallus_cbuffer_t *cbptr,
-                      bool free_values);
+                     bool free_values);
 
 
 /**
@@ -137,8 +140,8 @@ gallus_cbuffer_wakeup(gallus_cbuffer_t *cbptr, gallus_chrono_t nsec);
  *     @retval GALLUS_RESULT_ANY_FAILURES      Failed.
  */
 gallus_result_t
-gallus_cbuffer_wait_gettable(gallus_cbuffer_t *cbptr, 
-                              gallus_chrono_t nsec);
+gallus_cbuffer_wait_gettable(gallus_cbuffer_t *cbptr,
+                             gallus_chrono_t nsec);
 
 
 /**
@@ -155,8 +158,8 @@ gallus_cbuffer_wait_gettable(gallus_cbuffer_t *cbptr,
  *     @retval GALLUS_RESULT_ANY_FAILURES      Failed.
  */
 gallus_result_t
-gallus_cbuffer_wait_puttable(gallus_cbuffer_t *cbptr, 
-                              gallus_chrono_t nsec);
+gallus_cbuffer_wait_puttable(gallus_cbuffer_t *cbptr,
+                             gallus_chrono_t nsec);
 
 
 
@@ -164,9 +167,9 @@ gallus_cbuffer_wait_puttable(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_put_with_size(gallus_cbuffer_t *cbptr,
-                              void **valptr,
-                              size_t valsz,
-                              gallus_chrono_t nsec);
+                             void **valptr,
+                             size_t valsz,
+                             gallus_chrono_t nsec);
 /**
  * Put an element at the tail of a circular buffer.
  *
@@ -185,16 +188,16 @@ gallus_cbuffer_put_with_size(gallus_cbuffer_t *cbptr,
  */
 #define gallus_cbuffer_put(cbptr, valptr, type, nsec)                  \
   gallus_cbuffer_put_with_size((cbptr), (void **)(valptr), sizeof(type), \
-                                (nsec))
+                               (nsec))
 
 
 gallus_result_t
 gallus_cbuffer_put_n_with_size(gallus_cbuffer_t *cbptr,
-                                void **valptr,
-                                size_t n_vals,
-                                size_t valsz,
-                                gallus_chrono_t nsec,
-                                size_t *n_actual_put);
+                               void **valptr,
+                               size_t n_vals,
+                               size_t valsz,
+                               gallus_chrono_t nsec,
+                               size_t *n_actual_put);
 /**
  * Put elements at the tail of a circular buffer.
  *
@@ -237,17 +240,17 @@ gallus_cbuffer_put_n_with_size(gallus_cbuffer_t *cbptr,
  *     guaranteed.
  */
 #define gallus_cbuffer_put_n(cbptr, valptr, n_vals, type, nsec,        \
-                              n_actual_put)                             \
+                             n_actual_put)                             \
 gallus_cbuffer_put_n_with_size((cbptr), (void **)(valptr),           \
-                                (n_vals), sizeof(type), (nsec),       \
-                                (n_actual_put))
+                               (n_vals), sizeof(type), (nsec),       \
+                               (n_actual_put))
 
 
 gallus_result_t
 gallus_cbuffer_get_with_size(gallus_cbuffer_t *cbptr,
-                              void **valptr,
-                              size_t valsz,
-                              gallus_chrono_t nsec);
+                             void **valptr,
+                             size_t valsz,
+                             gallus_chrono_t nsec);
 /**
  * Get the head element in a circular buffer.
  *
@@ -266,17 +269,17 @@ gallus_cbuffer_get_with_size(gallus_cbuffer_t *cbptr,
  */
 #define gallus_cbuffer_get(cbptr, valptr, type, nsec)                  \
   gallus_cbuffer_get_with_size((cbptr), (void **)(valptr), sizeof(type), \
-                                (nsec))
+                               (nsec))
 
 
 gallus_result_t
 gallus_cbuffer_get_n_with_size(gallus_cbuffer_t *cbptr,
-                                void **valptr,
-                                size_t n_vals_max,
-                                size_t n_at_least,
-                                size_t valsz,
-                                gallus_chrono_t nsec,
-                                size_t *n_actual_get);
+                               void **valptr,
+                               size_t n_vals_max,
+                               size_t n_at_least,
+                               size_t valsz,
+                               gallus_chrono_t nsec,
+                               size_t *n_actual_get);
 /**
  * Get elements from the head of a circular buffer.
  *
@@ -325,17 +328,17 @@ gallus_cbuffer_get_n_with_size(gallus_cbuffer_t *cbptr,
  *
  */
 #define gallus_cbuffer_get_n(cbptr, valptr, n_vals_max, n_at_least,    \
-                              type, nsec, n_actual_get)                 \
+                             type, nsec, n_actual_get)                 \
 gallus_cbuffer_get_n_with_size((cbptr), (void **)(valptr),           \
-                                (n_vals_max), (n_at_least),           \
-                                sizeof(type), (nsec), (n_actual_get))
+                               (n_vals_max), (n_at_least),           \
+                               sizeof(type), (nsec), (n_actual_get))
 
 
 gallus_result_t
 gallus_cbuffer_peek_with_size(gallus_cbuffer_t *cbptr,
-                               void **valptr,
-                               size_t valsz,
-                               gallus_chrono_t nsec);
+                              void **valptr,
+                              size_t valsz,
+                              gallus_chrono_t nsec);
 /**
  * Peek the head element of a circular buffer.
  *
@@ -354,16 +357,16 @@ gallus_cbuffer_peek_with_size(gallus_cbuffer_t *cbptr,
  */
 #define gallus_cbuffer_peek(cbptr, valptr, type, nsec)                \
   gallus_cbuffer_peek_with_size((cbptr), (void **)(valptr), sizeof(type), \
-                                 (nsec))
+                                (nsec))
 
 gallus_result_t
 gallus_cbuffer_peek_n_with_size(gallus_cbuffer_t *cbptr,
-                                 void **valptr,
-                                 size_t n_vals_max,
-                                 size_t n_at_least,
-                                 size_t valsz,
-                                 gallus_chrono_t nsec,
-                                 size_t *n_actual_get);
+                                void **valptr,
+                                size_t n_vals_max,
+                                size_t n_at_least,
+                                size_t valsz,
+                                gallus_chrono_t nsec,
+                                size_t *n_actual_get);
 /**
  * Peek elements from the head of a circular buffer.
  *
@@ -411,10 +414,10 @@ gallus_cbuffer_peek_n_with_size(gallus_cbuffer_t *cbptr,
  *     *n_actual_peek if needed.
  */
 #define gallus_cbuffer_peek_n(cbptr, valptr, n_vals_max, n_at_least,   \
-                               type, nsec, n_actual_peek)               \
+                              type, nsec, n_actual_peek)               \
 gallus_cbuffer_peek_n_with_size((cbptr), (void **)(valptr),          \
-                                 (n_vals_max), (n_at_least),          \
-                                 sizeof(type), (nsec), (n_actual_peek))
+                                (n_vals_max), (n_at_least),          \
+                                sizeof(type), (nsec), (n_actual_peek))
 
 
 

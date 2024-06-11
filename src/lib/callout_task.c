@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 
 
 
@@ -83,14 +86,14 @@ s_set_task_state_in_table(const gallus_callout_task_t t,
       val = (void *)s;
 
       if (unlikely((r = gallus_hashmap_add(&s_tsk_tbl, (void *)t,
-                                             &val, true)) !=
+                                           &val, true)) !=
                    GALLUS_RESULT_OK)) {
         ret = TASK_STATE_UNKNOWN;
       }
     } else if (likely(r == GALLUS_RESULT_NOT_FOUND)) {
       val = (void *)s;
       if (likely((r = gallus_hashmap_add(&s_tsk_tbl, (void *)t,
-                                          &val, true)) ==
+                                         &val, true)) ==
                  GALLUS_RESULT_OK)) {
         ret = s;
       }
@@ -172,7 +175,7 @@ s_create_task(gallus_callout_task_t *tptr,
   s_lock_global();
   {
     if (likely((ret = gallus_runnable_create((gallus_runnable_t *)tptr, sz,
-                                              s_runnable_run, NULL, NULL)) ==
+                      s_runnable_run, NULL, NULL)) ==
                GALLUS_RESULT_OK)) {
 
       (void)memset((void *)&((*tptr)->m_entry), 0, sizeof((*tptr)->m_entry));
@@ -404,7 +407,7 @@ s_cancel(const gallus_callout_task_t t) {
             t->m_status = TASK_STATE_CANCELLED;
           }
           s_unlock_task(t);
-          
+
         }
 
       }
@@ -489,7 +492,7 @@ s_exec_task(gallus_callout_task_t t) {
               t->m_status = TASK_STATE_EXEC_FAILED;
               gallus_perror(ret);
               gallus_msg_error_with_task(t,
-                                          "task execution failure.\n");
+                                         "task execution failure.\n");
               do_delete = true;
             }
           } else {
@@ -505,7 +508,7 @@ s_exec_task(gallus_callout_task_t t) {
                * Must not happens.
                */
               gallus_exit_fatal("Must not be here. A callout task state "
-                                 "mismatch occured.\n");
+                                "mismatch occured.\n");
               /* not reached. */
             }
           }
@@ -544,7 +547,7 @@ s_exec_task(gallus_callout_task_t t) {
                 do_delete = true;
                 gallus_perror(ret);
                 gallus_msg_error_with_task(t,
-                                            "can't re-schedule the task.\n");
+                                           "can't re-schedule the task.\n");
               }
 
             } else {
@@ -566,7 +569,7 @@ s_exec_task(gallus_callout_task_t t) {
            * Atomic incr/decr problem??
            */
           gallus_msg_warning("the exec ref. count too large, " PFSZ(u) ".\n",
-                              is_execing);
+                             is_execing);
         }
         ret = GALLUS_RESULT_OK;
       }
@@ -602,12 +605,12 @@ s_exec_task(gallus_callout_task_t t) {
             s_wakeup_task(t);
           }
           s_unlock_task(t);
-        
+
         }
       }
 
     } else {	/* st == TASK_STATE_DEQUEUED */
-   not_the_dequeued_state:
+    not_the_dequeued_state:
 
       /*
        * Illegal state, the most likely already executing.
@@ -630,7 +633,7 @@ s_exec_task(gallus_callout_task_t t) {
             s_set_cancel_and_destroy_task_no_lock(t);
           }
           s_unlock_global();
-          
+
           ret = GALLUS_RESULT_OK;
           break;
         }
@@ -641,7 +644,7 @@ s_exec_task(gallus_callout_task_t t) {
         default: {
           ret = GALLUS_RESULT_INVALID_STATE_TRANSITION;
           gallus_msg_warning("About to execute a task with invalid state "
-                              "%d.\n", (int)st);
+                             "%d.\n", (int)st);
           break;
         }
       }
@@ -697,7 +700,7 @@ s_submit_task(gallus_callout_task_t t,
                * An urgent task.
                */
               ret = gallus_bbq_put(&s_urgent_tsk_q, (void **)&tt,
-                                    gallus_callout_task_t, -1LL);
+                                   gallus_callout_task_t, -1LL);
             } else if (likely(initial_delay > 0LL)) {
               /*
                * A timed task.
@@ -712,7 +715,7 @@ s_submit_task(gallus_callout_task_t t,
                * An idle task.
                */
               ret = gallus_bbq_put(&s_idle_tsk_q, (void **)&tt,
-                                    gallus_callout_task_t, -1LL);
+                                   gallus_callout_task_t, -1LL);
             }
 
             if (ret == GALLUS_RESULT_OK && t->m_is_in_timed_q == false) {

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_pipeline_stage_internal.h"
 
@@ -98,7 +101,7 @@ s_shutdown(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "called with \"%s\".\n",
-                    (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
+                   (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
 
   return GALLUS_RESULT_OK;
 }
@@ -110,7 +113,7 @@ s_finalize(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "%s.\n",
-                    (is_canceled == false) ? "exit normally" : "canceled");
+                   (is_canceled == false) ? "exit normally" : "canceled");
 }
 
 
@@ -145,17 +148,17 @@ main(int argc, const char *const argv[]) {
 #if 0
   fprintf(stdout, "Creating... ");
   st = gallus_pipeline_stage_create(&s, 0, "a_test",
-                                     nthd,
-                                     sizeof(void *), 1024,
-                                     s_pre_pause,
-                                     s_sched,
-                                     s_setup,
-                                     s_fetch,
-                                     s_main,
-                                     s_throw,
-                                     s_shutdown,
-                                     s_finalize,
-                                     s_freeup);
+                                    nthd,
+                                    sizeof(void *), 1024,
+                                    s_pre_pause,
+                                    s_sched,
+                                    s_setup,
+                                    s_fetch,
+                                    s_main,
+                                    s_throw,
+                                    s_shutdown,
+                                    s_finalize,
+                                    s_freeup);
   if (st == GALLUS_RESULT_OK) {
     fprintf(stdout, "Created.\n");
     fprintf(stdout, "Setting up... ");

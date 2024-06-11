@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 
@@ -153,7 +156,8 @@ test_bbq_put_get_ptr(void) {
       ret = s_get(&bbQ, &get);
       TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, "get entry");
       TEST_ASSERT_EQUAL_MESSAGE(&(entries[i]), get, "get entry - check ptr");
-      TEST_ASSERT_EQUAL_MESSAGE(entries[i].num, get->num, "get entry - check value");
+      TEST_ASSERT_EQUAL_MESSAGE(entries[i].num, get->num,
+                                "get entry - check value");
     }
   }
 }

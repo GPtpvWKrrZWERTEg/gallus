@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -23,8 +26,8 @@ static void s_dtors(void) __attr_destructor__(105);
 
 
 
-typedef void *	(*numa_alloc_node_proc_t)(size_t sz, unsigned int node);
-typedef void *	(*numa_alloc_cpu_proc_t)(size_t sz, int cpu);
+typedef void 	*(*numa_alloc_node_proc_t)(size_t sz, unsigned int node);
+typedef void 	*(*numa_alloc_cpu_proc_t)(size_t sz, int cpu);
 typedef void	(*numa_free_proc_t)(void *p);
 
 
@@ -48,13 +51,13 @@ static numa_alloc_node_proc_t s_alloc_node_proc = NULL;
 static numa_alloc_cpu_proc_t s_alloc_cpu_proc = NULL;
 static numa_free_proc_t s_free_proc = NULL;
 
-static void *	s_numa_alloc_node(size_t sz, unsigned int node);
-static void *	s_numa_alloc_cpu(size_t sz, int cpu);
+static void 	*s_numa_alloc_node(size_t sz, unsigned int node);
+static void 	*s_numa_alloc_cpu(size_t sz, int cpu);
 static void	s_numa_free(void *p);
 
 #ifndef DO_NUMA_EVNE_ONE_NODE
-static void *	s_uma_alloc_node(size_t sz, unsigned int node);
-static void *	s_uma_alloc_cpu(size_t sz, int cpu);
+static void 	*s_uma_alloc_node(size_t sz, unsigned int node);
+static void 	*s_uma_alloc_cpu(size_t sz, int cpu);
 static void	s_uma_free(void *p);
 #endif /* ! DO_NUMA_EVNE_ONE_NODE */
 
@@ -105,13 +108,13 @@ s_init_numa_thingies(void) {
   s_n_cpus = (int64_t)sysconf(_SC_NPROCESSORS_CONF);
   if (s_n_cpus > 0) {
     s_numa_nodes = (unsigned int *)malloc(
-	    sizeof(unsigned int) * (size_t)s_n_cpus);
+                     sizeof(unsigned int) * (size_t)s_n_cpus);
     if (s_numa_nodes != NULL) {
       int i;
       gallus_result_t r;
 
       (void)memset((void *)s_numa_nodes, 0,
-		   sizeof(unsigned int) * (size_t)s_n_cpus);
+                   sizeof(unsigned int) * (size_t)s_n_cpus);
 
       for (i = 0; i < (int)s_n_cpus; i++) {
         s_numa_nodes[i] = (unsigned int)numa_node_of_cpu(i);
@@ -126,7 +129,7 @@ s_init_numa_thingies(void) {
 #ifndef DO_NUMA_EVNE_ONE_NODE
       if (s_max_numa_node > s_min_numa_node) {
         r = gallus_hashmap_create(&s_tbl,
-                                   GALLUS_HASHMAP_TYPE_ONE_WORD, NULL);
+                                  GALLUS_HASHMAP_TYPE_ONE_WORD, NULL);
         if (r == GALLUS_RESULT_OK) {
           s_is_numa = true;
 
@@ -135,11 +138,11 @@ s_init_numa_thingies(void) {
           s_free_proc = s_numa_free;
 
           gallus_msg_debug(5, "The NUMA aware memory allocator is "
-                            "initialized.\n");
+                           "initialized.\n");
         } else {
           gallus_perror(r);
           gallus_exit_fatal("can't initialize the "
-                             "NUMA memory allocation table.\n");
+                            "NUMA memory allocation table.\n");
         }
       } else {
         s_alloc_node_proc = s_uma_alloc_node;
@@ -147,11 +150,11 @@ s_init_numa_thingies(void) {
         s_free_proc = s_uma_free;
 
         gallus_msg_debug(5, "There is only one NUMA node on this machine. "
-                          "No NUMA aware memory allocation is enabled.\n");
+                         "No NUMA aware memory allocation is enabled.\n");
       }
 #else
       r = gallus_hashmap_create(&s_tbl,
-                                 GALLUS_HASHMAP_TYPE_ONE_WORD, NULL);
+                                GALLUS_HASHMAP_TYPE_ONE_WORD, NULL);
       if (r == GALLUS_RESULT_OK) {
         s_is_numa = true;
 
@@ -160,11 +163,11 @@ s_init_numa_thingies(void) {
         s_free_proc = s_numa_free;
 
         gallus_msg_debug(5, "The NUMA aware memory allocator is "
-                          "initialized.\n");
+                         "initialized.\n");
       } else {
         gallus_perror(r);
         gallus_exit_fatal("can't initialize the "
-                           "NUMA memory allocation table.\n");
+                          "NUMA memory allocation table.\n");
       }
 #endif /* ! DO_NUMA_EVNE_ONE_NODE */
     }
@@ -192,7 +195,7 @@ static inline void
 s_final_numa_thingies(void) {
   if (s_numa_nodes != NULL) {
     if (gallus_module_is_unloading() &&
-        gallus_module_is_finalized_cleanly()) {    
+        gallus_module_is_finalized_cleanly()) {
       free((void *)s_numa_nodes);
 
       if (s_tbl != NULL) {
@@ -203,7 +206,7 @@ s_final_numa_thingies(void) {
       gallus_msg_debug(10, "The NUMA aware memory allocator is finalized.\n");
     } else {
       gallus_msg_debug(10, "The NUMA aware memory allocator is not finalized"
-                        "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }
@@ -308,8 +311,8 @@ s_numa_alloc_node(size_t sz, unsigned int node) {
              * still usable. Just return it.
              */
             gallus_msg_warning("can't allocate " PFSZ(u) " bytes memory "
-                                "on NUMA node %d.\n",
-                                sz, node);
+                               "on NUMA node %d.\n",
+                               sz, node);
           }
         } else {
           gallus_perror(GALLUS_RESULT_POSIX_API_ERROR);
@@ -351,13 +354,13 @@ s_numa_alloc_cpu(size_t sz, int cpu) {
     if (likely(cpu >= 0)) {
       if (likely(s_numa_nodes != NULL && s_n_cpus > 0)) {
         unsigned int node = s_numa_nodes[cpu];
-	ret = s_numa_alloc_node(sz, node);
+        ret = s_numa_alloc_node(sz, node);
       } else {	/* s_numa_nodes != NULL && s_n_cpus > 0 */
         /*
          * Not initialized or initialization failure.
          */
         gallus_msg_warning("The NUMA related information is not initialized. "
-                            "Use malloc(3) instead.\n");
+                           "Use malloc(3) instead.\n");
         ret = malloc(sz);
       }
     } else {	/* cpu >= 0 */

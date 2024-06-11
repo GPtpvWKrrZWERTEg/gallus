@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -55,7 +58,7 @@ spin_trylock_cas(spin_lock_t *l) {
 
   if (likely(l != NULL)) {
     if (__sync_val_compare_and_swap(l, 0, 1) == 0) {
-      ret = GALLUS_RESULT_OK;      
+      ret = GALLUS_RESULT_OK;
     } else {
       ret = GALLUS_RESULT_BUSY;
     }
@@ -176,7 +179,7 @@ main(int argc, const char *const argv[]) {
     (void)gallus_spinlock_lock(&ll);
     (void)gallus_spinlock_unlock(&ll);
   }
-  ends[4] = gallus_rdtsc();  
+  ends[4] = gallus_rdtsc();
   fprintf(stderr, "\t\tpthd done.\n");
 
   /* pthread (contention) */

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_PIPELINE_STAGE_INTERNAL_H__
 #define __GALLUS_PIPELINE_STAGE_INTERNAL_H__
 

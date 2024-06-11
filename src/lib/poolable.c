@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_poolable_internal.h"
 
@@ -7,9 +10,9 @@
 
 gallus_result_t
 gallus_poolable_create_with_size(gallus_poolable_t *pptr,
-                              bool is_executor,
-                              gallus_poolable_methods_t m,
-                              void *carg, size_t sz) {
+                                 bool is_executor,
+                                 gallus_poolable_methods_t m,
+                                 void *carg, size_t sz) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   size_t alloc_sz = sz;
   gallus_poolable_t p = NULL;
@@ -54,7 +57,7 @@ gallus_poolable_create_with_size(gallus_poolable_t *pptr,
     p->m_shutdown_lvl = SHUTDOWN_UNKNOWN;
 
 #define set_method(mem)                                         \
-    p->mem = ((m != NULL && m->mem != NULL) ? m->mem : NULL)
+  p->mem = ((m != NULL && m->mem != NULL) ? m->mem : NULL)
 
     set_method(m_construct);
     set_method(m_setup);
@@ -75,7 +78,7 @@ gallus_poolable_create_with_size(gallus_poolable_t *pptr,
         ret = GALLUS_RESULT_INVALID_ARGS;
         gallus_perror(ret);
         gallus_msg_error("insufficient methods to creating an executor type "
-                      "poolable object.\n");
+                         "poolable object.\n");
         goto done;
       }
     } else {
@@ -84,7 +87,7 @@ gallus_poolable_create_with_size(gallus_poolable_t *pptr,
         ret = GALLUS_RESULT_INVALID_ARGS;
         gallus_perror(ret);
         gallus_msg_error("insufficient methods to creating a "
-                      "poolable object.\n");
+                         "poolable object.\n");
         goto done;
       }
     }
@@ -150,7 +153,8 @@ gallus_poolable_setup(gallus_poolable_t *pptr) {
 
 
 gallus_result_t
-gallus_poolable_shutdown(gallus_poolable_t *pptr, shutdown_grace_level_t lvl) {
+gallus_poolable_shutdown(gallus_poolable_t *pptr,
+                         shutdown_grace_level_t lvl) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(pptr != NULL && *pptr != NULL)) {
@@ -161,7 +165,7 @@ gallus_poolable_shutdown(gallus_poolable_t *pptr, shutdown_grace_level_t lvl) {
     {
 
       if ((*pptr)->m_st == GALLUS_POOLABLE_STATE_NOT_OPERATIONAL &&
-	  (*pptr)->m_is_torndown == true) {
+          (*pptr)->m_is_torndown == true) {
         ret = GALLUS_RESULT_OK;
       } else if ((*pptr)->m_st == GALLUS_POOLABLE_STATE_OPERATIONAL) {
         (*pptr)->m_shutdown_lvl = lvl;
@@ -184,7 +188,7 @@ gallus_poolable_shutdown(gallus_poolable_t *pptr, shutdown_grace_level_t lvl) {
             }
           }
         }
-        
+
       } else {
         ret = GALLUS_RESULT_INVALID_STATE_TRANSITION;
       }
@@ -211,7 +215,7 @@ gallus_poolable_cancel(gallus_poolable_t *pptr) {
     {
 
       if ((*pptr)->m_st == GALLUS_POOLABLE_STATE_NOT_OPERATIONAL &&
-	  (*pptr)->m_is_torndown == true) {
+          (*pptr)->m_is_torndown == true) {
         ret = GALLUS_RESULT_OK;
       } else if ((*pptr)->m_st == GALLUS_POOLABLE_STATE_OPERATIONAL ||
                  ((*pptr)->m_st == GALLUS_POOLABLE_STATE_SHUTDOWNING &&
@@ -265,7 +269,7 @@ gallus_poolable_teardown(gallus_poolable_t *pptr, bool is_cancelled) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   gallus_msg_debug(5, "called, cancelled %s.\n",
-                (is_cancelled == true) ? "yes" : "no");
+                   (is_cancelled == true) ? "yes" : "no");
 
   if (likely(pptr != NULL && *pptr != NULL)) {
 
@@ -286,7 +290,7 @@ gallus_poolable_teardown(gallus_poolable_t *pptr, bool is_cancelled) {
         if ((*pptr)->m_teardown != NULL) {
           do_call_teardown = true;
         } else {
-          is_torndown = true;          
+          is_torndown = true;
           ret = GALLUS_RESULT_OK;
         }
       }
@@ -298,10 +302,10 @@ gallus_poolable_teardown(gallus_poolable_t *pptr, bool is_cancelled) {
       if (do_call_teardown == true) {
         ret = (*pptr)->m_teardown(pptr, is_cancelled);
       }
-      
+
       (void)gallus_mutex_lock(&(*pptr)->m_lck);
       {
-    
+
         (*pptr)->m_last_result = ret;
         (*pptr)->m_is_cancelled = is_cancelled;
         (*pptr)->m_st = GALLUS_POOLABLE_STATE_NOT_OPERATIONAL;
@@ -309,7 +313,7 @@ gallus_poolable_teardown(gallus_poolable_t *pptr, bool is_cancelled) {
         (*pptr)->m_is_wait_done = true;
 
         ret = gallus_cond_notify(&(*pptr)->m_cnd, true);
-    
+
       }
       (void)gallus_mutex_unlock(&(*pptr)->m_lck);
 
@@ -328,11 +332,11 @@ gallus_poolable_wait(gallus_poolable_t *pptr, gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   gallus_msg_debug(5, "called.\n");
-  
+
   if (likely(pptr != NULL && *pptr != NULL)) {
 
     bool do_call_wait = false;
-    
+
     (void)gallus_mutex_lock(&(*pptr)->m_lck);
     {
 
@@ -361,7 +365,7 @@ gallus_poolable_wait(gallus_poolable_t *pptr, gallus_chrono_t nsec) {
     if (do_call_wait == true) {
       ret = (*pptr)->m_wait(pptr, nsec);
     }
-    
+
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -416,10 +420,11 @@ gallus_poolable_is_operational(gallus_poolable_t *pptr, bool *bptr) {
 
   return ret;
 }
-  
+
 
 gallus_result_t
-gallus_poolable_get_status(gallus_poolable_t *pptr, gallus_poolable_state_t *st) {
+gallus_poolable_get_status(gallus_poolable_t *pptr,
+                           gallus_poolable_state_t *st) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(pptr != NULL && *pptr != NULL && st != NULL)) {

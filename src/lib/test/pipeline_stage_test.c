@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 #include "gallus_pipeline_stage.h"
@@ -159,7 +162,7 @@ pipeline_shutdown(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "called with \"%s\".\n",
-                    (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
+                   (l == SHUTDOWN_RIGHT_NOW) ? "right now" : "gracefully");
   called_func_count(PIPELINE_FUNC_SHUTDOWN);
 
   return GALLUS_RESULT_OK;
@@ -171,7 +174,7 @@ pipeline_finalize(const gallus_pipeline_stage_t *sptr,
   (void)sptr;
 
   gallus_msg_debug(1, "%s.\n",
-                    (is_canceled == false) ? "exit normally" : "canceled");
+                   (is_canceled == false) ? "exit normally" : "canceled");
   called_func_count(PIPELINE_FUNC_FINALIZE);
 
 }
@@ -210,18 +213,18 @@ pipeline_stage_create(gallus_pipeline_stage_t *sptr,
   size_t nthd = 1;
 
   ret = gallus_pipeline_stage_create(sptr, 0,
-                                      "gallus_pipeline_stage_create",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pre_pause_proc,
-                                      sched_proc,
-                                      setup_proc,
-                                      fetch_proc,
-                                      main_proc,
-                                      throw_proc,
-                                      shutdown_proc,
-                                      finalize_proc,
-                                      freeup_proc);
+                                     "gallus_pipeline_stage_create",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pre_pause_proc,
+                                     sched_proc,
+                                     setup_proc,
+                                     fetch_proc,
+                                     main_proc,
+                                     throw_proc,
+                                     shutdown_proc,
+                                     finalize_proc,
+                                     freeup_proc);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "gallus_pipeline_stage_create error.");
   TEST_ASSERT_NOT_EQUAL_MESSAGE(NULL, *sptr,
@@ -308,83 +311,83 @@ test_gallus_pipeline_stage_create_invalid_args(void) {
   size_t nthd = 1;
 
   ret = gallus_pipeline_stage_create(NULL, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      0, 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     0, 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 0,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 0,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
 #if 0
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      NULL,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     NULL,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 #else
@@ -396,66 +399,66 @@ test_gallus_pipeline_stage_create_invalid_args(void) {
 #endif
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      NULL,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     NULL,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      NULL,
-                                      NULL,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     NULL,
+                                     NULL,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      NULL,
-                                      NULL,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     NULL,
+                                     NULL,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
   ret = gallus_pipeline_stage_create(&stage, 0,
-                                      "test_error",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      NULL,
-                                      NULL,
-                                      NULL,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "test_error",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     NULL,
+                                     NULL,
+                                     NULL,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "not invalid args.");
 
@@ -472,18 +475,18 @@ test_gallus_pipeline_stage_create_already_exists(void) {
 
   /* set data */
   ret = gallus_pipeline_stage_create(&stage1, 0,
-                                      "gallus_pipeline_stage_create",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "gallus_pipeline_stage_create",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "gallus_pipeline_stage_create error.");
   TEST_ASSERT_NOT_EQUAL_MESSAGE(NULL, stage1,
@@ -491,18 +494,18 @@ test_gallus_pipeline_stage_create_already_exists(void) {
 
   /* call func. */
   ret = gallus_pipeline_stage_create(&stage2, 0,
-                                      "gallus_pipeline_stage_create",
-                                      nthd,
-                                      sizeof(void *), 1024,
-                                      pipeline_pre_pause,
-                                      pipeline_sched,
-                                      pipeline_setup,
-                                      pipeline_fetch,
-                                      pipeline_main,
-                                      pipeline_throw,
-                                      pipeline_shutdown,
-                                      pipeline_finalize,
-                                      pipeline_freeup);
+                                     "gallus_pipeline_stage_create",
+                                     nthd,
+                                     sizeof(void *), 1024,
+                                     pipeline_pre_pause,
+                                     pipeline_sched,
+                                     pipeline_setup,
+                                     pipeline_fetch,
+                                     pipeline_main,
+                                     pipeline_throw,
+                                     pipeline_shutdown,
+                                     pipeline_finalize,
+                                     pipeline_freeup);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_ALREADY_EXISTS, ret,
                             "not already exists.");
   TEST_ASSERT_EQUAL_MESSAGE(NULL, stage2,
@@ -1385,7 +1388,7 @@ test_gallus_pipeline_stage_find_normal(void) {
 
   /* call func (normal - found). */
   ret = gallus_pipeline_stage_find("gallus_pipeline_stage_create",
-                                    &ret_stage1);
+                                   &ret_stage1);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "gallus_pipeline_stage_find(normal - found) error.");
   TEST_ASSERT_NOT_EQUAL_MESSAGE(NULL, ret_stage1,
@@ -1393,7 +1396,7 @@ test_gallus_pipeline_stage_find_normal(void) {
 
   /* call func (normal - not found). */
   ret = gallus_pipeline_stage_find("test_not_found",
-                                    &ret_stage2);
+                                   &ret_stage2);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_NOT_FOUND, ret,
                             "gallus_pipeline_stage_find(normal- not found) "
                             "error.");
@@ -1411,7 +1414,7 @@ test_gallus_pipeline_stage_find_null(void) {
 
   /* call func (null). */
   ret = gallus_pipeline_stage_find("gallus_pipeline_stage_create",
-                                    NULL);
+                                   NULL);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_INVALID_ARGS, ret,
                             "gallus_pipeline_stage_find(null) error.");
 }

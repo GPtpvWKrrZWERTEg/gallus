@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -31,11 +34,11 @@ main(int argc, char const *const argv[]) {
   }
 
   if ((ret = gallus_thread_create(&thd,
-                                   s_main_proc,
-                                   NULL,
-                                   NULL,
-                                   (const char *) "thread",
-                                   (void *) NULL)) == GALLUS_RESULT_OK) {
+                                  s_main_proc,
+                                  NULL,
+                                  NULL,
+                                  (const char *) "thread",
+                                  (void *) NULL)) == GALLUS_RESULT_OK) {
     if ((ret = gallus_thread_set_cpu_affinity(&thd,
                -1)) == GALLUS_RESULT_OK &&
         (ret = gallus_thread_set_cpu_affinity(&thd,

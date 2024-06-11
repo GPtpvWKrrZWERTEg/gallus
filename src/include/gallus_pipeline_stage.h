@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_PIPELINE_STAGE_H__
 #define __GALLUS_PIPELINE_STAGE_H__
 
@@ -70,24 +73,24 @@ __BEGIN_DECLS
  */
 gallus_result_t
 gallus_pipeline_stage_create(gallus_pipeline_stage_t *sptr,
-                              size_t alloc_size,
-                              const char *name,
-                              size_t n_workers,
-                              size_t event_size,
-                              size_t max_batch_size,
-                              gallus_pipeline_stage_pre_pause_proc_t
-                              pre_pause_proc,
-                              gallus_pipeline_stage_sched_proc_t sched_proc,
-                              gallus_pipeline_stage_setup_proc_t setup_proc,
-                              gallus_pipeline_stage_fetch_proc_t fetch_proc,
-                              gallus_pipeline_stage_main_proc_t main_proc,
-                              gallus_pipeline_stage_throw_proc_t throw_proc,
-                              gallus_pipeline_stage_shutdown_proc_t
-                              shutdown_proc,
-                              gallus_pipeline_stage_finalize_proc_t
-                              final_proc,
-                              gallus_pipeline_stage_freeup_proc_t
-                              freeup_proc);
+                             size_t alloc_size,
+                             const char *name,
+                             size_t n_workers,
+                             size_t event_size,
+                             size_t max_batch_size,
+                             gallus_pipeline_stage_pre_pause_proc_t
+                             pre_pause_proc,
+                             gallus_pipeline_stage_sched_proc_t sched_proc,
+                             gallus_pipeline_stage_setup_proc_t setup_proc,
+                             gallus_pipeline_stage_fetch_proc_t fetch_proc,
+                             gallus_pipeline_stage_main_proc_t main_proc,
+                             gallus_pipeline_stage_throw_proc_t throw_proc,
+                             gallus_pipeline_stage_shutdown_proc_t
+                             shutdown_proc,
+                             gallus_pipeline_stage_finalize_proc_t
+                             final_proc,
+                             gallus_pipeline_stage_freeup_proc_t
+                             freeup_proc);
 
 
 /**
@@ -153,7 +156,7 @@ gallus_pipeline_stage_start(const gallus_pipeline_stage_t *sptr);
  */
 gallus_result_t
 gallus_pipeline_stage_shutdown(const gallus_pipeline_stage_t *sptr,
-                                shutdown_grace_level_t l);
+                               shutdown_grace_level_t l);
 
 
 /**
@@ -190,7 +193,7 @@ gallus_pipeline_stage_cancel(const gallus_pipeline_stage_t *sptr);
  */
 gallus_result_t
 gallus_pipeline_stage_wait(const gallus_pipeline_stage_t *sptr,
-                            gallus_chrono_t nsec);
+                           gallus_chrono_t nsec);
 
 
 /**
@@ -272,9 +275,9 @@ gallus_pipeline_stage_set_worker_cpu_affinity(
  */
 gallus_result_t
 gallus_pipeline_stage_submit(const gallus_pipeline_stage_t *sptr,
-                              void *evbuf,
-                              size_t n_evs,
-                              void *hint);
+                             void *evbuf,
+                             size_t n_evs,
+                             void *hint);
 
 
 
@@ -306,7 +309,7 @@ gallus_pipeline_stage_submit(const gallus_pipeline_stage_t *sptr,
  */
 gallus_result_t
 gallus_pipeline_stage_pause(const gallus_pipeline_stage_t *sptr,
-                             gallus_chrono_t nsec);
+                            gallus_chrono_t nsec);
 
 
 /**
@@ -363,7 +366,7 @@ gallus_pipeline_stage_schedule_maintenance(
  */
 gallus_result_t
 gallus_pipeline_stage_find(const char *name,
-                            gallus_pipeline_stage_t *retptr);
+                           gallus_pipeline_stage_t *retptr);
 
 
 /**
@@ -371,7 +374,7 @@ gallus_pipeline_stage_find(const char *name,
  *
  *	@param[in]  sptr	A pointer to a stage.
  *
- *	@retval >=0				Succeeded, A # of 
+ *	@retval >=0				Succeeded, A # of
  *						the workers in the stage.
  *	@retval GALLUS_RESULT_INVALID_ARGS	Failed, invalid args.
  *	@retval GALLUS_RESULT_ANY_FAILURES	Failed.
@@ -383,7 +386,7 @@ gallus_pipeline_stage_get_worker_nubmer(gallus_pipeline_stage_t *sptr);
 /**
  * Get an event/batch buffer of a pipeline stage worker.
  *
- *	@param[in]	sptr	A pointer to a stage. 
+ *	@param[in]	sptr	A pointer to a stage.
  *	@param[in]	index	A worker index.
  *	@param[out]	buf	A returned address.
  *
@@ -393,13 +396,13 @@ gallus_pipeline_stage_get_worker_nubmer(gallus_pipeline_stage_t *sptr);
  */
 gallus_result_t
 gallus_pipeline_stage_get_worker_event_buffer(gallus_pipeline_stage_t *sptr,
-                                               size_t index, void **buf);
+    size_t index, void **buf);
 
 
 /**
  * Set an event/batch buffer of a pipeline stage worker.
  *
- *	@param[in]	sptr	A pointer to a stage. 
+ *	@param[in]	sptr	A pointer to a stage.
  *	@param[in]	index	A worker index.
  *	@param[in]	buf	A buffer.
  *	@param[in]	freeup_proc	A free up function for the \b buf.
@@ -410,16 +413,16 @@ gallus_pipeline_stage_get_worker_event_buffer(gallus_pipeline_stage_t *sptr,
  */
 gallus_result_t
 gallus_pipeline_stage_set_worker_event_buffer(
-    gallus_pipeline_stage_t *sptr,
-    size_t index,
-    void *buf,
-    gallus_pipeline_stage_event_buffer_freeup_proc_t freeup_proc);
+  gallus_pipeline_stage_t *sptr,
+  size_t index,
+  void *buf,
+  gallus_pipeline_stage_event_buffer_freeup_proc_t freeup_proc);
 
 
 /**
  * Get name a pipeline stage.
  *
- *	@param[in]	sptr	A pointer to a stage. 
+ *	@param[in]	sptr	A pointer to a stage.
  *	@param[out]	name	A pointer for the returned name.
  *
  *	@retval	GALLUS_RESULT_OK		Succeeded.
@@ -428,7 +431,7 @@ gallus_pipeline_stage_set_worker_event_buffer(
  */
 gallus_result_t
 gallus_pipeline_stage_get_name(const gallus_pipeline_stage_t *sptr,
-                                const char **name);
+                               const char **name);
 
 
 

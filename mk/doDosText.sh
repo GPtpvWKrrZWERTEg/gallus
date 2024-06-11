@@ -4,10 +4,10 @@ l=`find . -type f \( \
     -name '*.h' -o \
     -name '*.c' -o \
     -name '*.cpp' -o \
-    -name 'Makefile.in' \)`
+    -name 'Makefile.in' \) | grep -v '.git/'`
 
 for i in ${l}; do
-    nkf -c ${i} > ${i}.tmp
+    nkf -w8 -Lw -c ${i} > ${i}.tmp
     rm -f ${i}
     mv -f ${i}.tmp ${i}
 done

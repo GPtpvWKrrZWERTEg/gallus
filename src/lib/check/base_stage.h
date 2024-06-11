@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __BASE_STAGE_H__
 #define __BASE_STAGE_H__
 
@@ -16,7 +19,7 @@ struct base_stage_record;
 
 
 typedef gallus_result_t (*base_stage_setup_proc_t)(
-    struct base_stage_record *bsptr);
+  struct base_stage_record *bsptr);
 
 
 typedef struct base_stage_record {

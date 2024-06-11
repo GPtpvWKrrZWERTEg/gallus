@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "unity.h"
 #include "gallus_apis.h"
 
@@ -14,7 +17,7 @@ tearDown(void) {
 void
 test_zero_polls(void) {
   gallus_result_t ret = gallus_qmuxer_poll(NULL, NULL, 0,
-                         1000 * 1000 * 1000);
+                        1000 * 1000 * 1000);
   TEST_ASSERT_EQUAL(ret, GALLUS_RESULT_TIMEDOUT);
 }
 
@@ -35,7 +38,7 @@ test_null_polls(void) {
     if (ret == GALLUS_RESULT_OK) {
       gallus_qmuxer_poll_t polls[1];
       ret = gallus_qmuxer_poll_create(&polls[0], q,
-                                       GALLUS_QMUXER_POLL_READABLE);
+                                      GALLUS_QMUXER_POLL_READABLE);
       TEST_ASSERT_EQUAL(ret, GALLUS_RESULT_OK);
 
       if (ret == GALLUS_RESULT_OK) {
@@ -46,10 +49,10 @@ test_null_polls(void) {
         ret = gallus_qmuxer_poll(&qmx, NULL, 1, 1000 * 1000 * 1000);
         TEST_ASSERT_EQUAL(ret, GALLUS_RESULT_TIMEDOUT);
 
-        ret = gallus_qmuxer_poll(NULL, polls , 0, 1000 * 1000 * 1000);
+        ret = gallus_qmuxer_poll(NULL, polls, 0, 1000 * 1000 * 1000);
         TEST_ASSERT_EQUAL(ret, GALLUS_RESULT_TIMEDOUT);
 
-        ret = gallus_qmuxer_poll(NULL, NULL , 1, 1000 * 1000 * 1000);
+        ret = gallus_qmuxer_poll(NULL, NULL, 1, 1000 * 1000 * 1000);
         TEST_ASSERT_EQUAL(ret, GALLUS_RESULT_TIMEDOUT);
 
         gallus_qmuxer_poll_destroy(&polls[0]);

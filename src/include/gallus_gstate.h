@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_GSTATE_H__
 #define __GALLUS_GSTATE_H__
 

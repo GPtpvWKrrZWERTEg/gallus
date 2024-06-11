@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 
@@ -50,7 +53,7 @@ s_finalize(const gallus_thread_t *tptr, bool is_canceled, void *arg) {
   (void)tptr;
 
   gallus_msg_debug(1, "called. %s.\n",
-                    (is_canceled == false) ? "finished" : "canceled");
+                   (is_canceled == false) ? "finished" : "canceled");
   if (is_canceled == true) {
     gallus_bbq_cancel_janitor(&s_q);
   }
@@ -78,10 +81,10 @@ main(int argc, const char *const argv[]) {
     for (i = 0; i < NTHDS; i++) {
       s_thds[i] = NULL;
       if ((r = gallus_thread_create(&s_thds[i],
-                                     s_main,
-                                     s_finalize,
-                                     NULL,
-                                     "getter", NULL)) != GALLUS_RESULT_OK) {
+                                    s_main,
+                                    s_finalize,
+                                    NULL,
+                                    "getter", NULL)) != GALLUS_RESULT_OK) {
         gallus_perror(r);
         goto done;
       }
@@ -126,10 +129,10 @@ main(int argc, const char *const argv[]) {
     for (i = 0; i < NTHDS; i++) {
       s_thds[i] = NULL;
       if ((r = gallus_thread_create(&s_thds[i],
-                                     s_main,
-                                     s_finalize,
-                                     NULL,
-                                     "getter", NULL)) != GALLUS_RESULT_OK) {
+                                    s_main,
+                                    s_finalize,
+                                    NULL,
+                                    "getter", NULL)) != GALLUS_RESULT_OK) {
         gallus_perror(r);
         goto done;
       }

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #pragma once
 
 
@@ -37,13 +40,14 @@ typedef struct gallus_thread_pool_record *gallus_thread_pool_t;
 
 
 gallus_result_t
-gallus_thread_pool_create(gallus_thread_pool_t *pptr, const char *name, size_t n);
+gallus_thread_pool_create(gallus_thread_pool_t *pptr, const char *name,
+                          size_t n);
 
 
 gallus_result_t
 gallus_thread_pool_acquire_thread(gallus_thread_pool_t *pptr,
-			       gallus_pooled_thread_t *ptptr,
-			       gallus_chrono_t to);
+                                  gallus_pooled_thread_t *ptptr,
+                                  gallus_chrono_t to);
 
 
 gallus_result_t
@@ -60,8 +64,8 @@ gallus_thread_pool_wakeup(gallus_thread_pool_t *pptr, gallus_chrono_t to);
 
 gallus_result_t
 gallus_thread_pool_shutdown_all(gallus_thread_pool_t *pptr,
-			     shutdown_grace_level_t lvl,
-			     gallus_chrono_t to);
+                                shutdown_grace_level_t lvl,
+                                gallus_chrono_t to);
 
 
 gallus_result_t

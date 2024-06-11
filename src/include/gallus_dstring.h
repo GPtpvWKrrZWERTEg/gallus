@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 /**
  * @file	gallus_dstring.h
  */
@@ -70,7 +73,7 @@ gallus_dstring_clear(gallus_dstring_t *ds);
  */
 gallus_result_t
 gallus_dstring_vappendf(gallus_dstring_t *ds, const char *format,
-                         va_list *args) __attr_format_printf__(2, 0);
+                        va_list *args) __attr_format_printf__(2, 0);
 
 /**
  * Append a dynamic string according to a format.
@@ -103,7 +106,7 @@ __attr_format_printf__(2, 3);
  */
 gallus_result_t
 gallus_dstring_vprependf(gallus_dstring_t *ds, const char *format,
-                          va_list *args) __attr_format_printf__(2, 0);
+                         va_list *args) __attr_format_printf__(2, 0);
 
 /**
  * repend a dynamic string according to a format.
@@ -119,7 +122,7 @@ gallus_dstring_vprependf(gallus_dstring_t *ds, const char *format,
  */
 gallus_result_t
 gallus_dstring_prependf(gallus_dstring_t *ds, const char *format, ...)
-    __attr_format_printf__(2, 3);
+__attr_format_printf__(2, 3);
 
 /**
  * Insert a dynamic string according to a format for \e va_list.
@@ -137,9 +140,9 @@ gallus_dstring_prependf(gallus_dstring_t *ds, const char *format, ...)
  */
 gallus_result_t
 gallus_dstring_vinsertf(gallus_dstring_t *ds,
-                         size_t offset,
-                         const char *format,
-                         va_list *args) __attr_format_printf__(3, 0);
+                        size_t offset,
+                        const char *format,
+                        va_list *args) __attr_format_printf__(3, 0);
 
 /**
  * Prepend a dynamic string according to a format.
@@ -156,9 +159,9 @@ gallus_dstring_vinsertf(gallus_dstring_t *ds,
  */
 gallus_result_t
 gallus_dstring_insertf(gallus_dstring_t *ds,
-                        size_t offset,
-                        const char *format, ...)
-    __attr_format_printf__(3, 4);
+                       size_t offset,
+                       const char *format, ...)
+__attr_format_printf__(3, 4);
 
 
 /**
@@ -175,7 +178,7 @@ gallus_dstring_insertf(gallus_dstring_t *ds,
  */
 gallus_result_t
 gallus_dstring_concat(gallus_dstring_t *dst_ds,
-                       const gallus_dstring_t *src_ds);
+                      const gallus_dstring_t *src_ds);
 
 /**
  * Get string from a dynamic string.

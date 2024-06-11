@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_THREAD_INTERNAL_H__
 #define __GALLUS_THREAD_INTERNAL_H__
 

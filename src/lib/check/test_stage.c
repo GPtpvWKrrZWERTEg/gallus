@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 static gallus_result_t	s_ingress_setup(base_stage_t bs);
 
 
@@ -28,7 +31,7 @@ s_test_stage_create(test_stage_t *tsptr,
                     test_stage_type_t type,
                     size_t n_workers,
                     size_t n_qs,
-		    size_t q_len,
+                    size_t q_len,
                     size_t n_events,
                     size_t batch_size,
                     gallus_chrono_t to,
@@ -39,15 +42,15 @@ s_test_stage_create(test_stage_t *tsptr,
                     size_t max_stage) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
-  if (likely(tsptr != NULL && 
+  if (likely(tsptr != NULL &&
              main_proc != NULL &&
              n_workers > 0 && n_events > 0 && max_stage > 0)) {
     gallus_mutex_t lock = NULL;
     gallus_cond_t cond = NULL;
     test_stage_state_t *states = (test_stage_state_t *)
-        malloc(sizeof(test_stage_state_t) * n_workers);
-    gallus_pipeline_stage_throw_proc_t throw_proc = 
-        (type == test_stage_type_intermediate) ? s_base_throw : NULL;
+                                 malloc(sizeof(test_stage_state_t) * n_workers);
+    gallus_pipeline_stage_throw_proc_t throw_proc =
+      (type == test_stage_type_intermediate) ? s_base_throw : NULL;
 
     if (unlikely(states == NULL)) {
       ret = GALLUS_RESULT_NO_MEMORY;
@@ -63,7 +66,7 @@ s_test_stage_create(test_stage_t *tsptr,
                                     max_stage,	/* max_stage */
                                     n_workers,	/* n_workers */
                                     n_qs,	/* n_qs */
-				    q_len,	/* q_len */
+                                    q_len,	/* q_len */
                                     batch_size,	/* batch_size */
                                     to,		/* to */
                                     sched_proc,		/* sched_proc */
@@ -71,10 +74,10 @@ s_test_stage_create(test_stage_t *tsptr,
                                     main_proc,		/* main_proc */
                                     throw_proc,		/* throw_proc */
                                     s_test_stage_freeup	/* freeup_proc */
-                                    )) == GALLUS_RESULT_OK &&
+                                   )) == GALLUS_RESULT_OK &&
                ((type == test_stage_type_ingress ?
                  (ret = s_base_stage_set_setup_hook((base_stage_t)(*tsptr),
-                                                    s_ingress_setup)) :
+                        s_ingress_setup)) :
                  (ret = GALLUS_RESULT_OK))) == GALLUS_RESULT_OK)) {
       size_t i;
 
@@ -122,7 +125,7 @@ s_test_stage_wait(const test_stage_t ts) {
 
     (void)gallus_mutex_lock(&(ts->m_lock));
     {
-   recheck:
+    recheck:
       if (ts->m_do_exit != true) {
         (void)gallus_cond_wait(&(ts->m_cond), &(ts->m_lock), -1LL);
         goto recheck;
@@ -175,15 +178,15 @@ s_ingress_setup(base_stage_t bs) {
   if (likely(bs != NULL)) {
     test_stage_t ts = (test_stage_t)bs;
     gallus_result_t n_workers = gallus_pipeline_stage_get_worker_nubmer(
-        (gallus_pipeline_stage_t *)&ts);
+                                  (gallus_pipeline_stage_t *)&ts);
     size_t n_data = ts->m_n_data;
 
     if (likely(n_data > 0 &&
                n_workers > 0)) {
       uint64_t *data =
-          (uint64_t *)malloc(sizeof(uint64_t) * n_data);
-      enqueue_info_t *enq_infos = 
-          (enqueue_info_t *)malloc(sizeof(enqueue_info_t) * (size_t)n_workers);
+        (uint64_t *)malloc(sizeof(uint64_t) * n_data);
+      enqueue_info_t *enq_infos =
+        (enqueue_info_t *)malloc(sizeof(enqueue_info_t) * (size_t)n_workers);
 
       if (likely(data != NULL && enq_infos != NULL)) {
         size_t i;
@@ -247,18 +250,18 @@ s_ingress_main(const gallus_pipeline_stage_t *sptr,
 
         start_clock = gallus_rdtsc();
         ret = gallus_pipeline_stage_submit((gallus_pipeline_stage_t *)
-                                            &(bs->m_next_stg),
-                                            (void *)addr, len, (void *)idx);
+                                           &(bs->m_next_stg),
+                                           (void *)addr, len, (void *)idx);
         end_clock = gallus_rdtsc();
 
         gallus_atomic_update_min(uint64_t, &(ts->m_start_clock),
-                                  0, start_clock);
+                                 0, start_clock);
         gallus_atomic_update_max(uint64_t, &(ts->m_end_clock),
-                                  0, end_clock);
+                                 0, end_clock);
 
         gallus_atomic_update_min(gallus_chrono_t, &(ts->m_start_time),
-                                  -1LL, start_time);
-        
+                                 -1LL, start_time);
+
         ts->m_states[idx] = test_stage_state_done;
         mbar();
       } else {
@@ -288,7 +291,7 @@ s_ingress_create(test_stage_t *tsptr,
                               test_stage_type_ingress,
                               n_workers,	/* n_workers */
                               0,		/* n_qs */
-			      0,		/* q_len */
+                              0,		/* q_len */
                               n_events,		/* n_events */
                               1,		/* batch_size (dummy) */
                               0,		/* to */
@@ -297,7 +300,7 @@ s_ingress_create(test_stage_t *tsptr,
                               s_ingress_main,	/* main_proc */
                               0,		/* stage_idx */
                               max_stage		/* max_stage */
-                              );
+                             );
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -308,7 +311,7 @@ s_ingress_create(test_stage_t *tsptr,
 
 static inline gallus_result_t
 s_ingress_get_data(test_stage_t *tsptr,
-		   uint64_t **data, size_t *n) {
+                   uint64_t **data, size_t *n) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(tsptr != NULL && *tsptr != NULL &&
@@ -349,7 +352,7 @@ s_intermediate_main(const gallus_pipeline_stage_t *sptr,
       if (unlikely(ts->m_states[idx] == test_stage_state_initialized)) {
         uint64_t cur_clock = gallus_rdtsc();
         gallus_atomic_update_min(uint64_t, &(ts->m_start_clock),
-                                  0, cur_clock);
+                                 0, cur_clock);
         ts->m_states[idx] = test_stage_state_running;
       }
 
@@ -370,13 +373,13 @@ s_intermediate_main(const gallus_pipeline_stage_t *sptr,
         WHAT_TIME_IS_IT_NOW_IN_NSEC(end_time);
 
         gallus_msg_debug(1, "got " PFSZ(u) " / " PFSZ(u)"  events.\n",
-                          n_cur_evs, ts->m_n_data);
+                         n_cur_evs, ts->m_n_data);
 
         gallus_atomic_update_min(uint64_t, &(ts->m_end_clock),
-                                  0, cur_clock);
+                                 0, cur_clock);
 
         gallus_atomic_update_max(gallus_chrono_t, &(ts->m_end_time),
-                                  -1, end_time);
+                                 -1, end_time);
 
         ts->m_states[idx] = test_stage_state_done;
         mbar();
@@ -406,7 +409,7 @@ static inline gallus_result_t
 s_intermediate_create(test_stage_t *tsptr,
                       size_t n_workers,
                       size_t n_qs,
-		      size_t q_len,
+                      size_t q_len,
                       size_t n_events,
                       size_t batch_size,
                       gallus_chrono_t to,
@@ -416,7 +419,7 @@ s_intermediate_create(test_stage_t *tsptr,
                       size_t max_stage) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
-  if (likely(tsptr != NULL && 
+  if (likely(tsptr != NULL &&
              n_workers > 0 && n_qs > 0 && n_events > 0 &&
              q_len > 0 && batch_size > 0 &&
              sched_proc != NULL &&
@@ -427,7 +430,7 @@ s_intermediate_create(test_stage_t *tsptr,
                               test_stage_type_intermediate,
                               n_workers,	/* n_workers */
                               n_qs,		/* n_qs */
-			      q_len,		/* q_len */
+                              q_len,		/* q_len */
                               n_events,		/* n_events */
                               batch_size,	/* batch_size */
                               to,		/* to */
@@ -436,7 +439,7 @@ s_intermediate_create(test_stage_t *tsptr,
                               s_intermediate_main,	/* main_proc */
                               stage_idx,	/* stage_idx */
                               max_stage		/* max_stage */
-                              );
+                             );
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -452,7 +455,7 @@ static inline gallus_result_t
 s_egress_create(test_stage_t *tsptr,
                 size_t n_workers,
                 size_t n_qs,
-		size_t q_len,
+                size_t q_len,
                 size_t n_events,
                 size_t batch_size,
                 gallus_chrono_t to,
@@ -461,7 +464,7 @@ s_egress_create(test_stage_t *tsptr,
                 size_t max_stage) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
-  if (likely(tsptr != NULL && 
+  if (likely(tsptr != NULL &&
              n_workers > 0 && n_qs > 0 && n_events > 0 &&
              q_len > 0 && batch_size > 0 &&
              sched_proc != NULL &&
@@ -471,7 +474,7 @@ s_egress_create(test_stage_t *tsptr,
                               test_stage_type_egress,
                               n_workers,	/* n_workers */
                               n_qs,		/* n_qs */
-			      q_len,		/* q_len */
+                              q_len,		/* q_len */
                               n_events,		/* n_events */
                               batch_size,	/* batch_size */
                               to,		/* to */
@@ -480,7 +483,7 @@ s_egress_create(test_stage_t *tsptr,
                               s_intermediate_main,	/* main_proc */
                               max_stage - 1,	/* stage_idx */
                               max_stage		/* max_stage */
-                              );
+                             );
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;
   }
@@ -510,7 +513,7 @@ s_test_stage_create_by_spec(test_stage_t *tsptr,
                              max_stage);
     } else {
       if (likely(spec->m_n_qs > 0 &&
-		 spec->m_q_len > 0 &&
+                 spec->m_q_len > 0 &&
                  spec->m_batch_size > 0)) {
         gallus_pipeline_stage_sched_proc_t sched_proc = NULL;
         gallus_pipeline_stage_fetch_proc_t fetch_proc = NULL;
@@ -533,7 +536,7 @@ s_test_stage_create_by_spec(test_stage_t *tsptr,
           ret = s_egress_create(tsptr,
                                 spec->m_n_workers,
                                 spec->m_n_qs,
-				spec->m_q_len,
+                                spec->m_q_len,
                                 spec->m_n_events,
                                 spec->m_batch_size,
                                 spec->m_to,
@@ -544,7 +547,7 @@ s_test_stage_create_by_spec(test_stage_t *tsptr,
           ret = s_intermediate_create(tsptr,
                                       spec->m_n_workers,
                                       spec->m_n_qs,
-				      spec->m_q_len,
+                                      spec->m_q_len,
                                       spec->m_n_events,
                                       spec->m_batch_size,
                                       spec->m_to,

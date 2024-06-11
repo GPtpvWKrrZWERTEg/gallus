@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 /*
  * From Tcl8.0.5/license.terms
  *

@@ -1,5 +1,5 @@
 ##
-## Autoconf template.
+## $__Copyright__$
 ##
 AC_INIT
 
@@ -14,7 +14,7 @@ m4_include([mk/ltsugar.m4])
 m4_include([mk/ltversion.m4])
 m4_include([mk/lt~obsolete.m4])
 
-AC_CONFIG_HEADER([src/include/gallus_config.h])
+AC_CONFIG_HEADERS([src/include/gallus_config.h])
 
 if test "${prefix}" = "NONE"; then
     prefix=/usr/local
@@ -52,24 +52,12 @@ AC_CANONICAL_TARGET
 AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CXX
-AC_PROG_YACC
-AC_PROG_LEX
-if test "x$LEX" != xflex -a "x$LEX" != xlex; then
-   AC_MSG_ERROR([flex/lex must be installed.])
-fi
+#AC_PROG_YACC
+#AC_PROG_LEX
+#if test "x$LEX" != xflex -a "x$LEX" != xlex; then
+#   AC_MSG_ERROR([flex/lex must be installed.])
+#fi
 AC_PROG_AWK
-AC_DIAGNOSE([obsolete],[your code may safely assume C89 semantics that RETSIGTYPE is void.
-Remove this warning and the `AC_CACHE_CHECK' when you adjust the code.])dnl
-AC_CACHE_CHECK([return type of signal handlers],[ac_cv_type_signal],[AC_COMPILE_IFELSE(
-[AC_LANG_PROGRAM([#include <sys/types.h>
-#include <signal.h>
-],
-		 [return *(signal (0, 0)) (0) == 1;])],
-		   [ac_cv_type_signal=int],
-		   [ac_cv_type_signal=void])])
-AC_DEFINE_UNQUOTED([RETSIGTYPE],[$ac_cv_type_signal],[Define as the return type of signal handlers
-		    (`int' or `void').])
-
 
 RM="rm -f"
 AC_SUBST(RM)
@@ -85,6 +73,9 @@ AC_SUBST(READLINK)
 
 BASENAME="basename"
 AC_SUBST(BASENAME)
+
+PKGCONF="pkg-config"
+AC_SUBST(PKGCONF)
 
 # Assume 32 bit for cross compilation.
 AC_CHECK_SIZEOF(short int, 2)
@@ -137,7 +128,7 @@ case $OS in
 	OS=freebsd;;
     linux*)
 	OS_CPPFLAGS="${OS_CPPFLAGS} -D_GNU_SOURCE -D_POSIX_SOURCE"
-	OS_LIBS="-lrt -lpthread -ldl"
+	OS_LIBS="-lrt -lpthread -ldl -lpcap"
 	OS=linux;;
     netbsd*)
 	MAKE=gmake
@@ -256,7 +247,9 @@ LIBS=${oLIBS}
 
 AC_C_BIGENDIAN
 
-AC_HEADER_STDC
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 
 AC_CHECK_HEADER(inttypes.h, [AC_DEFINE(HAVE_INTTYPES_H)], [])
 AC_CHECK_HEADER(stdint.h, [AC_DEFINE(HAVE_STDINT_H)])
@@ -371,12 +364,12 @@ AC_SUBST(RDMA_LIBS)
 
 # use DPDK or not
 use_dpdk=no
-AC_ARG_WITH([dpdk],
+AC_ARG_ENABLE([dpdk],
 	[AS_HELP_STRING([--enable-dpdk],[enable DPDK. [default: no]])]
-	 ,[use_dpdk="$withval"], [use_dpdk=no])
+	 ,[use_dpdk="$enableval"], [use_dpdk=no])
 
 spdk_dir=''
-AC_ARG_ENABLE([spdk],
+AC_ARG_WITH([spdk],
 	[AS_HELP_STRING([--with-spdk=/path/to/spdk],[specify SPDK installation directory (implies --with-dpdk.)])]
 	 ,[spdk_dir="$enableval"], [spdk_dir=''])
 if test "x${enable_spdk}" = "xyes" -o "x${enable_spdk}" = "xno"; then
@@ -391,8 +384,8 @@ DPDK_DIR=''
 if test "x${use_dpdk}" = "xyes"; then
     AC_MSG_CHECKING([DPDK and the environmental variable])
     if test ! -z "${RTE_SDK}" -a ! -z "${RTE_TARGET}"; then
-        if test -d "${RTE_SDK}" -a -d "${RTE_SDK}/${RTE_TARGET}"; then
-            DPDK_DIR="${RTE_SDK}/${RTE_TARGET}"
+        if test -d "${RTE_SDK}" -a -d "${RTE_SDK}/lib/${RTE_TARGET}"; then
+            DPDK_DIR="${RTE_SDK}/lib/${RTE_TARGET}"
 	    AC_MSG_RESULT([available.])
         else
 	    AC_MSG_RESULT([not available.])
@@ -661,6 +654,6 @@ fi
 echo ""
 echo "CC:	'${CC}'"
 echo "CFLAGS:	'${OS_CFLAGS}'"
-echo "CPPFLAGS:	'${CPPFLAGS} ${OS_CPPFLAGS} ${CPUDEF} ${OSDEF}'"
+echo "CPPFLAGS:	'${CPPFLAGS} ${OS_CPPFLAGS}'"
 echo "LDFLAGS:	'${LDFLAGS} ${OS_LDFLAGS} ${OS_LIBS}'"
 echo ""

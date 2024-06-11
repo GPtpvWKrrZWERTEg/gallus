@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -38,9 +41,9 @@ delete_pair(void *p) {
 static inline void
 dump_pair(aPair *pPtr) {
   gallus_msg_debug(1, "Key: " PF64S(20, u) ",\tval: '%s'\n",
-                    pPtr->key,
-                    (IS_VALID_STRING(pPtr->name) == true) ?
-                    pPtr->name : "");
+                   pPtr->key,
+                   (IS_VALID_STRING(pPtr->name) == true) ?
+                   pPtr->name : "");
 }
 
 
@@ -139,8 +142,8 @@ main(int argc, const char *const argv[]) {
    * Creation
    */
   if ((rc = gallus_hashmap_create(&ht,
-                                   sizeof(uint64_t),
-                                   delete_pair)) != GALLUS_RESULT_OK) {
+                                  sizeof(uint64_t),
+                                  delete_pair)) != GALLUS_RESULT_OK) {
     gallus_perror(rc);
     goto done;
   }
@@ -153,7 +156,7 @@ main(int argc, const char *const argv[]) {
     snprintf(valbuf, sizeof(valbuf), PF64(u), key);
     pPtr = new_pair(key, valbuf);
     rc = gallus_hashmap_add(&ht, (void *)keyRef(pPtr->key),
-                             (void **)&pPtr, false);
+                            (void **)&pPtr, false);
     if (rc != GALLUS_RESULT_OK) {
       gallus_perror(rc);
       goto done;
@@ -192,7 +195,7 @@ main(int argc, const char *const argv[]) {
   start = gallus_chrono_now();
   for (i = 0; i < n_entry; i++) {
     rc = gallus_hashmap_find(&ht, (void *)keyRef(keys[i]),
-                              (void **)&pPtr);
+                             (void **)&pPtr);
     if (rc != GALLUS_RESULT_OK) {
       gallus_perror(rc);
       gallus_exit_fatal("rc must be GALLUS_RESULT_OK.\n");

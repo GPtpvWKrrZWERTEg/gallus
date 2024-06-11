@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -82,7 +85,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The global status tracker finalized.\n");
     } else {
       gallus_msg_debug(10, "The global status tracker is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }

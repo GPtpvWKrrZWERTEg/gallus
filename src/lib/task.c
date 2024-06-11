@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 #include "gallus_poolable_internal.h"
@@ -15,9 +18,9 @@
  */
 gallus_result_t
 gallus_task_create(gallus_task_t *tptr, size_t sz, const char *name,
-                gallus_task_main_proc_t main_func,
-                gallus_task_finalize_proc_t finalize_func,
-		gallus_task_freeup_proc_t freeup_func) {
+                   gallus_task_main_proc_t main_func,
+                   gallus_task_finalize_proc_t finalize_func,
+                   gallus_task_freeup_proc_t freeup_func) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   size_t alloc_sz = sz;
   gallus_task_t t = NULL;
@@ -75,7 +78,10 @@ gallus_task_create(gallus_task_t *tptr, size_t sz, const char *name,
     t->m_main = main_func;
     t->m_finalize = finalize_func;
     t->m_freeup = freeup_func;
+    t->m_core_num = -1;
+    t->m_numa_node_num = -1;
     t->m_flag = 0;
+    t->m_tr = NULL;
     t->m_tmp_thd = NULL;
 
     t->m_state = GALLUS_TASK_STATE_CONSTRUCTED;
@@ -95,11 +101,57 @@ done:
 
 
 gallus_result_t
-gallus_task_run(gallus_task_t *tptr, gallus_pooled_thread_t *ptptr, int flag) {
+gallus_task_set_cpu_affinity(const gallus_task_t *tptr, int cpu) {
+  gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
+
+  if (likely(tptr != NULL && *tptr != NULL)) {
+    (*tptr)->m_core_num = cpu;
+    if (likely((*tptr)->m_tr != NULL)) {
+      if (likely(gallus_thread_set_cpu_affinity((gallus_thread_t *)&(*tptr)->m_tr,
+                 -1) ==
+                 GALLUS_RESULT_OK)) {
+        ret = gallus_thread_set_cpu_affinity((gallus_thread_t *)&(*tptr)->m_tr,
+                                             cpu);
+      }
+    } else {
+      ret = GALLUS_RESULT_OK;
+    }
+  } else {
+    ret = GALLUS_RESULT_INVALID_ARGS;
+  }
+
+  return ret;
+}
+
+
+gallus_result_t
+gallus_task_set_numa_node_affinity(const gallus_task_t *tptr, int node) {
+  gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
+
+  if (likely(tptr != NULL && *tptr != NULL)) {
+    (*tptr)->m_numa_node_num = node;
+    if (likely((*tptr)->m_tr != NULL)) {
+      ret = gallus_thread_set_numa_node_affinity((gallus_thread_t *)&(*tptr)->m_tr,
+            node);
+    } else {
+      ret = GALLUS_RESULT_OK;
+    }
+  } else {
+    ret = GALLUS_RESULT_INVALID_ARGS;
+  }
+
+  return ret;
+}
+
+
+gallus_result_t
+gallus_task_run(gallus_task_t *tptr, gallus_pooled_thread_t *ptptr,
+                int flag) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   gallus_task_t t = NULL;
 
-  if (likely(tptr != NULL && (t = *tptr) != NULL && t->m_main != NULL)) {
+  if (likely(tptr != NULL && (t = *tptr) != NULL && t->m_main != NULL &&
+             t->m_tr == NULL)) {
     gallus_pooled_thread_t pt = NULL;
     gallus_poolable_t pobj = NULL;
     gallus_task_runner_thread_t tr = NULL;
@@ -164,8 +216,8 @@ gallus_task_finalize(gallus_task_t *tptr, bool is_cancelled) {
   gallus_task_t t = NULL;
 
   gallus_msg_debug(5, "called, cancel %s.\n",
-                (is_cancelled == true) ? "yes" : "no");
-  
+                   (is_cancelled == true) ? "yes" : "no");
+
   if (likely(tptr != NULL && (t = *tptr) != NULL)) {
 
     if (t->m_finalize != NULL) {
@@ -186,6 +238,7 @@ gallus_task_finalize(gallus_task_t *tptr, bool is_cancelled) {
       (void)gallus_cond_notify(&t->m_cnd, true);
 
       gallus_msg_debug(5, "woke task \"%s\" waiters up.\n", t->m_name);
+
     }
     (void)gallus_mutex_unlock(&t->m_lck);
   }
@@ -201,7 +254,7 @@ gallus_task_wait(gallus_task_t *tptr, gallus_chrono_t to) {
 
     gallus_msg_debug(5, "wait for task \"%s\" done...\n", t->m_name);
 
-                  (void)gallus_mutex_lock(&t->m_lck);
+    (void)gallus_mutex_lock(&t->m_lck);
     {
 
       do {
@@ -220,7 +273,7 @@ gallus_task_wait(gallus_task_t *tptr, gallus_chrono_t to) {
     (void)gallus_mutex_unlock(&t->m_lck);
 
     gallus_msg_debug(5, "task \"%s\" done, returns %ld.\n",
-                  t->m_name, t->m_exit_code);
+                     t->m_name, t->m_exit_code);
 
   } else {
     ret = GALLUS_RESULT_INVALID_ARGS;

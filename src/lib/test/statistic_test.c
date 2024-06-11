@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "unity.h"
 
@@ -127,7 +130,7 @@ test_invalid_args(void) {
   r = gallus_statistic_create(NULL, NULL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_INVALID_ARGS);
   r = gallus_statistic_create(&s, NULL);
-  TEST_ASSERT_EQUAL(r, GALLUS_RESULT_INVALID_ARGS);  
+  TEST_ASSERT_EQUAL(r, GALLUS_RESULT_INVALID_ARGS);
   r = gallus_statistic_create(&s, "");
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_INVALID_ARGS);
   r = gallus_statistic_create(&s, "test2");
@@ -184,7 +187,7 @@ test_invalid_args(void) {
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_INVALID_ARGS);
 
   gallus_statistic_destroy_by_name("test2");
-  
+
   r = gallus_statistic_find(&s, "test2");
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_NOT_FOUND);
   TEST_ASSERT_EQUAL(s, NULL);

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -21,8 +24,8 @@ s_term_handler(int sig) {
       }
       if (IS_VALID_SHUTDOWN(l) == true) {
         gallus_msg_info("About to request shutdown(%s)...\n",
-                         (l == SHUTDOWN_RIGHT_NOW) ?
-                         "RIGHT_NOW" : "GRACEFULLY");
+                        (l == SHUTDOWN_RIGHT_NOW) ?
+                        "RIGHT_NOW" : "GRACEFULLY");
         if ((r = global_state_request_shutdown(l)) == GALLUS_RESULT_OK) {
           gallus_msg_info("The shutdown request accepted.\n");
         } else {
@@ -150,25 +153,25 @@ test_1(void *arg) {
   s_val0 = 0LL;
 
   if (likely(((ret = gallus_callout_create_task(&t0, 0, "test_task0",
-                                                 callout0, (void *)&s_val0,
-                                                 callout0_freeup)) ==
+                     callout0, (void *)&s_val0,
+                     callout0_freeup)) ==
               GALLUS_RESULT_OK) &&
 
              ((ret = gallus_callout_create_task(&t1, 0, "test_task1",
-                                                 callout1, (void *)&s_val1,
-                                                 callout1_freeup)) ==
+                     callout1, (void *)&s_val1,
+                     callout1_freeup)) ==
               GALLUS_RESULT_OK))) {
 
     if (likely(((ret =
-                 gallus_callout_submit_task(&t0,
-                                             0LL, 
-                                             1000LL * 1000LL * 1000LL)) ==
+                   gallus_callout_submit_task(&t0,
+                       0LL,
+                       1000LL * 1000LL * 1000LL)) ==
                 GALLUS_RESULT_OK) &&
 
                ((ret =
-                 gallus_callout_submit_task(&t1,
-                                             10LL * 1000LL * 1000LL * 1000LL, 
-                                             300LL * 1000LL * 1000LL)) ==
+                   gallus_callout_submit_task(&t1,
+                       10LL * 1000LL * 1000LL * 1000LL,
+                       300LL * 1000LL * 1000LL)) ==
                 GALLUS_RESULT_OK))) {
 
       (void)gallus_chrono_nanosleep(1500LL * 1000LL * 1000LL, NULL);
@@ -198,7 +201,7 @@ test_1(void *arg) {
 
 
 int
-main(int argc, const char * const argv[]) {
+main(int argc, const char *const argv[]) {
   size_t n_workers = 1;
   callout_test_task_record t = {
     test_1, NULL
@@ -222,10 +225,10 @@ main(int argc, const char * const argv[]) {
   (void)gallus_signal(SIGQUIT, s_term_handler, NULL);
 
   ret = gallus_thread_create(&s_thd,
-                              s_thd_main,
-                              NULL,
-                              NULL,
-                              "test", (void *)&t);
+                             s_thd_main,
+                             NULL,
+                             NULL,
+                             "test", (void *)&t);
   if (likely(ret == GALLUS_RESULT_OK)) {
     ret = gallus_thread_start(&s_thd, false);
     if (unlikely(ret != GALLUS_RESULT_OK)) {
@@ -234,7 +237,7 @@ main(int argc, const char * const argv[]) {
   }
 
   ret = gallus_mainloop_with_callout(argc, argv, NULL, NULL,
-                                      false, false, false);
+                                     false, false, false);
 
 done:
   return (ret == GALLUS_RESULT_OK) ? 0 : 1;

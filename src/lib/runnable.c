@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_runnable_internal.h"
 
@@ -13,10 +16,10 @@
 
 gallus_result_t
 gallus_runnable_create(gallus_runnable_t *rptr,
-                        size_t alloc_sz,
-                        gallus_runnable_proc_t func,
-                        void *arg,
-                        gallus_runnable_freeup_proc_t freeup_func) {
+                       size_t alloc_sz,
+                       gallus_runnable_proc_t func,
+                       void *arg,
+                       gallus_runnable_freeup_proc_t freeup_func) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   bool is_heap_allocd = false;
 

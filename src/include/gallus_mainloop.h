@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_MAINLOOP_H__
 #define __GALLUS_MAINLOOP_H__
 
@@ -22,9 +25,9 @@ __BEGIN_DECLS
 /**
  * The signature of the mainloop pre/post-startup hook functions.
  *
- *	@param[in]	argc		A # of arguments, passed to 
+ *	@param[in]	argc		A # of arguments, passed to
  *					the \b gallus_mainloop().
- *	@param[in]	argv		Arguments passed to 
+ *	@param[in]	argv		Arguments passed to
  *					the \b gallus_mainloop().
  *
  *	@retval GALLUS_RESULT_OK	Succeeded.
@@ -35,7 +38,7 @@ __BEGIN_DECLS
  *	pre/post-startup.
  */
 typedef gallus_result_t (*gallus_mainloop_startup_hook_proc_t)(
-    int argc, const char * const argv[]);
+  int argc, const char *const argv[]);
 
 
 
@@ -154,7 +157,7 @@ gallus_mainloop_set_shutdown_timeout(gallus_chrono_t nsec);
  *	@param[in] post_hook	The post-startup hook (NULL allowed.)
  *	@param[in] do_fork	If \b true call fork(2) before startup.
  *	@param[in] do_pidfile	If \b true create a pid file.
- *				The file name can be specified 
+ *				The file name can be specified
  *				by the \b gallus_set_pidfile().
  *	@param[in] do_thread	If \b true the main loop runs in a newly
  *				spawned thread.
@@ -169,10 +172,10 @@ gallus_mainloop_set_shutdown_timeout(gallus_chrono_t nsec);
  *	application.
  */
 gallus_result_t
-gallus_mainloop(int argc, const char * const argv[],
-                 gallus_mainloop_startup_hook_proc_t pre_hook,
-                 gallus_mainloop_startup_hook_proc_t post_hook,
-                 bool do_fork, bool do_pidfile, bool do_thread);
+gallus_mainloop(int argc, const char *const argv[],
+                gallus_mainloop_startup_hook_proc_t pre_hook,
+                gallus_mainloop_startup_hook_proc_t post_hook,
+                bool do_fork, bool do_pidfile, bool do_thread);
 
 
 /**
@@ -186,7 +189,7 @@ gallus_mainloop(int argc, const char * const argv[],
  *	@param[in] post_hook	The post-startup hook (NULL allowed.)
  *	@param[in] do_fork	If \b true call fork(2) before startup.
  *	@param[in] do_pidfile	If \b true create a pid file.
- *				The file name can be specified 
+ *				The file name can be specified
  *				by the \b gallus_set_pidfile().
  *	@param[in] do_thread	If \b true the main loop runs in a newly
  *				spawned thread.
@@ -201,11 +204,11 @@ gallus_mainloop(int argc, const char * const argv[],
  *	application.
  */
 gallus_result_t
-gallus_mainloop_with_callout(int argc, const char * const argv[],
-                              gallus_mainloop_startup_hook_proc_t pre_hook,
-                              gallus_mainloop_startup_hook_proc_t post_hook,
-                              bool do_fork, bool do_pidfile,
-                              bool do_thread);
+gallus_mainloop_with_callout(int argc, const char *const argv[],
+                             gallus_mainloop_startup_hook_proc_t pre_hook,
+                             gallus_mainloop_startup_hook_proc_t post_hook,
+                             bool do_fork, bool do_pidfile,
+                             bool do_thread);
 
 
 /**
@@ -244,9 +247,9 @@ gallus_mainloop_wait_thread(void);
  *	nned to provide a custom main loop function.
  */
 gallus_result_t
-gallus_mainloop_prologue(int argc, const char * const argv[],
-                          gallus_mainloop_startup_hook_proc_t pre_hook,
-                          gallus_mainloop_startup_hook_proc_t post_hook);
+gallus_mainloop_prologue(int argc, const char *const argv[],
+                         gallus_mainloop_startup_hook_proc_t pre_hook,
+                         gallus_mainloop_startup_hook_proc_t post_hook);
 
 
 /**

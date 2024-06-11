@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __TEST_STAGE_H__
 #define __TEST_STAGE_H__
 

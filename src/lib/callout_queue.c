@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 
 
 
@@ -104,7 +107,7 @@ s_do_sched(gallus_callout_task_t t) {
         if (unlikely(r != GALLUS_RESULT_OK)) {
           gallus_perror(r);
           gallus_msg_error("can't wake the callout task master "
-                            "scheduler up.\n");
+                           "scheduler up.\n");
         }
       }
     }
@@ -163,15 +166,15 @@ s_do_unsched(gallus_callout_task_t t) {
         TAILQ_REMOVE(&s_chrono_tsk_q, t, m_entry);
 
         if (t->m_status == TASK_STATE_ENQUEUED) {
-            (void)s_set_task_state_in_table(t, TASK_STATE_DEQUEUED);
-            t->m_status = TASK_STATE_DEQUEUED;
+          (void)s_set_task_state_in_table(t, TASK_STATE_DEQUEUED);
+          t->m_status = TASK_STATE_DEQUEUED;
         }
 
         t->m_is_in_timed_q = false;
       }
     }
     s_unlock_task(t);
-      
+
   }
   s_unlock_task_q();
 
@@ -356,7 +359,7 @@ s_get_runnable_timed_task_no_lock(gallus_chrono_t base_abstime,
 
   return ret;
 }
-             
+
 
 static inline gallus_result_t
 s_get_runnable_timed_task(gallus_chrono_t base_abstime,
@@ -377,7 +380,7 @@ s_get_runnable_timed_task(gallus_chrono_t base_abstime,
 
   return ret;
 }
-             
+
 
 static inline void
 s_destroy_all_queued_timed_tasks(void) {

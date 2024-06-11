@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "unity.h"
 
@@ -42,8 +45,8 @@ setUp(void) {
     exit(1);
   }
   if ((rc = gallus_hashmap_create(&ht,
-                                   GALLUS_HASHMAP_TYPE_ONE_WORD,
-                                   delete_entry)) != GALLUS_RESULT_OK) {
+                                  GALLUS_HASHMAP_TYPE_ONE_WORD,
+                                  delete_entry)) != GALLUS_RESULT_OK) {
     gallus_perror(rc);
     exit(1);
   }
@@ -63,13 +66,13 @@ test_hash_table_creation(void) {
   gallus_hashmap_t myht = NULL;
 
   if ((rc = gallus_hashmap_create(&myht,
-                                   GALLUS_HASHMAP_TYPE_ONE_WORD,
-                                   delete_entry)) != GALLUS_RESULT_OK) {
+                                  GALLUS_HASHMAP_TYPE_ONE_WORD,
+                                  delete_entry)) != GALLUS_RESULT_OK) {
     TEST_FAIL_MESSAGE("creation failed");
     goto done;
   }
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_OK, rc,
-      "create hashmap");
+                                          "create hashmap");
 
 done:
   if (myht != NULL) {
@@ -86,8 +89,8 @@ test_hash_miss(void) {
   i = 1;
   rc = gallus_hashmap_find(&ht, (void *)i, (void *)&e);
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_NOT_FOUND, rc,
-      "If key is not found in table, "
-      "function should return GALLUS_RESULT_NOT_FOUND");
+                                          "If key is not found in table, "
+                                          "function should return GALLUS_RESULT_NOT_FOUND");
 }
 
 void
@@ -97,19 +100,19 @@ test_invalid_arguments(void) {
   size_t i = 0;
   rc = gallus_hashmap_create(NULL, GALLUS_HASHMAP_TYPE_ONE_WORD, NULL);
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_INVALID_ARGS, rc,
-      "gallus_hashmap_create(hmptr=NULL, ...) is invalid argument");
+                                          "gallus_hashmap_create(hmptr=NULL, ...) is invalid argument");
 
   rc = gallus_hashmap_find(NULL, (void *)i, (void *)&e);
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_INVALID_ARGS, rc,
-      "gallus_hashmap_find(hmptr=NULL, ...) is invalid argument");
+                                          "gallus_hashmap_find(hmptr=NULL, ...) is invalid argument");
 
   rc = gallus_hashmap_find(&ht, (void *)i, (void *)NULL);
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_INVALID_ARGS, rc,
-      "gallus_hashmap_find(..., valptr=NULL) is invalid argument");
+                                          "gallus_hashmap_find(..., valptr=NULL) is invalid argument");
 
   rc = gallus_hashmap_clear(NULL, true);
   TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_INVALID_ARGS, rc,
-      "gallus_hashmap_find(hmptr=NULL, ...) is invalid argument");
+                                          "gallus_hashmap_find(hmptr=NULL, ...) is invalid argument");
 
 }
 
@@ -126,14 +129,14 @@ test_hash_table_add(void) {
     TEST_ASSERT_EQUAL_GALLUS_STATUS(GALLUS_RESULT_OK, rc);
     TEST_ASSERT_NULL_MESSAGE(e,
                              "If hashmap_add function occurred no "
-			     "confliction, valptr should be set to NULL");
+                             "confliction, valptr should be set to NULL");
   }
 
   for (i = 0; i < n_entry; i++) {
     rc = gallus_hashmap_find(&ht, (void *)i, (void *)&e);
     TEST_ASSERT_EQUAL_GALLUS_STATUS_MESSAGE(GALLUS_RESULT_OK, rc,
-        "If key is found in table, "
-        "then hashmap_find function return GALLUS_RESULT_OK");
+                                            "If key is found in table, "
+                                            "then hashmap_find function return GALLUS_RESULT_OK");
     TEST_ASSERT_EQUAL_UINT64_MESSAGE(i, e->content,
                                      "check a value of hash entry");
   }
@@ -272,7 +275,7 @@ test_hash_table_clear(void) {
   TEST_ASSERT_EQUAL_UINT64_MESSAGE(i, ne->content,
                                    "If an argument 'free_values' is false, "
                                    "hashmap_clear function shouldn't free "
-				   "entries");
+                                   "entries");
   delete_entry(ne);
 
   for (i = 0; i < n_entry; i++) {

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -39,9 +42,9 @@ delete_pair(void *p) {
 static inline void
 dump_pair(aPair *pPtr) {
   gallus_msg_debug(1, "Key: " PF64S(20, u) ",\tval: '%s'\n",
-                    pPtr->key,
-                    (IS_VALID_STRING(pPtr->name) == true) ?
-                    pPtr->name : "");
+                   pPtr->key,
+                   (IS_VALID_STRING(pPtr->name) == true) ?
+                   pPtr->name : "");
 }
 
 
@@ -117,8 +120,8 @@ main(int argc, const char *const argv[]) {
    * Creation
    */
   if ((rc = gallus_hashmap_create(&ht,
-                                   sizeof(aPair),
-                                   delete_pair)) != GALLUS_RESULT_OK) {
+                                  sizeof(aPair),
+                                  delete_pair)) != GALLUS_RESULT_OK) {
     gallus_perror(rc);
     goto done;
   }

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_SESSION_TLS_H__
 #define __GALLUS_SESSION_TLS_H__
 
@@ -228,7 +231,7 @@ gallus_session_tls_set_certcheck_default(gallus_result_t
  */
 void
 gallus_session_tls_set_certcheck(gallus_session_t s, gallus_result_t
-                                  (*func)(const char *, const char *));
+                                 (*func)(const char *, const char *));
 
 
 

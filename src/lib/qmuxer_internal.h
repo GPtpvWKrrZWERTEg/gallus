@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __QMUXER_INTERNAL_H__
 #define __QMUXER_INTERNAL_H__
 

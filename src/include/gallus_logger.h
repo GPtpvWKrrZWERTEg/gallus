@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_LOGGER_H__
 #define __GALLUS_LOGGER_H__
 
@@ -58,10 +61,10 @@ __BEGIN_DECLS
  */
 gallus_result_t
 gallus_log_initialize(gallus_log_destination_t dst,
-                       const char *arg,
-                       bool multi_process,
-                       bool emit_date,
-                       uint16_t debug_level);
+                      const char *arg,
+                      bool multi_process,
+                      bool emit_date,
+                      uint16_t debug_level);
 
 
 /**
@@ -136,11 +139,11 @@ gallus_log_get_multi_process(bool *v);
  * The main logging workhorse: not intended for direct use.
  */
 void	gallus_log_emit(gallus_log_level_t log_level,
-                       uint64_t debug_level,
-                       const char *file,
-                       int line,
-                       const char *func,
-                       const char *fmt, ...)
+                      uint64_t debug_level,
+                      const char *file,
+                      int line,
+                      const char *func,
+                      const char *fmt, ...)
 __attr_format_printf__(6, 7);
 
 
@@ -164,7 +167,7 @@ __END_DECLS
  */
 #define gallus_msg_debug(level, ...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_DEBUG, (uint64_t)(level), \
-                   __FILE__, __LINE__, __PROC__, __VA_ARGS__)
+                  __FILE__, __LINE__, __PROC__, __VA_ARGS__)
 
 
 /**
@@ -172,7 +175,7 @@ __END_DECLS
  */
 #define gallus_msg_info(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_INFO, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -180,7 +183,7 @@ __END_DECLS
  */
 #define gallus_msg_notice(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_NOTICE, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -188,7 +191,7 @@ __END_DECLS
  */
 #define gallus_msg_warning(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_WARNING, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -196,7 +199,7 @@ __END_DECLS
  */
 #define gallus_msg_error(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_ERROR, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -204,7 +207,7 @@ __END_DECLS
  */
 #define gallus_msg_fatal(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_FATAL, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -212,7 +215,7 @@ __END_DECLS
  */
 #define gallus_msg(...) \
   gallus_log_emit(GALLUS_LOG_LEVEL_UNKNOWN, 0LL, __FILE__, __LINE__, \
-                   __PROC__, __VA_ARGS__)
+                  __PROC__, __VA_ARGS__)
 
 
 /**
@@ -231,7 +234,7 @@ __END_DECLS
   do {                                                                  \
     (s == GALLUS_RESULT_POSIX_API_ERROR) ?                             \
     gallus_msg_error("GALLUS_RESULT_POSIX_API_ERROR: %s.\n",      \
-                      strerror(errno)) :                            \
+                     strerror(errno)) :                            \
     gallus_msg_error("%s.\n", gallus_error_get_string((s)));      \
   } while (0)
 

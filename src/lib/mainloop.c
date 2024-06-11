@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -23,16 +26,16 @@
 
 
 typedef gallus_result_t (*mainloop_proc_t)(
-    int argc, const char * const argv[],
-    gallus_mainloop_startup_hook_proc_t pre_hook,
-    gallus_mainloop_startup_hook_proc_t post_hook,
-    int ipcfd);
+  int argc, const char *const argv[],
+  gallus_mainloop_startup_hook_proc_t pre_hook,
+  gallus_mainloop_startup_hook_proc_t post_hook,
+  int ipcfd);
 
 
 typedef struct {
   mainloop_proc_t m_proc;
   int m_argc;
-  const char * const * m_argv;
+  const char *const *m_argv;
   gallus_mainloop_startup_hook_proc_t m_pre_hook;
   gallus_mainloop_startup_hook_proc_t m_post_hook;
   int m_ipcfd;
@@ -53,10 +56,10 @@ static volatile bool s_do_abort = false;
 
 static size_t s_n_callout_workers = 1;
 
-static gallus_chrono_t s_idle_proc_interval = 
-    MAINLOOP_IDLE_PROC_INTERVAL;
-static gallus_chrono_t s_shutdown_timeout = 
-    MAINLOOP_SHUTDOWN_TIMEOUT;
+static gallus_chrono_t s_idle_proc_interval =
+  MAINLOOP_IDLE_PROC_INTERVAL;
+static gallus_chrono_t s_shutdown_timeout =
+  MAINLOOP_SHUTDOWN_TIMEOUT;
 
 
 static gallus_thread_t s_thd = NULL;
@@ -161,7 +164,7 @@ s_wait_parent_exit(void) {
         errno = 0;
         if (kill(ppid, 0) == 0) {
           ret = gallus_cond_wait(&s_parent_sync_cnd, &s_parent_sync_lck,
-                              100LL * 1000LL * 1000LL /* 100ms. */);
+                                 100LL * 1000LL * 1000LL /* 100ms. */);
           continue;
         } else {
           if (errno == ESRCH) {
@@ -178,7 +181,7 @@ s_wait_parent_exit(void) {
   (void)gallus_mutex_unlock(&s_parent_sync_lck);
 
   gallus_msg_debug(5, "Waiting parent %d exit ... done: %s.\n",
-                ppid, gallus_error_get_string(ret));
+                   ppid, gallus_error_get_string(ret));
 
   (void)gallus_signal(SIGUSR1, SIG_DFL, NULL);
 
@@ -223,23 +226,23 @@ s_wait_parent_exit(void) {
   while (s_is_parent_exit == false) {
     WHAT_TIME_IS_IT_NOW_IN_NSEC(now);
     if (now < stop) {
-        errno = 0;
-        if (kill(ppid, 0) == 0) {
-          continue;
+      errno = 0;
+      if (kill(ppid, 0) == 0) {
+        continue;
+      } else {
+        if (errno == ESRCH) {
+          ret = GALLUS_RESULT_OK;
         } else {
-          if (errno == ESRCH) {
-            ret = GALLUS_RESULT_OK;
-          } else {
-            ret = GALLUS_RESULT_POSIX_API_ERROR;
-            gallus_perror(ret);
-          }
-          break;
+          ret = GALLUS_RESULT_POSIX_API_ERROR;
+          gallus_perror(ret);
         }
+        break;
       }
     }
   }
+}
 
-  return ret;
+return ret;
 }
 
 
@@ -292,7 +295,7 @@ s_setsid(void) {
       ret = (pid_t)-1;
     }
   }
-  
+
   return ret;
 }
 
@@ -351,7 +354,7 @@ s_gen_pidfile(void) {
   } else {
     gallus_perror(GALLUS_RESULT_POSIX_API_ERROR);
     gallus_msg_error("can't create a pidfile \"%s\".\n",
-                      s_pidfile_buf);
+                     s_pidfile_buf);
   }
 }
 
@@ -390,8 +393,8 @@ s_term_handler(int sig) {
       }
       if (IS_VALID_SHUTDOWN(l) == true) {
         gallus_msg_info("About to request shutdown(%s)...\n",
-                         (l == SHUTDOWN_RIGHT_NOW) ?
-                         "RIGHT_NOW" : "GRACEFULLY");
+                        (l == SHUTDOWN_RIGHT_NOW) ?
+                        "RIGHT_NOW" : "GRACEFULLY");
         if ((r = global_state_request_shutdown(l)) == GALLUS_RESULT_OK) {
           gallus_msg_info("The shutdown request accepted.\n");
         } else {
@@ -444,7 +447,7 @@ s_mainloop_thd_main(const gallus_thread_t *tptr, void *arg) {
 
 
 static inline gallus_result_t
-s_start_mainloop_thd(mainloop_proc_t proc, int argc, const char * const argv[],
+s_start_mainloop_thd(mainloop_proc_t proc, int argc, const char *const argv[],
                      gallus_mainloop_startup_hook_proc_t pre_hook,
                      gallus_mainloop_startup_hook_proc_t post_hook,
                      int ipcfd) {
@@ -463,11 +466,11 @@ s_start_mainloop_thd(mainloop_proc_t proc, int argc, const char * const argv[],
     s_args.m_ipcfd = ipcfd;
 
     ret = gallus_thread_create(&s_thd,
-                                s_mainloop_thd_main,
-                                NULL,
-                                NULL,
-                                "mainlooper",
-                                (void *)&s_args);
+                               s_mainloop_thd_main,
+                               NULL,
+                               NULL,
+                               "mainlooper",
+                               (void *)&s_args);
     if (likely(ret == GALLUS_RESULT_OK)) {
       ret = gallus_thread_start(&s_thd, false);
       if (likely(ret == GALLUS_RESULT_OK)) {
@@ -492,8 +495,8 @@ s_start_mainloop_thd(mainloop_proc_t proc, int argc, const char * const argv[],
 
 static inline void
 s_wait_mainloop_thd(void) {
-  gallus_result_t r = 
-      gallus_thread_wait(&s_thd, MAINLOOP_SHUTDOWN_TIMEOUT);
+  gallus_result_t r =
+    gallus_thread_wait(&s_thd, MAINLOOP_SHUTDOWN_TIMEOUT);
   if (likely(r == GALLUS_RESULT_OK)) {
     gallus_thread_destroy(&s_thd);
   } else if (r == GALLUS_RESULT_TIMEDOUT) {
@@ -521,7 +524,7 @@ s_wait_mainloop_thd(void) {
 
 
 static inline gallus_result_t
-s_prologue(int argc, const char * const argv[],
+s_prologue(int argc, const char *const argv[],
            gallus_mainloop_startup_hook_proc_t pre_hook,
            gallus_mainloop_startup_hook_proc_t post_hook,
            int ipcfd) {
@@ -529,14 +532,14 @@ s_prologue(int argc, const char * const argv[],
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   gallus_msg_info("%s: Initializing all the modules.\n",
-                   gallus_get_command_name());
+                  gallus_get_command_name());
 
   (void)global_state_set(GLOBAL_STATE_INITIALIZING);
 
-  ret = gallus_module_initialize_all(argc, (const char * const *)argv);
+  ret = gallus_module_initialize_all(argc, (const char *const *)argv);
   if (likely(ret == GALLUS_RESULT_OK)) {
     gallus_msg_info("%s: All the modules are initialized.\n",
-                     gallus_get_command_name());                     
+                    gallus_get_command_name());
 
     if (pre_hook != NULL) {
       ret = pre_hook(argc, argv);
@@ -548,14 +551,14 @@ s_prologue(int argc, const char * const argv[],
     }
 
     gallus_msg_info("%s: Starting all the modules.\n",
-                     gallus_get_command_name());
+                    gallus_get_command_name());
     (void)global_state_set(GLOBAL_STATE_STARTING);
 
     ret = gallus_module_start_all();
     if (likely(ret == GALLUS_RESULT_OK)) {
 
       gallus_msg_info("%s: All the modules are started and ready to go.\n",
-                       gallus_get_command_name());
+                      gallus_get_command_name());
 
       (void)global_state_set(GLOBAL_STATE_STARTED);
 
@@ -603,28 +606,28 @@ s_epilogue(shutdown_grace_level_t l, gallus_chrono_t to) {
   (void)global_state_set(GLOBAL_STATE_ACCEPT_SHUTDOWN);
 
   gallus_msg_info("%s: About to shutdown all the modules...\n",
-                   gallus_get_command_name());
+                  gallus_get_command_name());
 
   ret = gallus_module_shutdown_all(l);
   if (likely(ret == GALLUS_RESULT_OK)) {
     ret = gallus_module_wait_all(to);
     if (likely(ret == GALLUS_RESULT_OK)) {
       gallus_msg_info("%s: Shutdown all the modules succeeded.\n",
-                       gallus_get_command_name());
+                      gallus_get_command_name());
     } else if (ret == GALLUS_RESULT_TIMEDOUT) {
-   do_cancel:
+    do_cancel:
       gallus_msg_warning("%s: Shutdown failed. Trying to stop al the module "
-                          "forcibly...\n", gallus_get_command_name());
+                         "forcibly...\n", gallus_get_command_name());
       ret = gallus_module_stop_all();
       if (likely(ret == GALLUS_RESULT_OK)) {
         ret = gallus_module_wait_all(to);
         if (likely(ret == GALLUS_RESULT_OK)) {
           gallus_msg_warning("%s: All the modules are stopped forcibly.\n",
-                              gallus_get_command_name());
+                             gallus_get_command_name());
         } else {
           gallus_perror(ret);
           gallus_msg_error("%s: can't stop all the modules.\n",
-                            gallus_get_command_name());
+                           gallus_get_command_name());
         }
       }
     }
@@ -648,12 +651,12 @@ s_epilogue(shutdown_grace_level_t l, gallus_chrono_t to) {
 static inline gallus_result_t
 s_default_idle_proc(void) {
   return global_state_wait_for_shutdown_request(&s_gl,
-                                                s_idle_proc_interval);
+         s_idle_proc_interval);
 }
 
 
 static inline gallus_result_t
-s_default_mainloop(int argc, const char * const argv[],
+s_default_mainloop(int argc, const char *const argv[],
                    gallus_mainloop_startup_hook_proc_t pre_hook,
                    gallus_mainloop_startup_hook_proc_t post_hook,
                    int ipcfd) {
@@ -665,11 +668,11 @@ s_default_mainloop(int argc, const char * const argv[],
                s_do_abort == false)) {
 
       gallus_msg_info("%s is go and entering the main loop.\n",
-                       gallus_get_command_name());
+                      gallus_get_command_name());
 
       while ((ret = s_default_idle_proc()) == GALLUS_RESULT_TIMEDOUT) {
         gallus_msg_debug(10, "%s: Wainitg for the shutdown request...\n",
-                          gallus_get_command_name());
+                         gallus_get_command_name());
       }
       if (likely(ret == GALLUS_RESULT_OK)) {
         (void)global_state_set(GLOBAL_STATE_ACCEPT_SHUTDOWN);
@@ -718,7 +721,7 @@ s_callout_idle_proc(void *arg) {
 
 
 static inline gallus_result_t
-s_callout_mainloop(int argc, const char * const argv[],
+s_callout_mainloop(int argc, const char *const argv[],
                    gallus_mainloop_startup_hook_proc_t pre_hook,
                    gallus_mainloop_startup_hook_proc_t post_hook,
                    int ipcfd) {
@@ -731,10 +734,10 @@ s_callout_mainloop(int argc, const char * const argv[],
      * Initialize the callout handler.
      */
     ret = gallus_callout_initialize_handler(s_n_callout_workers,
-                                             s_callout_idle_proc,
-                                             (void *)&s_gl,
-                                             s_idle_proc_interval,
-                                             NULL);
+                                            s_callout_idle_proc,
+                                            (void *)&s_gl,
+                                            s_idle_proc_interval,
+                                            NULL);
     if (likely(ret == GALLUS_RESULT_OK)) {
       handler_inited = true;
       if (s_do_abort == false) {
@@ -746,7 +749,7 @@ s_callout_mainloop(int argc, const char * const argv[],
 
 
           gallus_msg_info("%s is go and entering the main loop.\n",
-                       gallus_get_command_name());
+                          gallus_get_command_name());
 
           /*
            * Start the callout handler main loop.
@@ -769,7 +772,7 @@ s_callout_mainloop(int argc, const char * const argv[],
           }
         }
       }
-      
+
       if (handler_inited == true) {
         gallus_callout_finalize_handler();
       }
@@ -792,20 +795,20 @@ s_set_failsafe_handler(int sig) {
       gallus_result_t r = gallus_signal(sig, s_term_handler, NULL);
       if (r == GALLUS_RESULT_OK) {
         gallus_msg_warning("The signal %d seems not to be properly handled. "
-                            "Set a decent handler.\n", sig);
+                           "Set a decent handler.\n", sig);
       } else {
         gallus_perror(r);
-          gallus_msg_warning("Can't set failsefa signal handler to "
-                              "signal %d.\n", sig);
+        gallus_msg_warning("Can't set failsefa signal handler to "
+                           "signal %d.\n", sig);
       }
     }
   }
 }
-  
+
 
 static inline gallus_result_t
 s_do_mainloop(mainloop_proc_t mainloopproc,
-              int argc, const char * const argv[],
+              int argc, const char *const argv[],
               gallus_mainloop_startup_hook_proc_t pre_hook,
               gallus_mainloop_startup_hook_proc_t post_hook,
               bool do_fork, bool do_pidfile, bool do_thread) {
@@ -841,7 +844,7 @@ s_do_mainloop(mainloop_proc_t mainloopproc,
          */
         (void)gallus_log_get_multi_process(&s_org_multi_proc_mode);
         (void)gallus_log_set_multi_process(true);
-        
+
         errno = 0;
         pid = fork();
         if (pid > 0) {
@@ -857,7 +860,7 @@ s_do_mainloop(mainloop_proc_t mainloopproc,
           ssz = read(ipcfds[0], &child_st, sizeof(int));
           if (likely(ssz == sizeof(int))) {
             ret = (child_st == 0) ?
-                GALLUS_RESULT_OK : GALLUS_RESULT_ANY_FAILURES;
+                  GALLUS_RESULT_OK : GALLUS_RESULT_ANY_FAILURES;
           } else {
             ret = GALLUS_RESULT_POSIX_API_ERROR;
           }
@@ -879,7 +882,7 @@ s_do_mainloop(mainloop_proc_t mainloopproc,
           }
         } else {
           ret = GALLUS_RESULT_POSIX_API_ERROR;
-        }          
+        }
 
       } else {
         ret = GALLUS_RESULT_POSIX_API_ERROR;
@@ -998,16 +1001,16 @@ gallus_mainloop_set_shutdown_timeout(gallus_chrono_t nsec) {
   s_shutdown_timeout = nsec;
   return GALLUS_RESULT_OK;
 }
-  
+
 
 
 
 
 gallus_result_t
-gallus_mainloop(int argc, const char * const argv[],
-                 gallus_mainloop_startup_hook_proc_t pre_hook,
-                 gallus_mainloop_startup_hook_proc_t post_hook,
-                 bool do_fork, bool do_pidfile, bool do_thread) {
+gallus_mainloop(int argc, const char *const argv[],
+                gallus_mainloop_startup_hook_proc_t pre_hook,
+                gallus_mainloop_startup_hook_proc_t post_hook,
+                bool do_fork, bool do_pidfile, bool do_thread) {
   return s_do_mainloop(s_default_mainloop, argc, argv,
                        pre_hook, post_hook,
                        do_fork, do_pidfile, do_thread);
@@ -1015,11 +1018,11 @@ gallus_mainloop(int argc, const char * const argv[],
 
 
 gallus_result_t
-gallus_mainloop_with_callout(int argc, const char * const argv[],
-                              gallus_mainloop_startup_hook_proc_t pre_hook,
-                              gallus_mainloop_startup_hook_proc_t post_hook,
-                              bool do_fork, bool do_pidfile,
-                              bool do_thread) {
+gallus_mainloop_with_callout(int argc, const char *const argv[],
+                             gallus_mainloop_startup_hook_proc_t pre_hook,
+                             gallus_mainloop_startup_hook_proc_t post_hook,
+                             bool do_fork, bool do_pidfile,
+                             bool do_thread) {
   return s_do_mainloop(s_callout_mainloop, argc, argv,
                        pre_hook, post_hook,
                        do_fork, do_pidfile, do_thread);
@@ -1035,9 +1038,9 @@ gallus_mainloop_wait_thread(void) {
 
 
 gallus_result_t
-gallus_mainloop_prologue(int argc, const char * const argv[],
-                          gallus_mainloop_startup_hook_proc_t pre_hook,
-                          gallus_mainloop_startup_hook_proc_t post_hook) {
+gallus_mainloop_prologue(int argc, const char *const argv[],
+                         gallus_mainloop_startup_hook_proc_t pre_hook,
+                         gallus_mainloop_startup_hook_proc_t post_hook) {
   return s_prologue(argc, argv, pre_hook, post_hook, -1);
 }
 

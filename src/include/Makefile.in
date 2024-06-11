@@ -1,3 +1,4 @@
+# $__Copyright__$
 TOPDIR		= @TOPDIR@
 MKRULESDIR	= @MKRULESDIR@
 
@@ -5,7 +6,25 @@ include $(MKRULESDIR)/vars.mk
 
 INSTALL_HEADER_DIR	= $(DEST_HDRDIR_TOP)
 
-INSTALL_HEADER_TARGETS	= gallus_config.h gallus_platform.h
+INSTALL_HEADER_TARGETS	= gallus_config.h gallus_platform.h \
+	gallus_apis.h gallus_ip_addr.h gallus_pooled_thread_internal.h \
+	gallus_argv0.h gallus_lock.h gallus_qmuxer.h \
+	gallus_bbq.h gallus_logger.h gallus_qsort.h \
+	gallus_callout.h gallus_macros.h gallus_runnable.h \
+	gallus_callout_internal.h gallus_mainloop.h gallus_runnable_funcs.h \
+	gallus_callout_task_funcs.h gallus_module_apis.h gallus_runnable_internal.h \
+	gallus_callout_task_state.h gallus_numa.h gallus_session.h \
+	gallus_cbuffer.h gallus_perror.h gallus_session_tls.h \
+	gallus_chrono.h gallus_pipeline_stage.h gallus_signal.h \
+	gallus_pipeline_stage_funcs.h gallus_statistic.h \
+	gallus_dstring.h gallus_pipeline_stage_internal.h gallus_strutils.h \
+	gallus_ecode.h gallus_task.h \
+	gallus_error.h gallus_pool.h gallus_task_internal.h \
+	gallus_gstate.h gallus_pool_internal.h gallus_thread.h \
+	gallus_hashmap.h gallus_poolable.h gallus_thread_internal.h \
+	gallus_heapcheck.h gallus_poolable_internal.h gallus_types.h \
+	gallus_includes.h gallus_pooled_thread.h
+
 
 include $(MKRULESDIR)/rules.mk
 

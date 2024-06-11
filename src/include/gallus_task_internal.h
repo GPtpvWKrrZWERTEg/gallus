@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #pragma once
 
 
@@ -10,7 +13,7 @@ typedef struct gallus_task_record {
 
   gallus_mutex_t m_lck;
   gallus_cond_t m_cnd;
-  
+
   size_t m_total_obj_size;
   gallus_result_t m_exit_code;
 
@@ -25,7 +28,12 @@ typedef struct gallus_task_record {
   gallus_task_finalize_proc_t m_finalize;
   gallus_task_freeup_proc_t m_freeup;
 
+  int m_core_num;
+  int m_numa_node_num;
+
   int m_flag;
+
+  gallus_task_runner_thread_t m_tr;
 
   gallus_thread_t m_tmp_thd;
 } gallus_task_record;

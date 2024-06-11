@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_INCLUDES_H__
 #define __GALLUS_INCLUDES_H__
 

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_CHRONO_H__
 #define __GALLUS_CHRONO_H__
 
@@ -25,27 +28,27 @@ gallus_chrono_now(void);
 
 gallus_result_t
 gallus_chrono_to_timespec(struct timespec *dstptr,
-                           gallus_chrono_t nsec);
-
-
-gallus_result_t
-gallus_chrono_to_timeval(struct timeval *dstptr,
                           gallus_chrono_t nsec);
 
 
 gallus_result_t
+gallus_chrono_to_timeval(struct timeval *dstptr,
+                         gallus_chrono_t nsec);
+
+
+gallus_result_t
 gallus_chrono_from_timespec(gallus_chrono_t *dstptr,
-                             const struct timespec *specptr);
+                            const struct timespec *specptr);
 
 
 gallus_result_t
 gallus_chrono_from_timeval(gallus_chrono_t *dstptr,
-                            const struct timeval *valptr);
+                           const struct timeval *valptr);
 
 
 gallus_result_t
 gallus_chrono_nanosleep(gallus_chrono_t nsec,
-                         gallus_chrono_t *remptr);
+                        gallus_chrono_t *remptr);
 
 
 #ifdef __GNUC__
@@ -61,7 +64,7 @@ gallus_rdtsc(void) {
 static inline uint64_t
 gallus_rdtsc(void) {
   gallus_msg_warning("reading TSC thingies is not supported on this "
-                      "platform.\n");
+                     "platform.\n");
   return 0LL;
 }
 #endif /* GALLUS_CPU_X86_64 || GALLUS_CPU_I386 */
@@ -70,7 +73,7 @@ gallus_rdtsc(void) {
 static inline uint64_t
 gallus_rdtsc(void) {
   gallus_msg_warning("reading TSC thingies is not supported with "
-                      "this compiler.\n");
+                     "this compiler.\n");
   return 0LL;
 }
 #endif /* __GNUC__ */

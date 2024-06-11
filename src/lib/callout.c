@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_callout_internal.h"
 #include "gallus_pipeline_stage_internal.h"
@@ -19,7 +22,7 @@
 #define CALLOUT_IDLE_PROC_MIN_INTERVAL	1000LL * 1000LL /* 1 msec. */
 
 #define CALLOUT_STAGE_SHUTDOWN_TIMEOUT	5LL * 1000LL * 1000LL * 1000LL
-					/* 5 sec. */
+/* 5 sec. */
 
 #define gallus_msg_error_with_task(t, str, ...) {                      \
     do {                                                                \
@@ -40,7 +43,7 @@ typedef struct chrono_task_queue_t chrono_task_queue_t;
 
 
 typedef gallus_result_t
-(*final_task_schedule_proc_t)(const gallus_callout_task_t * const tasks,
+(*final_task_schedule_proc_t)(const gallus_callout_task_t *const tasks,
                               gallus_chrono_t start_time,
                               size_t n);
 
@@ -110,10 +113,10 @@ static void s_wait_task(gallus_callout_task_t t);
 static void s_wakeup_task(gallus_callout_task_t t);
 
 static callout_task_state_t s_set_task_state_in_table(
-    const gallus_callout_task_t t,
-    callout_task_state_t s);
+  const gallus_callout_task_t t,
+  callout_task_state_t s);
 static callout_task_state_t s_get_task_state_in_table(
-    const gallus_callout_task_t t);
+  const gallus_callout_task_t t);
 static inline void s_delete_task_in_table(const gallus_callout_task_t t);
 
 /**
@@ -138,7 +141,7 @@ static inline void s_cancel_task_no_lock(const gallus_callout_task_t t);
 static inline void s_cancel_task(const gallus_callout_task_t t);
 
 static gallus_result_t s_schedule_timed_task_no_lock(
-    gallus_callout_task_t t);
+  gallus_callout_task_t t);
 static gallus_result_t s_schedule_timed_task(gallus_callout_task_t t);
 static void s_unschedule_timed_task_no_lock(gallus_callout_task_t t);
 static void s_unschedule_timed_task(gallus_callout_task_t t);
@@ -146,9 +149,9 @@ static void s_unschedule_timed_task(gallus_callout_task_t t);
 static gallus_result_t s_exec_task(gallus_callout_task_t t);
 
 static gallus_result_t s_submit_callout_stage(
-    const gallus_callout_task_t * const tasks,
-    gallus_chrono_t start_time,
-    size_t n);
+  const gallus_callout_task_t *const tasks,
+  gallus_chrono_t start_time,
+  size_t n);
 
 static void s_task_freeup(void **valptr);
 
@@ -198,21 +201,21 @@ s_once_proc(void) {
   }
 
   if ((r = gallus_hashmap_create(&s_tsk_tbl,
-                                  GALLUS_HASHMAP_TYPE_ONE_WORD,
-                                  NULL)) != GALLUS_RESULT_OK) {
+                                 GALLUS_HASHMAP_TYPE_ONE_WORD,
+                                 NULL)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the callout table.\n");
   }
 
   if ((r = gallus_bbq_create(&s_urgent_tsk_q, gallus_callout_task_t,
-                              CALLOUT_TASK_MAX, s_task_freeup)) != 
+                             CALLOUT_TASK_MAX, s_task_freeup)) !=
       GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the callout urgent tasks queue.\n");
   }
 
   if ((r = gallus_bbq_create(&s_idle_tsk_q, gallus_callout_task_t,
-                              CALLOUT_TASK_MAX, s_task_freeup)) !=
+                             CALLOUT_TASK_MAX, s_task_freeup)) !=
       GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the callout idle tasks queue.\n");
@@ -265,7 +268,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The callout module is finalized.\n");
     } else {
       gallus_msg_debug(10, "The callout module is not finalized because of "
-                    "module finalization problem.\n");
+                       "module finalization problem.\n");
     }
   }
 }
@@ -326,7 +329,7 @@ s_wakeup_sched(void) {
 
 
 static inline gallus_result_t
-s_run_tasks_by_self(const gallus_callout_task_t * const tasks,
+s_run_tasks_by_self(const gallus_callout_task_t *const tasks,
                     gallus_chrono_t start_time,
                     size_t n) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
@@ -438,16 +441,16 @@ s_start_callout_main_loop(void) {
              * submisson/fetch atomic.
              */
 
-            sn_urgent_tasks = 
-                gallus_bbq_get_n(&s_urgent_tsk_q, (void **)urgent_tasks,
-                                  CALLOUT_TASK_MAX, 1LL,
-                                  gallus_callout_task_t,
-                                  0LL, NULL);
-            sn_idle_tasks = 
-                gallus_bbq_get_n(&s_idle_tsk_q, (void **)idle_tasks,
-                                  CALLOUT_TASK_MAX, 1LL,
-                                  gallus_callout_task_t,
-                                  0LL, NULL);
+            sn_urgent_tasks =
+              gallus_bbq_get_n(&s_urgent_tsk_q, (void **)urgent_tasks,
+                               CALLOUT_TASK_MAX, 1LL,
+                               gallus_callout_task_t,
+                               0LL, NULL);
+            sn_idle_tasks =
+              gallus_bbq_get_n(&s_idle_tsk_q, (void **)idle_tasks,
+                               CALLOUT_TASK_MAX, 1LL,
+                               gallus_callout_task_t,
+                               0LL, NULL);
 
           }
           s_unlock_global();
@@ -457,8 +460,8 @@ s_start_callout_main_loop(void) {
            */
 
           sn_timed_tasks = s_get_runnable_timed_task(now, timed_tasks,
-                                                     CALLOUT_TASK_MAX,
-                                                     &next_wakeup);
+                           CALLOUT_TASK_MAX,
+                           &next_wakeup);
           if (sn_timed_tasks > 0) {
             /*
              * Pack the timed tasks.
@@ -471,9 +474,9 @@ s_start_callout_main_loop(void) {
 
 #ifdef CO_MSG_DEBUG
             gallus_msg_debug(3, "timed task " PF64(u) ".\n",
-                              sn_timed_tasks);
+                             sn_timed_tasks);
             gallus_msg_debug(3, "nw:   " PF64(d) ".\n",
-                              next_wakeup);
+                             next_wakeup);
 #endif /* CO_MSG_DEBUG */
 
           } else if (sn_timed_tasks < 0) {
@@ -528,8 +531,8 @@ s_start_callout_main_loop(void) {
                * We can't be treat this as a fatal error. Carry on.
                */
               gallus_perror(r);
-              gallus_msg_error("failed to submit " PFSZ(u) 
-                                " urgent/timed tasks.\n", n_out_tasks);
+              gallus_msg_error("failed to submit " PFSZ(u)
+                               " urgent/timed tasks.\n", n_out_tasks);
             }
           }
 
@@ -581,8 +584,8 @@ s_start_callout_main_loop(void) {
 
 #ifdef CO_MSG_DEBUG
             gallus_msg_debug(4,
-                              "about to sleep, timeout " PF64(d) " nsec.\n",
-                              timeout);
+                             "about to sleep, timeout " PF64(d) " nsec.\n",
+                             timeout);
 #endif /* CO_MSG_DEBUG */
 
 #if 0
@@ -626,11 +629,11 @@ s_start_callout_main_loop(void) {
         } /* while (s_do_loop == true) */
 
       }
-   critical_end:
+    critical_end:
       s_is_stopped = true;
       s_wakeup_sched();
       (void)gallus_mutex_leave_critical(&s_sched_lck, cstate);
-  
+
       if (s_do_loop == false) {
         /*
          * The clean finish.
@@ -644,7 +647,7 @@ s_start_callout_main_loop(void) {
     }
   } else {
     s_is_stopped = true;
-  }    
+  }
 
   return ret;
 }
@@ -692,11 +695,11 @@ s_stop_callout_main_loop(void) {
 
 gallus_result_t
 gallus_callout_initialize_handler(size_t n_workers,
-                                   gallus_callout_idle_proc_t proc,
-                                   void *arg,
-                                   gallus_chrono_t interval,
-                                   gallus_callout_idle_arg_freeup_proc_t
-                                   freeup) {
+                                  gallus_callout_idle_proc_t proc,
+                                  void *arg,
+                                  gallus_chrono_t interval,
+                                  gallus_callout_idle_arg_freeup_proc_t
+                                  freeup) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(((proc == NULL) ? true :
@@ -711,7 +714,7 @@ gallus_callout_initialize_handler(size_t n_workers,
 
     s_n_workers = n_workers;
     s_final_task_sched_proc =
-        (s_n_workers == 0) ? s_run_tasks_by_self : s_submit_callout_stage;
+      (s_n_workers == 0) ? s_run_tasks_by_self : s_submit_callout_stage;
     s_idle_proc = proc;
     s_idle_proc_arg = arg;
     s_idle_interval = interval;
@@ -747,7 +750,7 @@ gallus_callout_finalize_handler(void) {
         if (unlikely(r != GALLUS_RESULT_OK)) {
           gallus_perror(r);
           gallus_msg_warning("failed to stop the callout stage so the "
-                              "callout queues still remain.\n");
+                             "callout queues still remain.\n");
           goto done;
         }
       }
@@ -761,7 +764,7 @@ gallus_callout_finalize_handler(void) {
       gallus_msg_warning("failed to stop the callout scheduler main loop.\n");
     }
 
- done:
+  done:
     s_is_handler_inited = false;
   }
 }
@@ -818,11 +821,11 @@ gallus_callout_stop_main_loop(void) {
 
 gallus_result_t
 gallus_callout_create_task(gallus_callout_task_t *tptr,
-                            size_t sz,
-                            const char *name,
-                            gallus_callout_task_proc_t proc,
-                            void *arg,
-                            gallus_callout_task_arg_freeup_proc_t freeproc) {
+                           size_t sz,
+                           const char *name,
+                           gallus_callout_task_proc_t proc,
+                           void *arg,
+                           gallus_callout_task_arg_freeup_proc_t freeproc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(s_is_handler_inited == true)) {
@@ -841,8 +844,8 @@ gallus_callout_create_task(gallus_callout_task_t *tptr,
 
 gallus_result_t
 gallus_callout_submit_task(const gallus_callout_task_t *tptr,
-                            gallus_chrono_t delay,
-                            gallus_chrono_t interval) {
+                           gallus_chrono_t delay,
+                           gallus_chrono_t interval) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(s_is_handler_inited == true)) {
@@ -915,7 +918,7 @@ gallus_callout_exec_task_forcibly(const gallus_callout_task_t *tptr) {
 
 gallus_result_t
 gallus_callout_task_reset_interval(gallus_callout_task_t *tptr,
-                                    gallus_chrono_t interval) {
+                                   gallus_chrono_t interval) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(tptr != NULL && *tptr != NULL)) {
@@ -946,7 +949,7 @@ gallus_callout_task_reset_interval(gallus_callout_task_t *tptr,
 
 gallus_result_t
 gallus_callout_task_state(gallus_callout_task_t *tptr,
-                           gallus_callout_task_state_t *sptr) {
+                          gallus_callout_task_state_t *sptr) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (likely(tptr != NULL && *tptr != NULL &&

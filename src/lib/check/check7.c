@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 
@@ -167,7 +170,7 @@ s_finalize(const gallus_thread_t *tptr, bool is_canceled, void *arg) {
   (void)tptr;
 
   gallus_msg_debug(1, "called. %s.\n",
-                    (is_canceled == false) ? "finished" : "canceled");
+                   (is_canceled == false) ? "finished" : "canceled");
 }
 
 
@@ -177,8 +180,8 @@ s_create(null_thread_t *nptr, a_obj_t o) {
 
   if (nptr != NULL) {
     if ((ret = gallus_thread_create((gallus_thread_t *)nptr,
-                                     s_main, s_finalize, NULL,
-                                     "waiter", NULL)) == GALLUS_RESULT_OK) {
+                                    s_main, s_finalize, NULL,
+                                    "waiter", NULL)) == GALLUS_RESULT_OK) {
       if ((ret = gallus_mutex_create(&((*nptr)->m_lock))) ==
           GALLUS_RESULT_OK) {
         (*nptr)->m_o = o;

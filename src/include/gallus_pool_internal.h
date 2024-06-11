@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #pragma once
 
 
@@ -26,9 +29,9 @@ typedef struct gallus_pool_record {
   gallus_cond_t m_awakened_cnd;
   volatile bool m_is_awakened;
   volatile bool m_is_cancelled;
-	
+
   size_t m_n_waiters;
-  
+
   size_t m_obj_idx;
 
   gallus_poolable_methods_record m_m;
@@ -37,7 +40,7 @@ typedef struct gallus_pool_record {
   size_t m_n_max;
   size_t m_n_cur;
   size_t m_n_free;
-	
+
   gallus_poolable_t *m_objs;	/* size: m_n_max */
 
   /* For GALLUS_POOL_TYPE_QUEUE */

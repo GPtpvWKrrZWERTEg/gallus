@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_CALLOUT_H__
 #define __GALLUS_CALLOUT_H__
 
@@ -69,7 +72,7 @@ typedef void	(*gallus_callout_idle_arg_freeup_proc_t)(void *arg);
  *	@param[in]	arg	An argument for the \b proc. (NULL allowed.)
  *	@param[in] interval	An interval time (in nsec) to execute the
  *				\b proc.
- *	@param[in]	freeproc	A function to freeup the \b arg 
+ *	@param[in]	freeproc	A function to freeup the \b arg
  *					(NULL allowed.)
  *
  *	@retval	GALLUS_RESULT_OK		Succeeded.
@@ -79,11 +82,11 @@ typedef void	(*gallus_callout_idle_arg_freeup_proc_t)(void *arg);
  */
 gallus_result_t
 gallus_callout_initialize_handler(size_t n_workers,
-                                   gallus_callout_idle_proc_t proc,
-                                   void *arg,
-                                   gallus_chrono_t interval,
-                                   gallus_callout_idle_arg_freeup_proc_t
-                                   freeup);
+                                  gallus_callout_idle_proc_t proc,
+                                  void *arg,
+                                  gallus_chrono_t interval,
+                                  gallus_callout_idle_arg_freeup_proc_t
+                                  freeup);
 
 
 /**
@@ -148,11 +151,11 @@ gallus_callout_stop_main_loop(void);
  */
 gallus_result_t
 gallus_callout_create_task(gallus_callout_task_t *tptr,
-                            size_t sz,
-                            const char *name,
-                            gallus_callout_task_proc_t proc,
-                            void *arg,
-                            gallus_callout_task_arg_freeup_proc_t freeproc);
+                           size_t sz,
+                           const char *name,
+                           gallus_callout_task_proc_t proc,
+                           void *arg,
+                           gallus_callout_task_arg_freeup_proc_t freeproc);
 
 /**
  * Submit a callout task.
@@ -178,8 +181,8 @@ gallus_callout_create_task(gallus_callout_task_t *tptr,
  */
 gallus_result_t
 gallus_callout_submit_task(const gallus_callout_task_t *tptr,
-                            gallus_chrono_t delay,
-                            gallus_chrono_t interval);
+                           gallus_chrono_t delay,
+                           gallus_chrono_t interval);
 
 
 /**
@@ -221,7 +224,7 @@ gallus_callout_exec_task_forcibly(const gallus_callout_task_t *tptr);
  */
 gallus_result_t
 gallus_callout_task_reset_interval(gallus_callout_task_t *tptr,
-                                    gallus_chrono_t interval);
+                                   gallus_chrono_t interval);
 
 
 /**
@@ -235,7 +238,7 @@ gallus_callout_task_reset_interval(gallus_callout_task_t *tptr,
  */
 gallus_result_t
 gallus_callout_task_state(gallus_callout_task_t *tptr,
-                           gallus_callout_task_state_t *sptr);
+                          gallus_callout_task_state_t *sptr);
 
 
 

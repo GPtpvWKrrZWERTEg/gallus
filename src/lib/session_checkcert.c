@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 #include <regex.h>
@@ -231,8 +234,8 @@ s_free_pair(void *p) {
 static inline gallus_result_t
 s_create_tbl(void) {
   return gallus_hashmap_create(&s_pat_tbl,
-                                GALLUS_HASHMAP_TYPE_ONE_WORD,
-                                s_free_pair);
+                               GALLUS_HASHMAP_TYPE_ONE_WORD,
+                               s_free_pair);
 }
 
 
@@ -320,15 +323,15 @@ s_serialize_pairs(size_t *szptr) {
       s.m_n_pats = 0;
 
       if ((rc = gallus_hashmap_iterate(&s_pat_tbl,
-                                        s_serilize_proc,
-                                        (void *)&s)) == GALLUS_RESULT_OK) {
+                                       s_serilize_proc,
+                                       (void *)&s)) == GALLUS_RESULT_OK) {
         gallus_qsort_r((void *)ret, n_pats, sizeof(pattern_pair_t *),
-                        s_cmp_proc, NULL);
+                       s_cmp_proc, NULL);
         *szptr = n_pats;
       }
     } else {
       gallus_msg_error("no memory, n_pats %d, size %d\n",
-                        (int) n_pats, (int) (sizeof(pattern_pair_t *) * (n_pats + 1)));
+                       (int) n_pats, (int) (sizeof(pattern_pair_t *) * (n_pats + 1)));
     }
   } else {
     gallus_perror((gallus_result_t) n_pats);
@@ -400,7 +403,7 @@ s_parse_line(const char *line, const char *filename, size_t lino) {
     }
 
     n_tokens = gallus_str_tokenize_quote(buf, tokens, 1024,
-                                          "\t\r\n ", "\"'");
+                                         "\t\r\n ", "\"'");
     if (n_tokens > 0) {
       if (n_tokens < 16) {
         if (*(tokens[0]) != '#') {
@@ -433,21 +436,21 @@ s_parse_line(const char *line, const char *filename, size_t lino) {
                         do_create = true;
                       } else {
                         gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                          "Invalid escape: '%s'.\n",
-                                          filename, lino, *tp);
+                                         "Invalid escape: '%s'.\n",
+                                         filename, lino, *tp);
                         goto done;
                       }
                     } else {
                       gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                        "Can't get an issuer pattern.\n",
-                                        filename, lino);
+                                       "Can't get an issuer pattern.\n",
+                                       filename, lino);
                       goto done;
                     }
                   } else {
                     gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                      "The issuer pattern is already "
-                                      "specified.\n",
-                                      filename, lino);
+                                     "The issuer pattern is already "
+                                     "specified.\n",
+                                     filename, lino);
                     goto done;
                   }
 
@@ -460,29 +463,29 @@ s_parse_line(const char *line, const char *filename, size_t lino) {
                         do_create = true;
                       } else {
                         gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                          "Invalid escape: '%s'.\n",
-                                          filename, lino, *tp);
+                                         "Invalid escape: '%s'.\n",
+                                         filename, lino, *tp);
                         goto done;
                       }
                     } else {
                       gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                        "Can't get a subject pattern.\n",
-                                        filename, lino);
+                                       "Can't get a subject pattern.\n",
+                                       filename, lino);
                       goto done;
                     }
                   } else {
                     gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                      "The subject pattern is already "
-                                      "specified.\n",
-                                      filename, lino);
+                                     "The subject pattern is already "
+                                     "specified.\n",
+                                     filename, lino);
                     goto done;
                   }
 
                 } else {
 
                   gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                    "Unknown/Invalid keyword: '%s'.\n",
-                                    filename, lino, *tp);
+                                   "Unknown/Invalid keyword: '%s'.\n",
+                                   filename, lino, *tp);
                   goto done;
 
                 }
@@ -493,21 +496,21 @@ s_parse_line(const char *line, const char *filename, size_t lino) {
 
             } else {
               gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                                "Unknown/Invalid permission: '%s'.\n",
-                                filename, lino, tp[0]);
+                               "Unknown/Invalid permission: '%s'.\n",
+                               filename, lino, tp[0]);
               goto done;
             }
           } else {
             gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                              "Insufficient tokens.\n",
-                              filename, lino);
+                             "Insufficient tokens.\n",
+                             filename, lino);
             goto done;
           }
         }
       } else {
         gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                          "Too many tokens.\n",
-                          filename, lino);
+                         "Too many tokens.\n",
+                         filename, lino);
         goto done;
       }
     } else {
@@ -571,8 +574,8 @@ s_load_config(const char *filename) {
           lino++;
           if (strlen(buf) >= (sizeof(buf) - 1)) {
             gallus_msg_error("\"%s\": line " PFSZ(u) ": "
-                              "The line too long.\n",
-                              filename, lino);
+                             "The line too long.\n",
+                             filename, lino);
             continue;
           }
           p = s_parse_line(buf, filename, lino);

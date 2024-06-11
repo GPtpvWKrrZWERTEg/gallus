@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_QMUXER_H__
 #define __GALLUS_QMUXER_H__
 
@@ -85,8 +88,8 @@ gallus_qmuxer_destroy(gallus_qmuxer_t *qmxptr);
  */
 gallus_result_t
 gallus_qmuxer_poll_create(gallus_qmuxer_poll_t *mpptr,
-                           gallus_bbq_t bbq,
-                           gallus_qmuxer_poll_event_t type);
+                          gallus_bbq_t bbq,
+                          gallus_qmuxer_poll_event_t type);
 
 
 /**
@@ -129,7 +132,7 @@ gallus_qmuxer_poll_reset(gallus_qmuxer_poll_t *mpptr);
  */
 gallus_result_t
 gallus_qmuxer_poll_set_queue(gallus_qmuxer_poll_t *mpptr,
-                              gallus_bbq_t bbq);
+                             gallus_bbq_t bbq);
 
 
 /**
@@ -147,7 +150,7 @@ gallus_qmuxer_poll_set_queue(gallus_qmuxer_poll_t *mpptr,
  */
 gallus_result_t
 gallus_qmuxer_poll_get_queue(gallus_qmuxer_poll_t *mpptr,
-                              gallus_bbq_t *bbqptr);
+                             gallus_bbq_t *bbqptr);
 
 
 /**
@@ -165,7 +168,7 @@ gallus_qmuxer_poll_get_queue(gallus_qmuxer_poll_t *mpptr,
  */
 gallus_result_t
 gallus_qmuxer_poll_set_type(gallus_qmuxer_poll_t *mpptr,
-                             gallus_qmuxer_poll_event_t type);
+                            gallus_qmuxer_poll_event_t type);
 
 
 /**
@@ -218,9 +221,9 @@ gallus_qmuxer_poll_remaining_capacity(gallus_qmuxer_poll_t *mpptr);
  */
 gallus_result_t
 gallus_qmuxer_poll(gallus_qmuxer_t *qmxptr,
-                    gallus_qmuxer_poll_t const polls[],
-                    size_t npolls,
-                    gallus_chrono_t nsec);
+                   gallus_qmuxer_poll_t const polls[],
+                   size_t npolls,
+                   gallus_chrono_t nsec);
 
 
 

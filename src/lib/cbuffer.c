@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "qmuxer_internal.h"
 
@@ -244,7 +247,7 @@ s_wait_io_ready(gallus_cbuffer_t cb,
     if (nsec != 0LL) {
 
       gallus_msg_debug(500, "wait " PF64(d) " nsec.\n",
-                        nsec);
+                       nsec);
 
       (void)__sync_fetch_and_add(&(cb->m_n_waiters), 1);
       ret = gallus_cond_wait(cptr, &(cb->m_lock), nsec);
@@ -252,10 +255,10 @@ s_wait_io_ready(gallus_cbuffer_t cb,
 
       if (cb->m_is_awakened == true) {
         gallus_msg_debug(5, "awakened while sleeping " PF64(d) " nsec.\n",
-                          nsec);
+                         nsec);
       } else {
         gallus_msg_debug(500, "wait " PF64(d) " nsec done.\n",
-                          nsec);
+                         nsec);
       }
 
       if (ret == GALLUS_RESULT_OK &&
@@ -387,7 +390,7 @@ s_put_n(gallus_cbuffer_t *cbptr,
                  * the data??  Must not happen??
                  */
                 gallus_msg_fatal("Couldn't put all the data even rooms "
-                                  "available. Must not happen.\n");
+                                 "available. Must not happen.\n");
               }
             } else {
               /*
@@ -447,7 +450,7 @@ s_put_n(gallus_cbuffer_t *cbptr,
                  * the data??  Must not happen??
                  */
                 gallus_msg_fatal("Couldn't put all the data even rooms "
-                                  "available. Must not happen.\n");
+                                 "available. Must not happen.\n");
               }
             } else {
               /*
@@ -568,7 +571,7 @@ s_get_n(gallus_cbuffer_t *cbptr,
                  * the data??  Must not happen??
                  */
                 gallus_msg_fatal("Couldn't get all the data even the data "
-                                  "available. Must not happen.\n");
+                                 "available. Must not happen.\n");
               }
             } else {
               /*
@@ -629,7 +632,7 @@ s_get_n(gallus_cbuffer_t *cbptr,
                  * the data??  Must not happen??
                  */
                 gallus_msg_fatal("Couldn't get all the data even the data "
-                                  "available. Must not happen.\n");
+                                 "available. Must not happen.\n");
               }
             } else {
               /*
@@ -673,16 +676,16 @@ s_get_n(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_create_with_size(gallus_cbuffer_t *cbptr,
-                                 size_t elemsize,
-                                 int64_t maxelems,
-                                 gallus_cbuffer_value_freeup_proc_t proc) {
+                                size_t elemsize,
+                                int64_t maxelems,
+                                gallus_cbuffer_value_freeup_proc_t proc) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (cbptr != NULL &&
       elemsize > 0 &&
       maxelems > 0) {
     gallus_cbuffer_t cb = (gallus_cbuffer_t)malloc(
-                             sizeof(*cb) + elemsize * (size_t)(maxelems + N_EMPTY_ROOM));
+                            sizeof(*cb) + elemsize * (size_t)(maxelems + N_EMPTY_ROOM));
 
     *cbptr = NULL;
 
@@ -728,7 +731,7 @@ gallus_cbuffer_create_with_size(gallus_cbuffer_t *cbptr,
 
 void
 gallus_cbuffer_shutdown(gallus_cbuffer_t *cbptr,
-                         bool free_values) {
+                        bool free_values) {
   if (cbptr != NULL &&
       *cbptr != NULL) {
 
@@ -744,7 +747,7 @@ gallus_cbuffer_shutdown(gallus_cbuffer_t *cbptr,
 
 void
 gallus_cbuffer_destroy(gallus_cbuffer_t *cbptr,
-                        bool free_values) {
+                       bool free_values) {
   if (cbptr != NULL &&
       *cbptr != NULL) {
 
@@ -767,7 +770,7 @@ gallus_cbuffer_destroy(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_clear(gallus_cbuffer_t *cbptr,
-                      bool free_values) {
+                     bool free_values) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (cbptr != NULL &&
@@ -820,7 +823,7 @@ gallus_cbuffer_wakeup(gallus_cbuffer_t *cbptr, gallus_chrono_t nsec) {
               /*
                * Then wait for one of the waiters wakes this thread up.
                */
-           recheck:
+            recheck:
               mbar();
               if ((*cbptr)->m_is_operational == true) {
                 if ((*cbptr)->m_is_awakened == true) {
@@ -828,7 +831,7 @@ gallus_cbuffer_wakeup(gallus_cbuffer_t *cbptr, gallus_chrono_t nsec) {
                   gallus_msg_debug(5, "sync wait a waiter wake me up...\n");
 
                   if ((ret = gallus_cond_wait(&((*cbptr)->m_cond_awakened),
-                                               &((*cbptr)->m_lock), nsec)) ==
+                                              &((*cbptr)->m_lock), nsec)) ==
                       GALLUS_RESULT_OK) {
                     goto recheck;
                   }
@@ -867,7 +870,7 @@ gallus_cbuffer_wakeup(gallus_cbuffer_t *cbptr, gallus_chrono_t nsec) {
 
 gallus_result_t
 gallus_cbuffer_wait_gettable(gallus_cbuffer_t *cbptr,
-                              gallus_chrono_t nsec) {
+                             gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   if (cbptr != NULL && *cbptr != NULL) {
@@ -895,7 +898,7 @@ gallus_cbuffer_wait_gettable(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_wait_puttable(gallus_cbuffer_t *cbptr,
-                              gallus_chrono_t nsec) {
+                             gallus_chrono_t nsec) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
   int64_t remains;
 
@@ -928,9 +931,9 @@ gallus_cbuffer_wait_puttable(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_put_with_size(gallus_cbuffer_t *cbptr,
-                              void **valptr,
-                              size_t valsz,
-                              gallus_chrono_t nsec) {
+                             void **valptr,
+                             size_t valsz,
+                             gallus_chrono_t nsec) {
   int64_t n = s_put_n(cbptr, (void *)valptr, 1LL, valsz, nsec, NULL);
   return (n == 1LL) ? GALLUS_RESULT_OK : n;
 }
@@ -938,20 +941,20 @@ gallus_cbuffer_put_with_size(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_put_n_with_size(gallus_cbuffer_t *cbptr,
-                                void **valptr,
-                                size_t n_vals,
-                                size_t valsz,
-                                gallus_chrono_t nsec,
-                                size_t *n_actual_put) {
+                               void **valptr,
+                               size_t n_vals,
+                               size_t valsz,
+                               gallus_chrono_t nsec,
+                               size_t *n_actual_put) {
   return s_put_n(cbptr, (void *)valptr, n_vals, valsz, nsec, n_actual_put);
 }
 
 
 gallus_result_t
 gallus_cbuffer_get_with_size(gallus_cbuffer_t *cbptr,
-                              void **valptr,
-                              size_t valsz,
-                              gallus_chrono_t nsec) {
+                             void **valptr,
+                             size_t valsz,
+                             gallus_chrono_t nsec) {
   int64_t n = s_get_n(cbptr, (void *)valptr, 1LL, 1LL,
                       valsz, nsec, NULL, true);
   return (n == 1LL) ? GALLUS_RESULT_OK : n;
@@ -960,12 +963,12 @@ gallus_cbuffer_get_with_size(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_get_n_with_size(gallus_cbuffer_t *cbptr,
-                                void **valptr,
-                                size_t n_vals_max,
-                                size_t n_at_least,
-                                size_t valsz,
-                                gallus_chrono_t nsec,
-                                size_t *n_actual_get) {
+                               void **valptr,
+                               size_t n_vals_max,
+                               size_t n_at_least,
+                               size_t valsz,
+                               gallus_chrono_t nsec,
+                               size_t *n_actual_get) {
   return s_get_n(cbptr, (void *)valptr, n_vals_max, n_at_least,
                  valsz, nsec, n_actual_get, true);
 }
@@ -973,9 +976,9 @@ gallus_cbuffer_get_n_with_size(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_peek_with_size(gallus_cbuffer_t *cbptr,
-                               void **valptr,
-                               size_t valsz,
-                               gallus_chrono_t nsec) {
+                              void **valptr,
+                              size_t valsz,
+                              gallus_chrono_t nsec) {
   int64_t n = s_get_n(cbptr, (void *)valptr, 1LL, 1LL,
                       valsz, nsec, NULL, false);
   return (n == 1LL) ? GALLUS_RESULT_OK : n;
@@ -984,12 +987,12 @@ gallus_cbuffer_peek_with_size(gallus_cbuffer_t *cbptr,
 
 gallus_result_t
 gallus_cbuffer_peek_n_with_size(gallus_cbuffer_t *cbptr,
-                                 void **valptr,
-                                 size_t n_vals_max,
-                                 size_t n_at_least,
-                                 size_t valsz,
-                                 gallus_chrono_t nsec,
-                                 size_t *n_actual_get) {
+                                void **valptr,
+                                size_t n_vals_max,
+                                size_t n_at_least,
+                                size_t valsz,
+                                gallus_chrono_t nsec,
+                                size_t *n_actual_get) {
   return s_get_n(cbptr, (void *)valptr, n_vals_max, n_at_least,
                  valsz, nsec, n_actual_get, false);
 }

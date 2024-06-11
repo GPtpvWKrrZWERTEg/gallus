@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 /**
  * @file	gallus_ip_addr.h
  */
@@ -36,7 +39,7 @@ typedef struct ip_address gallus_ip_address_t;
  */
 gallus_result_t
 gallus_ip_address_create(const char *name, bool is_ipv4_addr,
-                          gallus_ip_address_t **ip);
+                         gallus_ip_address_t **ip);
 
 /**
  * Destroy a gallus_ip_address_t
@@ -62,7 +65,7 @@ gallus_ip_address_destroy(gallus_ip_address_t *ip);
  */
 gallus_result_t
 gallus_ip_address_copy(const gallus_ip_address_t *src,
-                        gallus_ip_address_t **dst);
+                       gallus_ip_address_t **dst);
 
 /**
  * Equals a gallus_ip_address_t.
@@ -74,7 +77,7 @@ gallus_ip_address_copy(const gallus_ip_address_t *src,
  */
 bool
 gallus_ip_address_equals(const gallus_ip_address_t *ip1,
-                          const gallus_ip_address_t *ip2);
+                         const gallus_ip_address_t *ip2);
 
 /**
  * Get IP addr string.
@@ -89,7 +92,7 @@ gallus_ip_address_equals(const gallus_ip_address_t *ip1,
  */
 gallus_result_t
 gallus_ip_address_str_get(const gallus_ip_address_t *ip,
-                           char **addr_str);
+                          char **addr_str);
 
 /**
  * Get sockaddr structure.
@@ -104,7 +107,7 @@ gallus_ip_address_str_get(const gallus_ip_address_t *ip,
  */
 gallus_result_t
 gallus_ip_address_sockaddr_get(const gallus_ip_address_t *ip,
-                                struct sockaddr **saddr);
+                               struct sockaddr **saddr);
 
 /**
  * Get length of sockaddr structure.
@@ -117,7 +120,7 @@ gallus_ip_address_sockaddr_get(const gallus_ip_address_t *ip,
  */
 gallus_result_t
 gallus_ip_address_sockaddr_len_get(const gallus_ip_address_t *ip,
-                                    socklen_t *saddr_len);
+                                   socklen_t *saddr_len);
 
 
 /**
@@ -131,7 +134,7 @@ gallus_ip_address_sockaddr_len_get(const gallus_ip_address_t *ip,
  */
 gallus_result_t
 gallus_ip_address_is_ipv4(const gallus_ip_address_t *ip,
-                           bool *is_ipv4);
+                          bool *is_ipv4);
 
 
 

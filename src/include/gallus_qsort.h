@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef SRC_INCLUDE_GALLUS_QSORT_H_
 #define SRC_INCLUDE_GALLUS_QSORT_H_
 
@@ -15,10 +18,10 @@ __BEGIN_DECLS
 #else
 void
 gallus_qsort_r(void *array,
-                size_t nelem,
-                size_t size,
-                int (*cmp)(const void *, const void *, void *),
-                void *arg);
+               size_t nelem,
+               size_t size,
+               int (*cmp)(const void *, const void *, void *),
+               void *arg);
 #endif /* __linux__ */
 
 

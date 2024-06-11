@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_RUNNABLE_H__
 #define __GALLUS_RUNNABLE_H__
 
@@ -58,10 +61,10 @@ __BEGIN_DECLS
  */
 gallus_result_t
 gallus_runnable_create(gallus_runnable_t *rptr,
-                        size_t sz,
-                        gallus_runnable_proc_t func,
-                        void *arg,
-                        gallus_runnable_freeup_proc_t freeup_proc);
+                       size_t sz,
+                       gallus_runnable_proc_t func,
+                       void *arg,
+                       gallus_runnable_freeup_proc_t freeup_proc);
 
 
 /**

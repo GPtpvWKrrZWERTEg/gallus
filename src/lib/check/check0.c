@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 
@@ -25,7 +28,7 @@ main(int argc, const char *const argv[]) {
    */
   if (IS_GALLUS_RESULT_OK(
         gallus_log_initialize(GALLUS_LOG_EMIT_TO_UNKNOWN, NULL,
-                               false, true, 1)) == false) {
+                              false, true, 1)) == false) {
     gallus_msg_fatal("what's wrong??\n");
     /* not reached. */
   }
@@ -36,7 +39,7 @@ main(int argc, const char *const argv[]) {
    */
   if (IS_GALLUS_RESULT_OK(
         gallus_log_initialize(GALLUS_LOG_EMIT_TO_FILE, "./testlog.txt",
-                               false, true, 10)) == false) {
+                              false, true, 10)) == false) {
     gallus_msg_fatal("what's wrong??\n");
     /* not reached. */
   }
@@ -45,7 +48,7 @@ main(int argc, const char *const argv[]) {
 
   if (IS_GALLUS_RESULT_OK(
         gallus_log_initialize(GALLUS_LOG_EMIT_TO_SYSLOG, nm,
-                               false, false, 10)) == false) {
+                              false, false, 10)) == false) {
     gallus_msg_fatal("what's wrong??\n");
     /* not reached. */
   }
@@ -56,7 +59,7 @@ main(int argc, const char *const argv[]) {
    */
   if (IS_GALLUS_RESULT_OK(
         gallus_log_initialize(GALLUS_LOG_EMIT_TO_UNKNOWN, NULL,
-                               false, true, 1)) == false) {
+                              false, true, 1)) == false) {
     gallus_msg_fatal("what's wrong??\n");
     /* not reached. */
   }

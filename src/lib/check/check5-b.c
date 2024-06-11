@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "gallus_thread_internal.h"
 
@@ -28,7 +31,7 @@ s_test_thread_finalize(const gallus_thread_t *tptr, bool is_canceled,
   (void)arg;
 
   gallus_msg_debug(1, "called. %s.\n",
-                    (is_canceled == false) ? "finished" : "canceled");
+                   (is_canceled == false) ? "finished" : "canceled");
 }
 
 
@@ -74,8 +77,8 @@ s_test_thread_main(const gallus_thread_t *tptr, void *arg) {
         WHAT_TIME_IS_IT_NOW_IN_NSEC(dates[i]);
       }
       if (gallus_bbq_put_n(&(tt->m_q), (void **)dates,
-                            (size_t)tt->m_n_puts,
-                            gallus_chrono_t, -1LL, NULL) !=
+                           (size_t)tt->m_n_puts,
+                           gallus_chrono_t, -1LL, NULL) !=
           (gallus_result_t)tt->m_n_puts) {
         goto done;
       }
@@ -88,8 +91,8 @@ s_test_thread_main(const gallus_thread_t *tptr, void *arg) {
       ret = tt->m_n_puts;
 
       gallus_msg_debug(1, "Done, ret = " PFSZS(020, d)
-                        ", req = " PFSZS(020, u) ".\n",
-                        (size_t)ret, (size_t)tt->m_n_puts);
+                       ", req = " PFSZS(020, u) ".\n",
+                       (size_t)ret, (size_t)tt->m_n_puts);
     }
   }
 
@@ -111,10 +114,10 @@ s_initialize(test_thread_t tt,
   if (tt != NULL) {
     gallus_result_t r;
     if ((r = gallus_thread_create((gallus_thread_t *)&tt,
-                                   s_test_thread_main,
-                                   s_test_thread_finalize,
-                                   s_test_thread_destroy,
-                                   name, NULL)) != GALLUS_RESULT_OK) {
+                                  s_test_thread_main,
+                                  s_test_thread_finalize,
+                                  s_test_thread_destroy,
+                                  name, NULL)) != GALLUS_RESULT_OK) {
       gallus_perror(r);
       goto done;
     }
@@ -344,8 +347,8 @@ do_run(size_t nthds, ssize_t nputs) {
   }
   for (i = 0; i < nthds; i++) {
     if ((r = gallus_bbq_create(&(bbqs[i]), gallus_chrono_t,
-                                1000LL * 1000LL,
-                                NULL)) != GALLUS_RESULT_OK) {
+                               1000LL * 1000LL,
+                               NULL)) != GALLUS_RESULT_OK) {
       gallus_perror(r);
       goto done;
     }
@@ -359,14 +362,14 @@ do_run(size_t nthds, ssize_t nputs) {
    * Then create poll objects for the each queue.
    */
   polls = (gallus_qmuxer_poll_t *)malloc(sizeof(gallus_qmuxer_poll_t) *
-                                          n_created_bbqs);
+                                         n_created_bbqs);
   if (polls == NULL) {
     goto done;
   }
   for (i = 0; i < n_created_bbqs; i++) {
     if ((r = gallus_qmuxer_poll_create(&(polls[i]),
-                                        bbqs[i],
-                                        GALLUS_QMUXER_POLL_READABLE)) !=
+                                       bbqs[i],
+                                       GALLUS_QMUXER_POLL_READABLE)) !=
         GALLUS_RESULT_OK) {
       gallus_perror(r);
       goto done;
@@ -472,9 +475,9 @@ do_run(size_t nthds, ssize_t nputs) {
      *
      *	Note that we better set timeout, not waiting forever.
      */
-    r = gallus_qmuxer_poll(&qmx, (gallus_qmuxer_poll_t * const)polls,
-                            n_need_watch,
-                            100LL * 1000LL * 1000LL);
+    r = gallus_qmuxer_poll(&qmx, (gallus_qmuxer_poll_t *const)polls,
+                           n_need_watch,
+                           100LL * 1000LL * 1000LL);
 
     if (r > 0) {
       /*
@@ -488,13 +491,13 @@ do_run(size_t nthds, ssize_t nputs) {
         if ((qsz = gallus_bbq_size(&(bbqs[i]))) > 0) {
 
           gallus_msg_debug(1, "Got " PFSZS(8, u) " events from the Q"
-                            PFSZS(03, u) ".\n",
-                            (size_t)qsz, (size_t)i);
+                           PFSZS(03, u) ".\n",
+                           (size_t)qsz, (size_t)i);
           if ((r = gallus_bbq_get_n(&(bbqs[i]), (void **)put_dates,
-                                     (size_t)nputs, 1LL,
-                                     gallus_chrono_t,
-                                     1000LL * 1000LL * 1000LL,
-                                     &n_actual_get)) > 0) {
+                                    (size_t)nputs, 1LL,
+                                    gallus_chrono_t,
+                                    1000LL * 1000LL * 1000LL,
+                                    &n_actual_get)) > 0) {
 #if 1
             WHAT_TIME_IS_IT_NOW_IN_NSEC(p_begin);
 #endif
@@ -509,7 +512,7 @@ do_run(size_t nthds, ssize_t nputs) {
                  * check this queue anymore. To specify this:
                  */
                 gallus_msg_debug(1, "Got an EOF from the Q" PFSZS(04, u)
-                                  ".\n", i);
+                                 ".\n", i);
                 goto nullify;
               }
 
@@ -542,7 +545,7 @@ do_run(size_t nthds, ssize_t nputs) {
             if ((r = gallus_qmuxer_poll_set_queue(&(polls[i]), NULL)) ==
                 GALLUS_RESULT_OK) {
               gallus_msg_debug(1, "Q" PFSZS(04, u) " is not valid "
-                                "anymore, ignore the queue.\n", i);
+                               "anymore, ignore the queue.\n", i);
               break;
             } else {
               /*

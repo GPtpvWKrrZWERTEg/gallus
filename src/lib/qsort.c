@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 /**
  *	@file	qsort.c
  *	@brief	Thread safe qsort function slimilar to glibc qsort_r.
@@ -19,10 +22,10 @@ qsort_cmp(const void *a, const void *b) {
 
 void
 gallus_qsort_r(void *array,
-                size_t nelem,
-                size_t size,
-                int (*cmp)(const void *, const void *, void *),
-                void *arg) {
+               size_t nelem,
+               size_t size,
+               int (*cmp)(const void *, const void *, void *),
+               void *arg) {
   qdata.cmp = cmp;
   qdata.arg = arg;
   qsort(array, nelem, size, qsort_cmp);

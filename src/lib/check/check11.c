@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 #include "base_stage.h"
@@ -26,7 +29,7 @@ s_pipeline_create(test_stage_t *stages,
   if (likely(stages != NULL &&
              max_stage > 1 &&
              ingress_info != NULL &&
-             ((max_stage > 2) ? 
+             ((max_stage > 2) ?
               ((intermediate_info != NULL) ? true : false) : true) &&
              egress_info != NULL)) {
     size_t i;
@@ -34,15 +37,15 @@ s_pipeline_create(test_stage_t *stages,
     (void)memset((void *)stages, 0, sizeof(*stages) * max_stage);
 
     if (unlikely((ret = s_test_stage_create_by_spec(&(stages[0]), 0, max_stage,
-                                                    ingress_info)) != 
+                        ingress_info)) !=
                  GALLUS_RESULT_OK)) {
       goto done;
     }
 
     for (i = 1; i < (max_stage - 1); i++) {
       if (unlikely((ret =
-                    s_test_stage_create_by_spec(&(stages[i]), i, max_stage,
-                                                intermediate_info)) != 
+                      s_test_stage_create_by_spec(&(stages[i]), i, max_stage,
+                          intermediate_info)) !=
                    GALLUS_RESULT_OK ||
                    (ret = s_test_stage_set_weight(&(stages[i]), weight)) !=
                    GALLUS_RESULT_OK)) {
@@ -57,7 +60,7 @@ s_pipeline_create(test_stage_t *stages,
       ret = s_test_stage_set_weight(&(stages[max_stage - 1]), weight);
     }
 
- done:
+  done:
     if (unlikely(ret != GALLUS_RESULT_OK)) {
       for (i = 0; i < max_stage; i++) {
         gallus_pipeline_stage_destroy((gallus_pipeline_stage_t *)stages[i]);
@@ -130,7 +133,7 @@ s_str2fetch(const char *str) {
 
 static inline gallus_result_t
 s_allowed_queue_types(size_t n_qs,
-                      base_stage_sched_t sched, 
+                      base_stage_sched_t sched,
                       base_stage_fetch_t fetch) {
   gallus_result_t ret = GALLUS_RESULT_NOT_ALLOWED;
 
@@ -172,7 +175,7 @@ s_set_stage_spec(test_stage_spec_t *spec, const char *str) {
       if ((gallus_str_tokenize_with_limit(cstr, tokens, 6, 6, ":|")) == 6) {
         size_t n_workers = 0;
         size_t n_qs = 0;
-	size_t q_len = 0;
+        size_t q_len = 0;
         size_t batch = 0;
         base_stage_sched_t sched = s_str2sched(tokens[4]);
         base_stage_fetch_t fetch = s_str2fetch(tokens[5]);
@@ -187,7 +190,7 @@ s_set_stage_spec(test_stage_spec_t *spec, const char *str) {
             GALLUS_RESULT_OK) {
           spec->m_n_workers = n_workers;
           spec->m_n_qs = n_qs;
-	  spec->m_q_len = q_len;
+          spec->m_q_len = q_len;
           spec->m_batch_size = batch;
 
           if ((ret = s_allowed_queue_types(spec->m_n_qs, sched, fetch)) ==
@@ -273,7 +276,7 @@ s_init(void) {
   }
 
   s_latencies = (gallus_statistic_t *)malloc(sizeof(gallus_statistic_t) *
-                                              s_n_stages);
+                s_n_stages);
   if (s_latencies != NULL) {
     size_t i;
     char buf[32];
@@ -311,7 +314,7 @@ s_init(void) {
     goto done;
   }
   if ((ret = gallus_statistic_create(&s_actual_meps,
-                                      "net load throughput")) !=
+                                     "net load throughput")) !=
       GALLUS_RESULT_OK) {
     goto done;
   }
@@ -350,7 +353,7 @@ s_final(void) {
 
 
 static inline gallus_result_t
-s_parse_args(int argc, const char * const argv[]) {
+s_parse_args(int argc, const char *const argv[]) {
   gallus_result_t ret = GALLUS_RESULT_ANY_FAILURES;
 
   uint64_t utmp;
@@ -364,7 +367,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         utmp = 0;
-        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) == 
+        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) ==
             GALLUS_RESULT_OK && utmp > 0) {
           s_n_events = utmp;
         } else {
@@ -379,7 +382,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         utmp = 0;
-        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) == 
+        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) ==
             GALLUS_RESULT_OK && utmp > 0) {
           s_n_try = utmp;
         } else {
@@ -394,7 +397,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         utmp = 0;
-        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) == 
+        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) ==
             GALLUS_RESULT_OK && utmp > 0) {
           if (utmp >= 2) {
             s_n_stages = utmp;
@@ -415,7 +418,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         utmp = 0;
-        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) == 
+        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) ==
             GALLUS_RESULT_OK && utmp > 0) {
           s_weight = utmp;
         } else {
@@ -430,7 +433,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         tmp = 0;
-        if ((ret = gallus_str_parse_int64(*argv, &tmp)) == 
+        if ((ret = gallus_str_parse_int64(*argv, &tmp)) ==
             GALLUS_RESULT_OK && tmp > 0) {
           s_to = tmp;
         } else {
@@ -461,7 +464,7 @@ s_parse_args(int argc, const char * const argv[]) {
       argv++;
       if (IS_VALID_STRING(*argv) == true) {
         utmp = 0;
-        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) == 
+        if ((ret = gallus_str_parse_uint64(*argv, &utmp)) ==
             GALLUS_RESULT_OK && utmp > 0) {
           s_n_ing_workers = utmp;
         } else {
@@ -499,13 +502,13 @@ s_parse_args(int argc, const char * const argv[]) {
     if ((ret = s_set_stage_spec(&s_interm_spec, s_int_spec_str)) !=
         GALLUS_RESULT_OK) {
       gallus_msg_error("Invalid intermidiate stages spec. '%s'.\n",
-                        s_int_spec_str);
+                       s_int_spec_str);
       goto done;
     }
     if ((ret = s_set_stage_spec(&s_egress_spec, s_egr_spec_str)) !=
         GALLUS_RESULT_OK) {
       gallus_msg_error("Invalid egres stage spec. '%s'.\n",
-                        s_int_spec_str);
+                       s_int_spec_str);
       goto done;
     }
 
@@ -547,21 +550,21 @@ s_record(void) {
   for (i = 1; i < s_n_stages; i++) {
     const char *name = NULL;
     (void)gallus_pipeline_stage_get_name(
-        (gallus_pipeline_stage_t *)&(s_stages[i]),
-        &name);
+      (gallus_pipeline_stage_t *)&(s_stages[i]),
+      &name);
     if (s_stages[i]->m_n_events != s_n_events) {
       gallus_msg_error("stage " PFSZ(u) " '%s' events # error, "
-                        PFSZ(u) " != " PFSZ(u) "\n",
-                        i, name,
-                        s_stages[i]->m_n_events, s_n_events);
+                       PFSZ(u) " != " PFSZ(u) "\n",
+                       i, name,
+                       s_stages[i]->m_n_events, s_n_events);
       goto done;
     }
     if (s_stages[i]->m_sum != s_check_sum) {
       fprintf(stderr, "\n");
       gallus_msg_error("stage " PFSZ(u) " '%s' checksum error, "
-                        PFSZ(u) " != " PFSZ(u) "\n",
-                        i, name,
-                        s_stages[i]->m_sum, s_check_sum);
+                       PFSZ(u) " != " PFSZ(u) "\n",
+                       i, name,
+                       s_stages[i]->m_sum, s_check_sum);
       goto done;
     }
   }
@@ -762,7 +765,7 @@ s_ref(size_t n_try) {
 
     ret = GALLUS_RESULT_OK;
 
- done:
+  done:
     free((void *)src);
     free((void *)dst);
   }

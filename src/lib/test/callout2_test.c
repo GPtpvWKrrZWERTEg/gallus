@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "unity.h"
 
@@ -95,7 +98,7 @@ s_freeup_arg(void *arg) {
       carg->m_is_freeuped = true;
       (void)gallus_cond_notify(&(carg->m_cond), true);
     }
-    (void)gallus_mutex_unlock(&(carg->m_lock));    
+    (void)gallus_mutex_unlock(&(carg->m_lock));
 
   }
 
@@ -117,7 +120,7 @@ s_wait_freeup_arg(callout_arg_t arg) {
       }
       ret = __sync_fetch_and_add(&(arg->m_n_exec), 0);
     }
-    (void)gallus_mutex_unlock(&(arg->m_lock));    
+    (void)gallus_mutex_unlock(&(arg->m_lock));
 
   }
 
@@ -142,13 +145,13 @@ callout_task(void *arg) {
 
     if (carg->m_last_exec_abstime != 0) {
       gallus_msg_debug(1, "interval: " PF64(d) " nsec.\n",
-                        now - carg->m_last_exec_abstime);
+                       now - carg->m_last_exec_abstime);
     }
     carg->m_last_exec_abstime = now;
 
     if (carg->m_wait_nsec > 0) {
       gallus_msg_debug(1, "sleep " PFSZ(u) " nsec.\n",
-                        carg->m_wait_nsec);
+                       carg->m_wait_nsec);
       (void)gallus_chrono_nanosleep(carg->m_wait_nsec, NULL);
     }
 
@@ -170,15 +173,15 @@ void
 test_prologue(void) {
   gallus_result_t r;
   const char *argv0 =
-      ((IS_VALID_STRING(gallus_get_command_name()) == true) ?
-       gallus_get_command_name() : "callout_test");
-  const char * const argv[] = {
+    ((IS_VALID_STRING(gallus_get_command_name()) == true) ?
+     gallus_get_command_name() : "callout_test");
+  const char *const argv[] = {
     argv0, NULL
   };
 
   (void)gallus_mainloop_set_callout_workers_number(N_CALLOUT_WORKERS);
   r = gallus_mainloop_with_callout(1, argv, NULL, NULL,
-                                    false, false, true);
+                                   false, false, true);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 }
 
@@ -203,13 +206,13 @@ test_urgent_cancel_before(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  0LL,
-                                  1000LL * 1000LL * 1000LL);
+                                 0LL,
+                                 1000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   gallus_callout_cancel_task(&t);
@@ -239,13 +242,13 @@ test_delayed_cancel_before(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  0LL,
-                                  1000LL * 1000LL * 1000LL);
+                                 0LL,
+                                 1000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   gallus_callout_cancel_task(&t);
@@ -275,13 +278,13 @@ test_idle_cancel_before(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  -1LL,
-                                  1000LL * 1000LL * 1000LL);
+                                 -1LL,
+                                 1000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   gallus_callout_cancel_task(&t);
@@ -319,13 +322,13 @@ test_urgent_cancel_while(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  0LL,
-                                  3000LL * 1000LL * 1000LL);
+                                 0LL,
+                                 3000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(1000LL * 1000LL * 1000LL, NULL);
@@ -357,13 +360,13 @@ test_delayed_cancel_while(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  100LL * 1000LL * 1000LL,
-                                  3000LL * 1000LL * 1000LL);
+                                 100LL * 1000LL * 1000LL,
+                                 3000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(1000LL * 1000LL * 1000LL, NULL);
@@ -395,13 +398,13 @@ test_idle_cancel_while(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  -1LL,
-                                  3000LL * 1000LL * 1000LL);
+                                 -1LL,
+                                 3000LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(1000LL * 1000LL * 1000LL, NULL);
@@ -442,13 +445,13 @@ test_urgent_force(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  0LL, 
-                                  500LL * 1000LL * 1000LL);
+                                 0LL,
+                                 500LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(100LL * 1000LL * 1000LL, NULL);
@@ -493,13 +496,13 @@ test_delayed_force(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  100LL * 1000LL * 1000LL,
-                                  500LL * 1000LL * 1000LL);
+                                 100LL * 1000LL * 1000LL,
+                                 500LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(100LL * 1000LL * 1000LL, NULL);
@@ -544,13 +547,13 @@ test_idle_force(void) {
   TEST_ASSERT_NOT_EQUAL(arg, NULL);
 
   r = gallus_callout_create_task(&t, 0, __func__,
-                                  callout_task, (void *)arg,
-                                  s_freeup_arg);
+                                 callout_task, (void *)arg,
+                                 s_freeup_arg);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   r = gallus_callout_submit_task(&t,
-                                  -1LL,
-                                  500LL * 1000LL * 1000LL);
+                                 -1LL,
+                                 500LL * 1000LL * 1000LL);
   TEST_ASSERT_EQUAL(r, GALLUS_RESULT_OK);
 
   (void)gallus_chrono_nanosleep(1000LL * 1000LL * 1000LL, NULL);

@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 #include "unity.h"
 #include "gallus_task_internal.h"
@@ -40,7 +43,7 @@ s_task_finalize(gallus_task_t *tptr, bool is_cancelled) {
   (void)tptr;
 
   gallus_msg_debug(1, "called, %s.\n",
-                (is_cancelled == true) ? "cancelled" : "clean exit");
+                   (is_cancelled == true) ? "cancelled" : "clean exit");
 }
 
 
@@ -54,15 +57,19 @@ s_task_freeup(gallus_task_t *tptr) {
 
 static gallus_result_t
 s_create_test_task(test_task_t *tptr, const char *name,
-                   unsigned int sleep_time) {
+                   unsigned int sleep_time, int cpu) {
   gallus_result_t ret = gallus_task_create((gallus_task_t *)tptr,
-                                     sizeof(test_task_record),
-                                     name,
-                                     s_task_main,
-                                     s_task_finalize,
-                                     s_task_freeup);
-  if (likely(ret == GALLUS_RESULT_OK)) {
+                        sizeof(test_task_record),
+                        name,
+                        s_task_main,
+                        s_task_finalize,
+                        s_task_freeup);
+  if (likely(ret == GALLUS_RESULT_OK &&
+             (ret = gallus_task_set_cpu_affinity((gallus_task_t *)tptr, cpu)) ==
+             GALLUS_RESULT_OK)) {
     (*tptr)->sleep_time_ = sleep_time;
+  } else {
+    gallus_task_destroy((gallus_task_t *)tptr);
   }
 
   return ret;
@@ -82,7 +89,7 @@ void
 setUp(void) {
   fflush(stdout);
   fflush(stderr);
-  (void)global_state_set(GLOBAL_STATE_STARTED);  
+  (void)global_state_set(GLOBAL_STATE_STARTED);
 }
 
 
@@ -110,17 +117,17 @@ test_call_task_sync_single_wait_2sec(void) {
                             "pool create error.");
 
   ret = gallus_thread_pool_get(name, &p1);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "get error.");
-  TEST_ASSERT_EQUAL_MESSAGE(p, p1, 
+  TEST_ASSERT_EQUAL_MESSAGE(p, p1,
                             "get (compare) error.");
-  
-  ret = s_create_test_task(&tsk, "test XX", 2);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+
+  ret = s_create_test_task(&tsk, "test XX", 2, 0);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -128,8 +135,8 @@ test_call_task_sync_single_wait_2sec(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -161,12 +168,12 @@ test_call_task_sync_single_no_wait(void) {
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "pool create error.");
 
-  ret = s_create_test_task(&tsk, "test XX", 0);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  ret = s_create_test_task(&tsk, "test XX", 0, 0);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -174,8 +181,8 @@ test_call_task_sync_single_no_wait(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -208,12 +215,12 @@ test_call_task_sync_multi_wait_2sec(void) {
                             "pool create error.");
 
   /* 1 */
-  ret = s_create_test_task(&tsk, "test XX", 2);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  ret = s_create_test_task(&tsk, "test XX", 2, 0);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -221,8 +228,8 @@ test_call_task_sync_multi_wait_2sec(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -240,12 +247,12 @@ test_call_task_sync_multi_wait_2sec(void) {
   s_destroy_test_task(&tsk);
 
   /* 2 */
-  ret = s_create_test_task(&tsk, "test XX", 2);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  ret = s_create_test_task(&tsk, "test XX", 2, 1);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -253,8 +260,8 @@ test_call_task_sync_multi_wait_2sec(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -288,12 +295,12 @@ test_call_task_sync_multi_no_wait(void) {
                             "pool create error.");
 
   /* 1 */
-  ret = s_create_test_task(&tsk, "test XX", 0);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  ret = s_create_test_task(&tsk, "test XX", 0, 0);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -301,8 +308,8 @@ test_call_task_sync_multi_no_wait(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -320,12 +327,12 @@ test_call_task_sync_multi_no_wait(void) {
   s_destroy_test_task(&tsk);
 
   /* 2 */
-  ret = s_create_test_task(&tsk, "test XX", 0);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  ret = s_create_test_task(&tsk, "test XX", 0, 1);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task create error.");
 
   ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "thread acquisition error.");
 
   ret = gallus_thread_pool_get_outstanding_thread_num(&p);
@@ -333,8 +340,8 @@ test_call_task_sync_multi_no_wait(void) {
                             "pooled thread num error after acquisition.");
 
   ret = gallus_task_run((gallus_task_t *)&tsk, &thd,
-                     GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                        GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "task start error.");
 
   ret = gallus_task_wait((gallus_task_t *)&tsk, -1LL);
@@ -374,19 +381,19 @@ test_call_task_async_multi_non_block_wait_2sec(void) {
   for (i = 0; i < n; i++) {
     tsks[i] = NULL;
     snprintf(buf, sizeof(buf), "test %ld ", i);
-    ret = s_create_test_task(&tsks[i], buf, 2);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    ret = s_create_test_task(&tsks[i], buf, 2, i);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "task create error.");
   }
 
   for (i = 0; i < n; i++) {
     ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "thread acquisition error.");
     ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-		       GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
-			      "task start error.");
+                          GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
+                              "task start error.");
   }
 
   for (i = 0; i < n; i++) {
@@ -395,7 +402,7 @@ test_call_task_async_multi_non_block_wait_2sec(void) {
                               "task wait error.");
     ret = gallus_task_get_exit_code((gallus_task_t *)&tsks[i]);
     TEST_ASSERT_EQUAL_MESSAGE(10, ret,
-                            "exit code error.");
+                              "exit code error.");
     s_destroy_test_task(&tsks[i]);
   }
 
@@ -421,19 +428,19 @@ test_call_task_async_multi_non_block_no_wait(void) {
   for (i = 0; i < n; i++) {
     tsks[i] = NULL;
     snprintf(buf, sizeof(buf), "test %ld ", i);
-    ret = s_create_test_task(&tsks[i], buf, 0);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    ret = s_create_test_task(&tsks[i], buf, 0, i);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "task create error.");
   }
 
   for (i = 0; i < n; i++) {
     ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "thread acquisition error.");
     ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-		       GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
-			      "task start error.");
+                          GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
+                              "task start error.");
   }
 
   for (i = 0; i < n; i++) {
@@ -442,7 +449,7 @@ test_call_task_async_multi_non_block_no_wait(void) {
                               "task wait error.");
     ret = gallus_task_get_exit_code((gallus_task_t *)&tsks[i]);
     TEST_ASSERT_EQUAL_MESSAGE(10, ret,
-                            "exit code error.");
+                              "exit code error.");
     s_destroy_test_task(&tsks[i]);
   }
 
@@ -468,19 +475,19 @@ test_call_task_async_multi_block_wait_2sec(void) {
   for (i = 0; i < n; i++) {
     tsks[i] = NULL;
     snprintf(buf, sizeof(buf), "test %ld ", i);
-    ret = s_create_test_task(&tsks[i], buf, 2);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    ret = s_create_test_task(&tsks[i], buf, 2, i);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "task create error.");
   }
 
   for (i = 0; i < n; i++) {
     ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "thread acquisition error.");
     ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-		       GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
-			      "task start error.");
+                          GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
+                              "task start error.");
   }
 
   for (i = 0; i < n; i++) {
@@ -489,7 +496,7 @@ test_call_task_async_multi_block_wait_2sec(void) {
                               "task wait error.");
     ret = gallus_task_get_exit_code((gallus_task_t *)&tsks[i]);
     TEST_ASSERT_EQUAL_MESSAGE(10, ret,
-                            "exit code error.");
+                              "exit code error.");
     s_destroy_test_task(&tsks[i]);
   }
 
@@ -507,7 +514,7 @@ test_call_task_async_multi_block_no_wait(void) {
   gallus_pooled_thread_t thd = NULL;
   size_t i;
   char buf[32];
-    
+
   ret = gallus_thread_pool_create(&p, "test pool", n - 1);
   TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "pool create error.");
@@ -515,19 +522,19 @@ test_call_task_async_multi_block_no_wait(void) {
   for (i = 0; i < n; i++) {
     tsks[i] = NULL;
     snprintf(buf, sizeof(buf), "test %ld ", i);
-    ret = s_create_test_task(&tsks[i], buf, 0);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    ret = s_create_test_task(&tsks[i], buf, 0, i);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "task create error.");
   }
 
   for (i = 0; i < n; i++) {
     ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "thread acquisition error.");
     ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-		       GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
-			      "task start error.");
+                          GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
+                              "task start error.");
   }
 
   for (i = 0; i < n; i++) {
@@ -536,7 +543,7 @@ test_call_task_async_multi_block_no_wait(void) {
                               "task wait error.");
     ret = gallus_task_get_exit_code((gallus_task_t *)&tsks[i]);
     TEST_ASSERT_EQUAL_MESSAGE(10, ret,
-                            "exit code error.");
+                              "exit code error.");
     s_destroy_test_task(&tsks[i]);
   }
 
@@ -570,23 +577,23 @@ test_shutdown(void) {
   for (i = 0; i < n; i++) {
     tsks[i] = NULL;
     snprintf(buf, sizeof(buf), "test %ld ", i);
-    ret = s_create_test_task(&tsks[i], buf, 2);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    ret = s_create_test_task(&tsks[i], buf, 2, i);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "task create error.");
   }
 
   for (i = 0; i < n; i++) {
     ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                               "thread acquisition error.");
     ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-		       GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
-			      "task start error.");
+                          GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+    TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
+                              "task start error.");
   }
 
   ret = gallus_thread_pool_shutdown_all(&p, SHUTDOWN_RIGHT_NOW, 1000LL);
-  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+  TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                             "pool shutdown error.");
 
   for (i = 0; i < n; i++) {
@@ -598,7 +605,7 @@ test_shutdown(void) {
       ret = 10;
     }
     TEST_ASSERT_EQUAL_MESSAGE(10, ret,
-                            "exit code error.");
+                              "exit code error.");
     ret = gallus_task_get_state((gallus_task_t *)&tsks[i], &s);
     switch (s) {
       case GALLUS_TASK_STATE_CLEAN_FINISHED:
@@ -649,23 +656,23 @@ test_cancel(void) {
       for (i = 0; i < n; i++) {
         tsks[i] = NULL;
         snprintf(buf, sizeof(buf), "test %ld ", i);
-        ret = s_create_test_task(&tsks[i], buf, 2);
-        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+        ret = s_create_test_task(&tsks[i], buf, 2, i);
+        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                                   "task create error.");
       }
 
       for (i = 0; i < n; i++) {
         ret = gallus_thread_pool_acquire_thread(&p, &thd, -1LL);
-        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                                   "thread acquisition error.");
         ret = gallus_task_run((gallus_task_t *)&tsks[i], &thd,
-                           GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
-        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+                              GALLUS_TASK_RELEASE_THREAD_AFTER_EXEC);
+        TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                                   "task start error.");
       }
 
       ret = gallus_thread_pool_cancel_all(&p);
-      TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret, 
+      TEST_ASSERT_EQUAL_MESSAGE(GALLUS_RESULT_OK, ret,
                                 "pool cancellation error.");
 
       for (i = 0; i < n; i++) {

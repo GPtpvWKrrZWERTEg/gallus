@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #include "gallus_apis.h"
 
 #include <math.h>
@@ -44,8 +47,8 @@ s_once_proc(void) {
   gallus_result_t r;
 
   if ((r = gallus_hashmap_create(&s_stat_tbl,
-                                  GALLUS_HASHMAP_TYPE_STRING,
-                                  s_stat_freeup)) != GALLUS_RESULT_OK) {
+                                 GALLUS_HASHMAP_TYPE_STRING,
+                                 s_stat_freeup)) != GALLUS_RESULT_OK) {
     gallus_perror(r);
     gallus_exit_fatal("can't initialize the stattistics table.\n");
   }
@@ -84,7 +87,7 @@ s_dtors(void) {
       gallus_msg_debug(10, "The stattitics module is finalized.\n");
     } else {
       gallus_msg_debug(10, "The stattitics module is not finalized "
-                    "because of module finalization problem.\n");
+                       "because of module finalization problem.\n");
     }
   }
 }
@@ -118,11 +121,11 @@ s_create_stat(gallus_statistic_t *sptr, const char *name) {
     if (likely(s != NULL && IS_VALID_STRING(m_name) == true)) {
       void *val = (void *)s;
       if (likely((ret = gallus_hashmap_add(&s_stat_tbl, (void *)m_name,
-                                            &val, false)) ==
+                                           &val, false)) ==
                  GALLUS_RESULT_OK)) {
-         s->m_name = m_name;
-         s_reset_stat(s);
-         *sptr = s;
+        s->m_name = m_name;
+        s_reset_stat(s);
+        *sptr = s;
       }
     } else {
       ret = GALLUS_RESULT_NO_MEMORY;
@@ -146,7 +149,7 @@ s_destroy_stat(gallus_statistic_t s, bool delhash) {
   if (likely(s != NULL)) {
     if (delhash == true) {
       (void)gallus_hashmap_delete(&s_stat_tbl,
-                                   (void *)s->m_name, NULL, false);
+                                  (void *)s->m_name, NULL, false);
     }
     if (s->m_name != NULL) {
       free((void *)s->m_name);
@@ -258,7 +261,7 @@ s_get_max_stat(gallus_statistic_t s, int64_t *valptr) {
 static inline gallus_result_t
 s_get_avg_stat(gallus_statistic_t s, double *valptr) {
   if (likely(s != NULL && valptr != NULL)) {
-    int64_t n = (int64_t)__sync_fetch_and_add(&(s->m_n), 0); 
+    int64_t n = (int64_t)__sync_fetch_and_add(&(s->m_n), 0);
 
     if (n > 0) {
       double sum = (double)__sync_fetch_and_add(&(s->m_sum), 0);
@@ -286,10 +289,10 @@ s_get_sd_stat(gallus_statistic_t s, double *valptr, bool is_ssd) {
       double sum = (double)__sync_fetch_and_add(&(s->m_sum), 0);
       double sum2 = (double)__sync_fetch_and_add(&(s->m_sum2), 0);
       double avg = sum / (double)n;
-      double ssum = 
-          sum2 -
-          2.0 * avg * sum +
-          avg * avg * (double)n;
+      double ssum =
+        sum2 -
+        2.0 * avg * sum +
+        avg * avg * (double)n;
 
       if (is_ssd == true) {
         if (n >= 2) {
@@ -303,7 +306,7 @@ s_get_sd_stat(gallus_statistic_t s, double *valptr, bool is_ssd) {
         } else {
           *valptr = 0.0;
         }
-      }        
+      }
     }
 
     return GALLUS_RESULT_OK;

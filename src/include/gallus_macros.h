@@ -1,3 +1,6 @@
+/* 
+ * $__Copyright__$
+ */
 #ifndef __GALLUS_MACROS_H__
 #define __GALLUS_MACROS_H__
 
@@ -185,13 +188,13 @@
 #else
 #ifndef htonll
 #define htonll(_x64)                                     \
-    ((((uint64_t) htonl((_x64) & 0xffffffffLL)) << 32) | \
-     htonl((uint32_t) ((_x64) >> 32)))
+  ((((uint64_t) htonl((_x64) & 0xffffffffLL)) << 32) | \
+   htonl((uint32_t) ((_x64) >> 32)))
 #endif /* htonll */
 #ifndef ntohll
 #define ntohll(_x64)                                     \
-    ((((uint64_t) ntohl((_x64) & 0xffffffffLL)) << 32) | \
-     ntohl((uint32_t) ((_x64) >> 32)))
+  ((((uint64_t) ntohl((_x64) & 0xffffffffLL)) << 32) | \
+   ntohl((uint32_t) ((_x64) >> 32)))
 #endif /* ntohll */
 #endif /* GALLUS_BIG_ENDIAN */
 
@@ -202,28 +205,28 @@
 
 #ifdef __GNUC__
 #define gallus_atomic_update_cmp(type, addr, init, val, cmp)           \
-{                                                                       \
-  type __tmp__ =  __sync_fetch_and_add((addr), 0);                      \
-  type __tmp2__;                                                        \
-  do {                                                                  \
-    if (__tmp__ == (init) || __tmp__ cmp (val)) {                       \
-      __tmp2__ = __sync_val_compare_and_swap((addr), __tmp__, (val));   \
-      if (likely(__tmp__ == __tmp2__)) {                                \
-        break;                                                          \
-      } else {                                                          \
-        __tmp__ = __tmp2__;                                             \
-        continue;                                                       \
-      }                                                                 \
-    } else {                                                            \
-      break;                                                            \
-    }                                                                   \
-  } while (true);                                                       \
-}
+  {                                                                       \
+    type __tmp__ =  __sync_fetch_and_add((addr), 0);                      \
+    type __tmp2__;                                                        \
+    do {                                                                  \
+      if (__tmp__ == (init) || __tmp__ cmp (val)) {                       \
+        __tmp2__ = __sync_val_compare_and_swap((addr), __tmp__, (val));   \
+        if (likely(__tmp__ == __tmp2__)) {                                \
+          break;                                                          \
+        } else {                                                          \
+          __tmp__ = __tmp2__;                                             \
+          continue;                                                       \
+        }                                                                 \
+      } else {                                                            \
+        break;                                                            \
+      }                                                                   \
+    } while (true);                                                       \
+  }
 
 #define gallus_atomic_update_min(type, addr, init, val)  \
-    gallus_atomic_update_cmp(type, addr, init, val, >)
+  gallus_atomic_update_cmp(type, addr, init, val, >)
 #define gallus_atomic_update_max(type, addr, init, val)  \
-    gallus_atomic_update_cmp(type, addr, init, val, <)
+  gallus_atomic_update_cmp(type, addr, init, val, <)
 #endif /* __GNUC__ */
 
 
