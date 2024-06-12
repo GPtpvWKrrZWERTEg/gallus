@@ -1,14 +1,13 @@
 /* 
  * $__Copyright__$
  */
-#ifndef __GALLUS_MACROS_H__
-#define __GALLUS_MACROS_H__
+#pragma once
 
 
 
 
 
-#include "gallus_config.h"
+#include "gallus_platform.h"
 
 /*
  * Architecture independent memory barrier
@@ -229,8 +228,3 @@
   gallus_atomic_update_cmp(type, addr, init, val, <)
 #endif /* __GNUC__ */
 
-
-
-
-
-#endif /* ! __GALLUS_MACROS_H__ */

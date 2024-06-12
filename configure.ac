@@ -14,7 +14,7 @@ m4_include([mk/ltsugar.m4])
 m4_include([mk/ltversion.m4])
 m4_include([mk/lt~obsolete.m4])
 
-AC_CONFIG_HEADERS([src/include/gallus_config.h])
+AC_CONFIG_HEADERS([framework/include/gallus_config.h])
 
 if test "${prefix}" = "NONE"; then
     prefix=/usr/local
@@ -52,12 +52,14 @@ AC_CANONICAL_TARGET
 AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_EGREP
+AC_PROG_AWK
+
 #AC_PROG_YACC
 #AC_PROG_LEX
 #if test "x$LEX" != xflex -a "x$LEX" != xlex; then
 #   AC_MSG_ERROR([flex/lex must be installed.])
 #fi
-AC_PROG_AWK
 
 RM="rm -f"
 AC_SUBST(RM)
@@ -102,7 +104,14 @@ case $CPU in
         CPU=i386;;
 esac
 
-OS_CPPFLAGS='-D_REENTRANT'
+changequote(<<, >>)dnl
+CPUDEF=GALLUS_CPU_`echo $CPU | tr '[a-z]' '[A-Z]'`
+OSDEF=GALLUS_OS_`echo $OS | tr '[a-z]' '[A-Z]'`
+changequote([, ])dnl
+AC_SUBST(CPUDEF)
+AC_SUBST(OSDEF)
+
+OS_CPPFLAGS="-D_REENTRANT"
 OS_LDFLAGS=''
 OS_LIBS=''
 OS_CFLAGS=''
@@ -128,7 +137,8 @@ case $OS in
 	OS=freebsd;;
     linux*)
 	OS_CPPFLAGS="${OS_CPPFLAGS} -D_GNU_SOURCE -D_POSIX_SOURCE"
-	OS_LIBS="-lrt -lpthread -ldl -lpcap"
+	CPPFLAGS="${CPPFLAGS} ${OS_CPPFLAGS}"
+	OS_LIBS="-lrt -lpthread -ldl"
 	OS=linux;;
     netbsd*)
 	MAKE=gmake
@@ -173,13 +183,6 @@ AC_SUBST(OS_LDFLAGS)
 AC_SUBST(OS_LIBS)
 AC_SUBST(ECHO_N)
 AC_SUBST(STAT)
-
-changequote(<<, >>)dnl
-CPUDEF=GALLUS_CPU_`echo $CPU | tr '[a-z]' '[A-Z]'`
-OSDEF=GALLUS_OS_`echo $OS | tr '[a-z]' '[A-Z]'`
-changequote([, ])dnl
-AC_SUBST(CPUDEF)
-AC_SUBST(OSDEF)
 
 MKRULESDIR=${TOPDIR}/mk
 AC_SUBST(MKRULESDIR)
@@ -230,73 +233,117 @@ AC_SUBST(HAVE_GCOVR)
 AC_MSG_CHECKING([/proc/self/exe])
 if test -h /proc/self/exe; then
   AC_MSG_RESULT([exists.])
-  AC_DEFINE(HAVE_PROCFS_SELF_EXE)
+  AC_DEFINE([HAVE_PROCFS_SELF_EXE], [1], [Define if available])
 else
   AC_MSG_RESULT([does noe exists.])
 fi
 
 # headers/macros
 
-oLIBS=${LIBS}
-LIBS=''
-AC_CHECK_HEADER(pcap/pcap.h,, [AC_MSG_ERROR([pcap/pcap.h is required!])])
-AC_CHECK_LIB(pcap, pcap_create,, [AC_MSG_ERROR([libpcap is required!])])
-PCAP_LIBS=${LIBS}
-AC_SUBST(PCAP_LIBS)
-LIBS=${oLIBS}
-
 AC_C_BIGENDIAN
-
 AC_CHECK_INCLUDES_DEFAULT
-AC_PROG_EGREP
 
-
-AC_CHECK_HEADER(inttypes.h, [AC_DEFINE(HAVE_INTTYPES_H)], [])
-AC_CHECK_HEADER(stdint.h, [AC_DEFINE(HAVE_STDINT_H)])
-AC_CHECK_HEADER(limits.h, [AC_DEFINE(HAVE_LIMITS_H)])
-AC_CHECK_HEADER(sys/param.h, [AC_DEFINE(HAVE_SYS_PARAM_H)])
-AC_CHECK_HEADER(sys/types.h, [AC_DEFINE(HAVE_SYS_TYPES_H)])
-AC_CHECK_HEADER(ctype.h, [AC_DEFINE(HAVE_CTYPE_H)])
-AC_CHECK_HEADER(stdio.h, [AC_DEFINE(HAVE_STDIO_H)])
-AC_CHECK_HEADER(stdlib.h, [AC_DEFINE(HAVE_STDLIB_H)])
-AC_CHECK_HEADER(unistd.h, [AC_DEFINE(HAVE_UNISTD_H)])
-AC_CHECK_HEADER(memory.h, [AC_DEFINE(HAVE_MEMORY_H)])
-AC_CHECK_HEADER(string.h, [AC_DEFINE(HAVE_STRING_H)])
-AC_CHECK_HEADER(malloc.h, [AC_DEFINE(HAVE_MALLOC_H)])
-AC_CHECK_HEADER(stdarg.h, [AC_DEFINE(HAVE_STDARG_H)])
-AC_CHECK_HEADER(dirent.h, [AC_DEFINE(HAVE_DIRENT_H)])
-AC_CHECK_HEADER(time.h, [AC_DEFINE(HAVE_TIME_H)])
-AC_CHECK_HEADER(sys/time.h, [AC_DEFINE(HAVE_SYS_TIME_H)])
-AC_CHECK_HEADER(termios.h, [AC_DEFINE(HAVE_TERMIOS_H)])
-AC_CHECK_HEADER(sys/stat.h, [AC_DEFINE(HAVE_SYS_STAT_H)])
-AC_CHECK_HEADER(fcntl.h, [AC_DEFINE(HAVE_FCNTL_H)])
-AC_CHECK_HEADER(errno.h, [AC_DEFINE(HAVE_ERRNO_H)])
-AC_CHECK_HEADER(signal.h, [AC_DEFINE(HAVE_SIGNAL_H)])
-AC_CHECK_HEADER(netdb.h, [AC_DEFINE(HAVE_NETDB_H)])
-AC_CHECK_HEADER(netinet/tcp.h, [AC_DEFINE(HAVE_NETINET_TCP_H)])
-AC_CHECK_HEADER(sys/socket.h, [AC_DEFINE(HAVE_SYS_SOCKET_H)])
-AC_CHECK_HEADER(arpa/inet.h, [AC_DEFINE(HAVE_ARPA_INET_H)])
-AC_CHECK_HEADER(sys/ioctl.h, [AC_DEFINE(HAVE_SYS_IOCTL_H)])
-AC_CHECK_HEADER(sys/wait.h, [AC_DEFINE(HAVE_SYS_WAIT_H)])
-AC_CHECK_HEADER(pthread.h, [AC_DEFINE(HAVE_PTHREAD_H)])
-AC_CHECK_HEADER(stdbool.h, [AC_DEFINE(HAVE_STDBOOL_H)])
-AC_CHECK_HEADER(sys/resource.h, [AC_DEFINE(HAVE_SYS_RESOURCE_H)])
-AC_CHECK_HEADER(regex.h, [AC_DEFINE(HAVE_REGEX_H)])
-AC_CHECK_HEADER(syslog.h, [AC_DEFINE(HAVE_SYSLOG_H)])
-AC_CHECK_HEADER(getopt.h, [AC_DEFINE(HAVE_GETOPT_H)])
-AC_CHECK_HEADER(bsd/sys/queue.h, [AC_DEFINE(HAVE_BSD_SYS_QUEUE_H)])
-AC_CHECK_HEADER(sys/queue.h, [AC_DEFINE(HAVE_SYS_QUEUE_H)])
-AC_CHECK_HEADER(mcheck.h, [AC_DEFINE(HAVE_MCHECK_H)])
-AC_CHECK_HEADER(assert.h, [AC_DEFINE(HAVE_ASSERT_H)])
-AC_CHECK_HEADER(poll.h, [AC_DEFINE(HAVE_POLL_H)])
-AC_CHECK_HEADER(sys/mman.h, [AC_DEFINE(HAVE_SYS_MMAN_H)])
-AC_CHECK_HEADER(sys/prctl.h, [AC_DEFINE(HAVE_SYS_PRCTL_H)])
+AC_CHECK_HEADER(inttypes.h,
+	[AC_DEFINE([HAVE_INTTYPES_H], [1], [Define if available])])
+AC_CHECK_HEADER(stdint.h,
+	[AC_DEFINE([HAVE_STDINT_H], [1], [Define if available])])
+AC_CHECK_HEADER(limits.h,
+	[AC_DEFINE([HAVE_LIMITS_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/param.h,
+	[AC_DEFINE([HAVE_SYS_PARAM_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/types.h,
+	[AC_DEFINE([HAVE_SYS_TYPES_H], [1], [Define if available])])
+AC_CHECK_HEADER(ctype.h,
+	[AC_DEFINE([HAVE_CTYPE_H], [1], [Define if available])])
+AC_CHECK_HEADER(stdio.h,
+	[AC_DEFINE([HAVE_STDIO_H], [1], [Define if available])])
+AC_CHECK_HEADER(stdlib.h,
+	[AC_DEFINE([HAVE_STDLIB_H], [1], [Define if available])])
+AC_CHECK_HEADER(unistd.h,
+	[AC_DEFINE([HAVE_UNISTD_H], [1], [Define if available])])
+AC_CHECK_HEADER(memory.h,
+	[AC_DEFINE([HAVE_MEMORY_H], [1], [Define if available])])
+AC_CHECK_HEADER(string.h,
+	[AC_DEFINE([HAVE_STRING_H], [1], [Define if available])])
+AC_CHECK_HEADER(malloc.h,
+	[AC_DEFINE([HAVE_MALLOC_H], [1], [Define if available])])
+AC_CHECK_HEADER(stdarg.h,
+	[AC_DEFINE([HAVE_STDARG_H], [1], [Define if available])])
+AC_CHECK_HEADER(dirent.h,
+	[AC_DEFINE([HAVE_DIRENT_H], [1], [Define if available])])
+AC_CHECK_HEADER(time.h,
+	[AC_DEFINE([HAVE_TIME_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(sys/time.h,
+	[AC_DEFINE([HAVE_SYS_TIME_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(termios.h,
+	[AC_DEFINE([HAVE_TERMIOS_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(sys/stat.h,
+	[AC_DEFINE([HAVE_SYS_STAT_H], [1], [Define if available])])
+AC_CHECK_HEADER(fcntl.h,
+	[AC_DEFINE([HAVE_FCNTL_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(errno.h,
+	[AC_DEFINE([HAVE_ERRNO_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(signal.h,
+	[AC_DEFINE([HAVE_SIGNAL_H], [1], [Define if available])])  
+AC_CHECK_HEADER(netdb.h,
+	[AC_DEFINE([HAVE_NETDB_H], [1], [Define if available])])
+AC_CHECK_HEADER(netinet/tcp.h,
+	[AC_DEFINE([HAVE_NETINET_TCP_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/socket.h,
+	[AC_DEFINE([HAVE_SYS_SOCKET_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(arpa/inet.h,
+	[AC_DEFINE([HAVE_ARPA_INET_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(sys/ioctl.h,
+	[AC_DEFINE([HAVE_SYS_IOCTL_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/wait.h,
+	[AC_DEFINE([HAVE_SYS_WAIT_H], [1], [Define if available])])
+AC_CHECK_HEADER(pthread.h,
+	[AC_DEFINE([HAVE_PTHREAD_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(stdbool.h,
+	[AC_DEFINE([HAVE_STDBOOL_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/resource.h,
+	[AC_DEFINE([HAVE_SYS_RESOURCE_H], [1], [Define if available])])
+AC_CHECK_HEADER(regex.h,
+	[AC_DEFINE([HAVE_REGEX_H], [1], [Define if available])])
+AC_CHECK_HEADER(syslog.h,
+	[AC_DEFINE([HAVE_SYSLOG_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(getopt.h,
+	[AC_DEFINE([HAVE_GETOPT_H], [1], [Define if available])])
+AC_CHECK_HEADER(bsd/sys/queue.h,
+	[AC_DEFINE([HAVE_BSD_SYS_QUEUE_H], [1], [Define if available])])
+AC_CHECK_HEADER(sys/queue.h,
+	[AC_DEFINE([HAVE_SYS_QUEUE_H], [1], [Define if available])])
+AC_CHECK_HEADER(mcheck.h,
+	[AC_DEFINE([HAVE_MCHECK_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(assert.h,
+	[AC_DEFINE([HAVE_ASSERT_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(poll.h,
+	[AC_DEFINE([HAVE_POLL_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(sys/mman.h,
+	[AC_DEFINE([HAVE_SYS_MMAN_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(sys/prctl.h,
+	[AC_DEFINE([HAVE_SYS_PRCTL_H], [1], [Define if available])])
 
 oLIBS=${LIBS}
 LIBS="${LIBS} -lpthread"
-AC_CHECK_FUNCS([strlcpy strlcat, pthread_mutex_timedlock])
+AC_CHECK_FUNCS([strlcpy strlcat pthread_mutex_timedlock])
 LIBS=${oLIBS}
-AC_CHECK_FUNC(strtold, [AC_DEFINE(HAVE_STRTOLD)])
+AC_CHECK_FUNC(strtold,
+	[AC_DEFINE([HAVE_STRTOLD], [1], [Define if available])]) 
+
+# check pcap
+oLIBS=${LIBS}
+LIBS=''
+PCAP_LIBS=''
+have_pcap_header=no
+have_pcap_lib=no
+AC_CHECK_HEADER(pcap/pcap.h, [have_pcap_header=yes], [])
+AC_CHECK_LIB(pcap, pcap_create, [have_pcap_lib=yes], [])
+if test "x${have_pcap_header}" = "xyes" -a "x${have_pcap_lib}" = "xyes"; then
+   PCAP_LIBS=${LIBS}
+fi
+AC_SUBST(PCAP_LIBS)
+LIBS=${oLIBS}
 
 # use libaio or not
 use_libaio=yes
@@ -425,7 +472,7 @@ fi
 AC_SUBST(HAVE_PROTOC)
 
 # check ssl library
-AC_CHECK_HEADER(openssl/ssl.h,, [AC_MSG_ERROR([openssl/ssl.h is required!])])
+AC_CHECK_HEADER(openssl/ssl.h, [true], [AC_MSG_ERROR([openssl/ssl.h is required!])])
 oLIBS=${LIBS}
 SSL_LIBS=''
 LIBS=''
@@ -435,8 +482,11 @@ SSL_LIBS="${LIBS}"
 AC_SUBST(SSL_LIBS)
 LIBS=${oLIBS}
 
-# check for gmp.
-AC_CHECK_HEADER(gmp.h, [AC_DEFINE(HAVE_GMP_H)], [AC_MSG_ERROR([The GNU MP must be installed.])])
+# check for gmp
+AC_CHECK_HEADER(gmp.h,
+	[AC_DEFINE([HAVE_GMP_H], [1], [Define if available])],
+	[AC_MSG_ERROR([The GNU MP must be installed.])])
+
 resultOK=0
 GMP_LIBS=''
 oLIBS=${LIBS}
@@ -478,7 +528,8 @@ AC_RUN_IFELSE(
 		 [snprintf(buf, sizeof(buf), "%zu", (size_t)1);]
 		 [return (strcmp("1", buf) == 0 && strlen(buf) == 1) ? ]
 		 [0 : 1;]])],
-	[AC_DEFINE(HAVE_PRINT_FORMAT_FOR_SIZE_T)
+	[AC_DEFINE([HAVE_PRINT_FORMAT_FOR_SIZE_T],
+		[1], [Define if available])
 	 AC_MSG_RESULT([available.])],
 	[AC_MSG_RESULT([not available.])],
 	[AC_MSG_RESULT([not checkable since cross-compilation.])])
@@ -499,7 +550,8 @@ AC_RUN_IFELSE(
 		[[char buf[16];]
 		 [snprintf(buf, sizeof(buf), "a thread");]
 		 [return pthread_setname_np(pthread_self(), buf);]])],
-	[AC_DEFINE(HAVE_PTHREAD_SETNAME_NP)
+	[AC_DEFINE([HAVE_PTHREAD_SETNAME_NP],
+		[1], [Define if available])
 	 AC_MSG_RESULT([available.])],
 	[AC_MSG_RESULT([not available.])],
 	[AC_MSG_RESULT([not checkable since cross-compilation.])])
@@ -523,7 +575,8 @@ AC_RUN_IFELSE(
 		 [CPU_ZERO(&c);]
 		 [CPU_SET(0, &c);]
 		 [return pthread_setaffinity_np(pthread_self(), sizeof(c), &c);]])],
-	[AC_DEFINE(HAVE_PTHREAD_SETAFFINITY_NP)
+	[AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP],
+		[1], [Define if available])	
 	 AC_MSG_RESULT([available.])],
 	[AC_MSG_RESULT([not available.])],
 	[AC_MSG_RESULT([not checkable since cross-compilation.])])
@@ -531,8 +584,10 @@ CFLAGS=${oCFLAGS}
 LDFLAGS="${oLDFLAGS} ${LIBS}"
 
 # numa
-AC_CHECK_HEADER(numa.h, [AC_DEFINE(HAVE_NUMA_H)])
-AC_CHECK_HEADER(numaif.h, [AC_DEFINE(HAVE_NUMAIF_H)])
+AC_CHECK_HEADER(numa.h,
+	[AC_DEFINE([HAVE_NUMA_H], [1], [Define if available])]) 
+AC_CHECK_HEADER(numaif.h,
+	[AC_DEFINE([HAVE_NUMAIF_H], [1], [Define if available])]) 
 
 numa_supported=no
 oCFLAGS=${CFLAGS}
@@ -576,7 +631,7 @@ if test "X${do_numa}" = "Xyes"; then
     AC_MSG_ERROR([The NUMA support library is not usable.])
     exit 1
   else
-    AC_DEFINE(HAVE_NUMA)
+    AC_DEFINE([HAVE_NUMA], [1], [Define if available])
     NUMA_LIBS='-lnuma'
     LIBS="${LIBS} ${NUMA_LIBS}"
     OS_LIBS="${OS_LIBS} ${NUMA_LIBS}"
@@ -591,11 +646,12 @@ AC_CONFIG_FILES(
 	mk/DPDK-build/Makefile
 	mk/doxygen.conf
 	Makefile
-	src/include/Makefile
-	src/include/gallus_platform.h
-	src/lib/Makefile
-	src/lib/test/Makefile
-	src/lib/check/Makefile
+	framework/include/Makefile
+	framework/include/gallus_platform.h
+	framework/lib/Makefile
+	framework/lib/test/Makefile
+	framework/lib/check/Makefile
+	app/Makefile
 	tools/Makefile
 )
 
@@ -654,6 +710,6 @@ fi
 echo ""
 echo "CC:	'${CC}'"
 echo "CFLAGS:	'${OS_CFLAGS}'"
-echo "CPPFLAGS:	'${CPPFLAGS} ${OS_CPPFLAGS}'"
+echo "CPPFLAGS:	'${CPPFLAGS} -D${CPUDEF} -D${OSDEF}'"
 echo "LDFLAGS:	'${LDFLAGS} ${OS_LDFLAGS} ${OS_LIBS}'"
 echo ""

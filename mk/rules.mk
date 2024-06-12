@@ -285,11 +285,11 @@ symlink-clean::
 
 beautify-for-py::
 	@find . -type f -name '*.py' -o -name '*.py.in'| \
-	egrep -v 'src/wip-or-deprecate|test/AutomaticVerificationTool' | \
+	egrep -v 'framework/wip-or-deprecate|test/AutomaticVerificationTool' | \
 	xargs sh $(MKRULESDIR)/beautify_for_py
 
 beautify::
-	@sh $(MKRULESDIR)/beautify 'src/*.c' 'src/*.cpp' 'src/*.h'
+	@sh $(MKRULESDIR)/beautify 'framework/*.c' 'framework/*.cpp' 'framework/*.h'
 
 revert::
 	@git status . | grep modified: | awk '{ print $$NF }' | \

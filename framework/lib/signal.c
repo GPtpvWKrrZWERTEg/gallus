@@ -84,6 +84,32 @@ s_sigfillset(sigset_t *ssptr) {
 #ifdef SIGCANCEL
   (void)sigdelset(ssptr, SIGCANCEL);
 #endif /* SIGCANCEL */
+
+  /* For core dump */
+  (void)sigdelset(ssptr, SIGQUIT);
+  (void)sigdelset(ssptr, SIGILL);
+  (void)sigdelset(ssptr, SIGABRT);
+  (void)sigdelset(ssptr, SIGFPE);
+  (void)sigdelset(ssptr, SIGSEGV);
+
+#ifdef SIGBUS
+  (void)sigdelset(ssptr, SIGBUS);
+#endif /* SIGBUS */
+#ifdef SIGSYS
+  (void)sigdelset(ssptr, SIGSYS);
+#endif /* SIGSYS */
+#ifdef SIGTRAP
+  (void)sigdelset(ssptr, SIGTRAP);
+#endif /* SIGTRAP */
+#ifdef SIGXCPU
+  (void)sigdelset(ssptr, SIGXCPU);
+#endif /* SIGXCPU */
+#ifdef SIGXCPU
+  (void)sigdelset(ssptr, SIGXCPU);
+#endif /* SIGXCPU */
+#ifdef SIGXFSZ
+  (void)sigdelset(ssptr, SIGXFSZ);
+#endif /* SIGXFSZ */
 }
 
 

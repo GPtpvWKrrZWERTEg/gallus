@@ -1,0 +1,17 @@
+TOPDIR		=	@TOPDIR@
+MKRULESDIR	=	@MKRULESDIR@
+
+TARGET_EXE			=	app
+INSTALL_SBIN_EXE_TARGETS	=	$(TARGET_EXE)
+INSTALL_SBIN_EXE_DIR		=	$(DEST_SBIN_EXEDIR)
+
+TARGETS		=	$(TARGET_EXE)
+
+include $(MKRULESDIR)/vars.mk
+
+SRCS		=	main.c
+
+DEP_LIBS	=	$(DEP_GALLUS_UTIL_LIB)
+
+include $(MKRULESDIR)/rules.mk
+include .depend

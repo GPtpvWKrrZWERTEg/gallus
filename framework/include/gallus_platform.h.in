@@ -1,8 +1,9 @@
 /*
  * $__Copyright__$
  */
-#ifndef __GALLUS_PLATFORM_H__
-#define __GALLUS_PLATFORM_H__
+#pragma once
+
+#include "gallus_config.h"
 
 #define @OSDEF@
 #define @CPUDEF@
@@ -20,5 +21,3 @@
 #else
 #error Sorry we can not live like this.
 #endif /* SIZEOF_LONG_INT == 8 || SIZEOF_LONG_INT == 4 */
-
-#endif /* ! __GALLUS_PLATFORM_H__ */

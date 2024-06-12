@@ -304,6 +304,7 @@ static inline void
 s_daemonize(int exclude_fd) {
   int i;
 
+  gallus_log_sync_for_fork();
   (void)s_setsid();
 
   for (i = 0; i < 1024; i++) {

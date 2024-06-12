@@ -86,6 +86,12 @@ void	gallus_log_finalize(void);
 
 
 /**
+ * Synchronize the logger for fork(2).
+ */
+void	gallus_log_sync_for_fork(void);
+
+
+/**
  * Set the debug level.
  *
  *	@param[in]	lvl	A debug level.

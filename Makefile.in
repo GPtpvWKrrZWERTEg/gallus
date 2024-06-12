@@ -6,8 +6,9 @@ include $(MKRULESDIR)/vars.mk
 
 DIRS	=	mk/DPDK-build \
 		tools \
-		src/lib \
-		src/include
+		framework/lib \
+		framework/include \
+		app
 
 include $(MKRULESDIR)/rules.mk
 
@@ -24,17 +25,17 @@ distclean::	clean
 	$(RM) -r ./tools/unity/* ./tools/unity/.??*
 	$(RM) config.* mk/vars.mk mk/doxygen.conf ./libtool \
 		mk/changeincludes mk/changename mk/initdepend \
-		src/include/gallus_ecode.h \
-		src/lib/ecode.c \
+		framework/include/gallus_ecode.h \
+		framework/lib/ecode.c \
 		mk/dpdk.mk mk/DPDK-build/Makefile \
-		src/lib/check/Makefile
+		framework/lib/check/Makefile
 	find . -type f \( \
 		-name '.depend' \
 	\) | xargs $(RM)
 	find . -type d \( \
 		-name '.libs' \
 	\) | xargs $(RM) -r
-		$(RM) src/lib/check/Makefile
+		$(RM) framework/lib/check/Makefile
 
 ultimateclean:	distclean
 	@git clean -n -f -d -x | \

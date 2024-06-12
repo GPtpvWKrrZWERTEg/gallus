@@ -1,10 +1,9 @@
 /* 
  * $__Copyright__$
  */
-#ifndef __GALLUS_INCLUDES_H__
-#define __GALLUS_INCLUDES_H__
+#pragma once
 
-#include "gallus_config.h"
+#include "gallus_platform.h"
 
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
@@ -177,6 +176,3 @@
 #ifdef HAVE_NUMAIF_H
 #include <numaif.h>
 #endif /* HAVE_NUMAIF_H */
-
-
-#endif /* ! __GALLUS_INCLUDES_H__ */

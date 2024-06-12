@@ -1,0 +1,234 @@
+/* framework/include/gallus_config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* Define if available */
+#undef HAVE_ARPA_INET_H
+
+/* Define if available */
+#undef HAVE_ASSERT_H
+
+/* Define if available */
+#undef HAVE_BSD_SYS_QUEUE_H
+
+/* Define if available */
+#undef HAVE_CTYPE_H
+
+/* Define if available */
+#undef HAVE_DIRENT_H
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define if available */
+#undef HAVE_ERRNO_H
+
+/* Define if available */
+#undef HAVE_FCNTL_H
+
+/* Define if available */
+#undef HAVE_GETOPT_H
+
+/* Define if available */
+#undef HAVE_GMP_H
+
+/* Define if available */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `crypto' library (-lcrypto). */
+#undef HAVE_LIBCRYPTO
+
+/* Define to 1 if you have the `ssl' library (-lssl). */
+#undef HAVE_LIBSSL
+
+/* Define if available */
+#undef HAVE_LIMITS_H
+
+/* Define if available */
+#undef HAVE_MALLOC_H
+
+/* Define if available */
+#undef HAVE_MCHECK_H
+
+/* Define if available */
+#undef HAVE_MEMORY_H
+
+/* Define if available */
+#undef HAVE_NETDB_H
+
+/* Define if available */
+#undef HAVE_NETINET_TCP_H
+
+/* Define if available */
+#undef HAVE_NUMA
+
+/* Define if available */
+#undef HAVE_NUMAIF_H
+
+/* Define if available */
+#undef HAVE_NUMA_H
+
+/* Define if available */
+#undef HAVE_POLL_H
+
+/* Define if available */
+#undef HAVE_PRINT_FORMAT_FOR_SIZE_T
+
+/* Define if available */
+#undef HAVE_PROCFS_SELF_EXE
+
+/* Define if available */
+#undef HAVE_PTHREAD_H
+
+/* Define to 1 if you have the `pthread_mutex_timedlock' function. */
+#undef HAVE_PTHREAD_MUTEX_TIMEDLOCK
+
+/* Define if available */
+#undef HAVE_PTHREAD_SETAFFINITY_NP
+
+/* Define if available */
+#undef HAVE_PTHREAD_SETNAME_NP
+
+/* Define if available */
+#undef HAVE_REGEX_H
+
+/* Define if available */
+#undef HAVE_SIGNAL_H
+
+/* Define if available */
+#undef HAVE_STDARG_H
+
+/* Define if available */
+#undef HAVE_STDBOOL_H
+
+/* Define if available */
+#undef HAVE_STDINT_H
+
+/* Define if available */
+#undef HAVE_STDIO_H
+
+/* Define if available */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define if available */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strlcat' function. */
+#undef HAVE_STRLCAT
+
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define if available */
+#undef HAVE_STRTOLD
+
+/* Define if available */
+#undef HAVE_SYSLOG_H
+
+/* Define if available */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if available */
+#undef HAVE_SYS_MMAN_H
+
+/* Define if available */
+#undef HAVE_SYS_PARAM_H
+
+/* Define if available */
+#undef HAVE_SYS_PRCTL_H
+
+/* Define if available */
+#undef HAVE_SYS_QUEUE_H
+
+/* Define if available */
+#undef HAVE_SYS_RESOURCE_H
+
+/* Define if available */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define if available */
+#undef HAVE_SYS_STAT_H
+
+/* Define if available */
+#undef HAVE_SYS_TIME_H
+
+/* Define if available */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if available */
+#undef HAVE_SYS_WAIT_H
+
+/* Define if available */
+#undef HAVE_TERMIOS_H
+
+/* Define if available */
+#undef HAVE_TIME_H
+
+/* Define if available */
+#undef HAVE_UNISTD_H
+
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#undef LT_OBJDIR
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `int64_t', as computed by sizeof. */
+#undef SIZEOF_INT64_T
+
+/* The size of `long int', as computed by sizeof. */
+#undef SIZEOF_LONG_INT
+
+/* The size of `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
+/* The size of `pthread_t', as computed by sizeof. */
+#undef SIZEOF_PTHREAD_T
+
+/* The size of `short int', as computed by sizeof. */
+#undef SIZEOF_SHORT_INT
+
+/* The size of `size_t', as computed by sizeof. */
+#undef SIZEOF_SIZE_T
+
+/* The size of `void *', as computed by sizeof. */
+#undef SIZEOF_VOID_P
+
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
+#undef STDC_HEADERS
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif

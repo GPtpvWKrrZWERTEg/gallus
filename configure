@@ -675,8 +675,6 @@ HAVE_RUBY
 HAVE_NKF
 TARGET_ARCH
 MKRULESDIR
-OSDEF
-CPUDEF
 STAT
 OS_LIBS
 OS_LDFLAGS
@@ -684,6 +682,8 @@ OS_CFLAGS
 OS_CPPFLAGS
 MAKE
 TOOLCHAIN_TARGET
+OSDEF
+CPUDEF
 PKGCONF
 BASENAME
 READLINK
@@ -4792,7 +4792,7 @@ TOPDIR=${ac_pwd}
 
 
 
-ac_config_headers="$ac_config_headers src/include/gallus_config.h"
+ac_config_headers="$ac_config_headers framework/include/gallus_config.h"
 
 
 if test "${prefix}" = "NONE"; then
@@ -18509,11 +18509,79 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-#AC_PROG_YACC
-#AC_PROG_LEX
-#if test "x$LEX" != xflex -a "x$LEX" != xlex; then
-#   AC_MSG_ERROR([flex/lex must be installed.])
-#fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
+printf %s "checking for egrep... " >&6; }
+if test ${ac_cv_path_EGREP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
+   then ac_cv_path_EGREP="$GREP -E"
+   else
+     if test -z "$EGREP"; then
+  ac_path_EGREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_prog in egrep
+   do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_EGREP" || continue
+# Check for GNU ac_path_EGREP and select it if it is found.
+  # Check for GNU $ac_path_EGREP
+case `"$ac_path_EGREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
+*)
+  ac_count=0
+  printf %s 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    printf "%s\n" 'EGREP' >> "conftest.nl"
+    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_EGREP="$ac_path_EGREP"
+      ac_path_EGREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_EGREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_EGREP"; then
+    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_EGREP=$EGREP
+fi
+
+   fi
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
+printf "%s\n" "$ac_cv_path_EGREP" >&6; }
+ EGREP="$ac_cv_path_EGREP"
+
+
 for ac_prog in gawk mawk nawk awk
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -18561,6 +18629,12 @@ fi
   test -n "$AWK" && break
 done
 
+
+#AC_PROG_YACC
+#AC_PROG_LEX
+#if test "x$LEX" != xflex -a "x$LEX" != xlex; then
+#   AC_MSG_ERROR([flex/lex must be installed.])
+#fi
 
 RM="rm -f"
 
@@ -18859,7 +18933,12 @@ case $CPU in
         CPU=i386;;
 esac
 
-OS_CPPFLAGS='-D_REENTRANT'
+CPUDEF=GALLUS_CPU_`echo $CPU | tr '[a-z]' '[A-Z]'`
+OSDEF=GALLUS_OS_`echo $OS | tr '[a-z]' '[A-Z]'`
+
+
+
+OS_CPPFLAGS="-D_REENTRANT"
 OS_LDFLAGS=''
 OS_LIBS=''
 OS_CFLAGS=''
@@ -18885,7 +18964,8 @@ case $OS in
 	OS=freebsd;;
     linux*)
 	OS_CPPFLAGS="${OS_CPPFLAGS} -D_GNU_SOURCE -D_POSIX_SOURCE"
-	OS_LIBS="-lrt -lpthread -ldl -lpcap"
+	CPPFLAGS="${CPPFLAGS} ${OS_CPPFLAGS}"
+	OS_LIBS="-lrt -lpthread -ldl"
 	OS=linux;;
     netbsd*)
 	MAKE=gmake
@@ -18931,11 +19011,6 @@ fi
 
 
 
-
-
-
-CPUDEF=GALLUS_CPU_`echo $CPU | tr '[a-z]' '[A-Z]'`
-OSDEF=GALLUS_OS_`echo $OS | tr '[a-z]' '[A-Z]'`
 
 
 
@@ -19161,7 +19236,8 @@ printf %s "checking /proc/self/exe... " >&6; }
 if test -h /proc/self/exe; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: exists." >&5
 printf "%s\n" "exists." >&6; }
-  printf "%s\n" "#define HAVE_PROCFS_SELF_EXE 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_PROCFS_SELF_EXE 1" >>confdefs.h
 
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: does noe exists." >&5
@@ -19169,65 +19245,6 @@ printf "%s\n" "does noe exists." >&6; }
 fi
 
 # headers/macros
-
-oLIBS=${LIBS}
-LIBS=''
-ac_fn_c_check_header_compile "$LINENO" "pcap/pcap.h" "ac_cv_header_pcap_pcap_h" "$ac_includes_default"
-if test "x$ac_cv_header_pcap_pcap_h" = xyes
-then :
-
-else $as_nop
-  as_fn_error $? "pcap/pcap.h is required!" "$LINENO" 5
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for pcap_create in -lpcap" >&5
-printf %s "checking for pcap_create in -lpcap... " >&6; }
-if test ${ac_cv_lib_pcap_pcap_create+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpcap  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char pcap_create ();
-int
-main (void)
-{
-return pcap_create ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_pcap_pcap_create=yes
-else $as_nop
-  ac_cv_lib_pcap_pcap_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcap_pcap_create" >&5
-printf "%s\n" "$ac_cv_lib_pcap_pcap_create" >&6; }
-if test "x$ac_cv_lib_pcap_pcap_create" = xyes
-then :
-  printf "%s\n" "#define HAVE_LIBPCAP 1" >>confdefs.h
-
-  LIBS="-lpcap $LIBS"
-
-else $as_nop
-  as_fn_error $? "libpcap is required!" "$LINENO" 5
-fi
-
-PCAP_LIBS=${LIBS}
-
-LIBS=${oLIBS}
 
  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether byte ordering is bigendian" >&5
 printf %s "checking whether byte ordering is bigendian... " >&6; }
@@ -19464,358 +19481,323 @@ printf "%s\n" "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
 
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
-printf %s "checking for egrep... " >&6; }
-if test ${ac_cv_path_EGREP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
-   then ac_cv_path_EGREP="$GREP -E"
-   else
-     if test -z "$EGREP"; then
-  ac_path_EGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in egrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP" || continue
-# Check for GNU ac_path_EGREP and select it if it is found.
-  # Check for GNU $ac_path_EGREP
-case `"$ac_path_EGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP' >> "conftest.nl"
-    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP="$ac_path_EGREP"
-      ac_path_EGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP=$EGREP
-fi
-
-   fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
-printf "%s\n" "$ac_cv_path_EGREP" >&6; }
- EGREP="$ac_cv_path_EGREP"
-
-
-
-
 ac_fn_c_check_header_compile "$LINENO" "inttypes.h" "ac_cv_header_inttypes_h" "$ac_includes_default"
 if test "x$ac_cv_header_inttypes_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_INTTYPES_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_INTTYPES_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "stdint.h" "ac_cv_header_stdint_h" "$ac_includes_default"
 if test "x$ac_cv_header_stdint_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDINT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STDINT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "limits.h" "ac_cv_header_limits_h" "$ac_includes_default"
 if test "x$ac_cv_header_limits_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_LIMITS_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_LIMITS_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/param.h" "ac_cv_header_sys_param_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_param_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_PARAM_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_PARAM_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/types.h" "ac_cv_header_sys_types_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_types_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_TYPES_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_TYPES_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "ctype.h" "ac_cv_header_ctype_h" "$ac_includes_default"
 if test "x$ac_cv_header_ctype_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_CTYPE_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_CTYPE_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "stdio.h" "ac_cv_header_stdio_h" "$ac_includes_default"
 if test "x$ac_cv_header_stdio_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDIO_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STDIO_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "stdlib.h" "ac_cv_header_stdlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_stdlib_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDLIB_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STDLIB_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "unistd.h" "ac_cv_header_unistd_h" "$ac_includes_default"
 if test "x$ac_cv_header_unistd_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_UNISTD_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_UNISTD_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "memory.h" "ac_cv_header_memory_h" "$ac_includes_default"
 if test "x$ac_cv_header_memory_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_MEMORY_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_MEMORY_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "string.h" "ac_cv_header_string_h" "$ac_includes_default"
 if test "x$ac_cv_header_string_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STRING_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STRING_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "malloc.h" "ac_cv_header_malloc_h" "$ac_includes_default"
 if test "x$ac_cv_header_malloc_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_MALLOC_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_MALLOC_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "stdarg.h" "ac_cv_header_stdarg_h" "$ac_includes_default"
 if test "x$ac_cv_header_stdarg_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDARG_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STDARG_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "dirent.h" "ac_cv_header_dirent_h" "$ac_includes_default"
 if test "x$ac_cv_header_dirent_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_DIRENT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_DIRENT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "time.h" "ac_cv_header_time_h" "$ac_includes_default"
 if test "x$ac_cv_header_time_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_TIME_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_TIME_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_time_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_TIME_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_TIME_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "termios.h" "ac_cv_header_termios_h" "$ac_includes_default"
 if test "x$ac_cv_header_termios_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_TERMIOS_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_TERMIOS_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/stat.h" "ac_cv_header_sys_stat_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_stat_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_STAT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_STAT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "fcntl.h" "ac_cv_header_fcntl_h" "$ac_includes_default"
 if test "x$ac_cv_header_fcntl_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_FCNTL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_FCNTL_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "errno.h" "ac_cv_header_errno_h" "$ac_includes_default"
 if test "x$ac_cv_header_errno_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_ERRNO_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_ERRNO_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "signal.h" "ac_cv_header_signal_h" "$ac_includes_default"
 if test "x$ac_cv_header_signal_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SIGNAL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SIGNAL_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "netdb.h" "ac_cv_header_netdb_h" "$ac_includes_default"
 if test "x$ac_cv_header_netdb_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_NETDB_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_NETDB_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "netinet/tcp.h" "ac_cv_header_netinet_tcp_h" "$ac_includes_default"
 if test "x$ac_cv_header_netinet_tcp_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_NETINET_TCP_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_NETINET_TCP_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/socket.h" "ac_cv_header_sys_socket_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_socket_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_SOCKET_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_SOCKET_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "arpa/inet.h" "ac_cv_header_arpa_inet_h" "$ac_includes_default"
 if test "x$ac_cv_header_arpa_inet_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_ARPA_INET_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_ARPA_INET_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/ioctl.h" "ac_cv_header_sys_ioctl_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_ioctl_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_IOCTL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_IOCTL_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/wait.h" "ac_cv_header_sys_wait_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_wait_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_WAIT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_WAIT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "pthread.h" "ac_cv_header_pthread_h" "$ac_includes_default"
 if test "x$ac_cv_header_pthread_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_PTHREAD_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_PTHREAD_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "stdbool.h" "ac_cv_header_stdbool_h" "$ac_includes_default"
 if test "x$ac_cv_header_stdbool_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDBOOL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STDBOOL_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/resource.h" "ac_cv_header_sys_resource_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_resource_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_RESOURCE_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_RESOURCE_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "regex.h" "ac_cv_header_regex_h" "$ac_includes_default"
 if test "x$ac_cv_header_regex_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_REGEX_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_REGEX_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "syslog.h" "ac_cv_header_syslog_h" "$ac_includes_default"
 if test "x$ac_cv_header_syslog_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYSLOG_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYSLOG_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "getopt.h" "ac_cv_header_getopt_h" "$ac_includes_default"
 if test "x$ac_cv_header_getopt_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_GETOPT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_GETOPT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "bsd/sys/queue.h" "ac_cv_header_bsd_sys_queue_h" "$ac_includes_default"
 if test "x$ac_cv_header_bsd_sys_queue_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_BSD_SYS_QUEUE_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_BSD_SYS_QUEUE_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/queue.h" "ac_cv_header_sys_queue_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_queue_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_QUEUE_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_QUEUE_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "mcheck.h" "ac_cv_header_mcheck_h" "$ac_includes_default"
 if test "x$ac_cv_header_mcheck_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_MCHECK_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_MCHECK_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "assert.h" "ac_cv_header_assert_h" "$ac_includes_default"
 if test "x$ac_cv_header_assert_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_ASSERT_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_ASSERT_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "poll.h" "ac_cv_header_poll_h" "$ac_includes_default"
 if test "x$ac_cv_header_poll_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_POLL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_POLL_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/mman.h" "ac_cv_header_sys_mman_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_mman_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_MMAN_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_MMAN_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "sys/prctl.h" "ac_cv_header_sys_prctl_h" "$ac_includes_default"
 if test "x$ac_cv_header_sys_prctl_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_SYS_PRCTL_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_SYS_PRCTL_H 1" >>confdefs.h
 
 fi
 
@@ -19828,10 +19810,10 @@ then :
   printf "%s\n" "#define HAVE_STRLCPY 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "strlcat," "ac_cv_func_strlcat_"
-if test "x$ac_cv_func_strlcat_" = xyes
+ac_fn_c_check_func "$LINENO" "strlcat" "ac_cv_func_strlcat"
+if test "x$ac_cv_func_strlcat" = xyes
 then :
-  printf "%s\n" "#define HAVE_STRLCAT_ 1" >>confdefs.h
+  printf "%s\n" "#define HAVE_STRLCAT 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "pthread_mutex_timedlock" "ac_cv_func_pthread_mutex_timedlock"
@@ -19845,10 +19827,69 @@ LIBS=${oLIBS}
 ac_fn_c_check_func "$LINENO" "strtold" "ac_cv_func_strtold"
 if test "x$ac_cv_func_strtold" = xyes
 then :
-  printf "%s\n" "#define HAVE_STRTOLD 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_STRTOLD 1" >>confdefs.h
 
 fi
 
+
+# check pcap
+oLIBS=${LIBS}
+LIBS=''
+PCAP_LIBS=''
+have_pcap_header=no
+have_pcap_lib=no
+ac_fn_c_check_header_compile "$LINENO" "pcap/pcap.h" "ac_cv_header_pcap_pcap_h" "$ac_includes_default"
+if test "x$ac_cv_header_pcap_pcap_h" = xyes
+then :
+  have_pcap_header=yes
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for pcap_create in -lpcap" >&5
+printf %s "checking for pcap_create in -lpcap... " >&6; }
+if test ${ac_cv_lib_pcap_pcap_create+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpcap  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char pcap_create ();
+int
+main (void)
+{
+return pcap_create ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_pcap_pcap_create=yes
+else $as_nop
+  ac_cv_lib_pcap_pcap_create=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcap_pcap_create" >&5
+printf "%s\n" "$ac_cv_lib_pcap_pcap_create" >&6; }
+if test "x$ac_cv_lib_pcap_pcap_create" = xyes
+then :
+  have_pcap_lib=yes
+fi
+
+if test "x${have_pcap_header}" = "xyes" -a "x${have_pcap_lib}" = "xyes"; then
+   PCAP_LIBS=${LIBS}
+fi
+
+LIBS=${oLIBS}
 
 # use libaio or not
 use_libaio=yes
@@ -20057,7 +20098,7 @@ fi
 ac_fn_c_check_header_compile "$LINENO" "openssl/ssl.h" "ac_cv_header_openssl_ssl_h" "$ac_includes_default"
 if test "x$ac_cv_header_openssl_ssl_h" = xyes
 then :
-
+  true
 else $as_nop
   as_fn_error $? "openssl/ssl.h is required!" "$LINENO" 5
 fi
@@ -20159,15 +20200,17 @@ SSL_LIBS="${LIBS}"
 
 LIBS=${oLIBS}
 
-# check for gmp.
+# check for gmp
 ac_fn_c_check_header_compile "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
 if test "x$ac_cv_header_gmp_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_GMP_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_GMP_H 1" >>confdefs.h
 
 else $as_nop
   as_fn_error $? "The GNU MP must be installed." "$LINENO" 5
 fi
+
 
 resultOK=0
 GMP_LIBS=''
@@ -20247,7 +20290,8 @@ char buf[24];
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
-  printf "%s\n" "#define HAVE_PRINT_FORMAT_FOR_SIZE_T 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_PRINT_FORMAT_FOR_SIZE_T 1" >>confdefs.h
 
 	 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: available." >&5
 printf "%s\n" "available." >&6; }
@@ -20291,7 +20335,8 @@ char buf[16];
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
-  printf "%s\n" "#define HAVE_PTHREAD_SETNAME_NP 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_PTHREAD_SETNAME_NP 1" >>confdefs.h
 
 	 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: available." >&5
 printf "%s\n" "available." >&6; }
@@ -20338,7 +20383,8 @@ cpu_set_t c;
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
-  printf "%s\n" "#define HAVE_PTHREAD_SETAFFINITY_NP 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_PTHREAD_SETAFFINITY_NP 1" >>confdefs.h
 
 	 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: available." >&5
 printf "%s\n" "available." >&6; }
@@ -20357,14 +20403,16 @@ LDFLAGS="${oLDFLAGS} ${LIBS}"
 ac_fn_c_check_header_compile "$LINENO" "numa.h" "ac_cv_header_numa_h" "$ac_includes_default"
 if test "x$ac_cv_header_numa_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_NUMA_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_NUMA_H 1" >>confdefs.h
 
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "numaif.h" "ac_cv_header_numaif_h" "$ac_includes_default"
 if test "x$ac_cv_header_numaif_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_NUMAIF_H 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_NUMAIF_H 1" >>confdefs.h
 
 fi
 
@@ -20438,7 +20486,8 @@ if test "X${do_numa}" = "Xyes"; then
     as_fn_error $? "The NUMA support library is not usable." "$LINENO" 5
     exit 1
   else
-    printf "%s\n" "#define HAVE_NUMA 1" >>confdefs.h
+
+printf "%s\n" "#define HAVE_NUMA 1" >>confdefs.h
 
     NUMA_LIBS='-lnuma'
     LIBS="${LIBS} ${NUMA_LIBS}"
@@ -20448,7 +20497,7 @@ fi
 
 
 # emit.
-ac_config_files="$ac_config_files mk/vars.mk mk/DPDK-build/Makefile.dpdk mk/DPDK-build/Makefile mk/doxygen.conf Makefile src/include/Makefile src/include/gallus_platform.h src/lib/Makefile src/lib/test/Makefile src/lib/check/Makefile tools/Makefile"
+ac_config_files="$ac_config_files mk/vars.mk mk/DPDK-build/Makefile.dpdk mk/DPDK-build/Makefile mk/doxygen.conf Makefile framework/include/Makefile framework/include/gallus_platform.h framework/lib/Makefile framework/lib/test/Makefile framework/lib/check/Makefile app/Makefile tools/Makefile"
 
 
 # emit and set executable attribute.
@@ -21569,18 +21618,19 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "src/include/gallus_config.h") CONFIG_HEADERS="$CONFIG_HEADERS src/include/gallus_config.h" ;;
+    "framework/include/gallus_config.h") CONFIG_HEADERS="$CONFIG_HEADERS framework/include/gallus_config.h" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "mk/vars.mk") CONFIG_FILES="$CONFIG_FILES mk/vars.mk" ;;
     "mk/DPDK-build/Makefile.dpdk") CONFIG_FILES="$CONFIG_FILES mk/DPDK-build/Makefile.dpdk" ;;
     "mk/DPDK-build/Makefile") CONFIG_FILES="$CONFIG_FILES mk/DPDK-build/Makefile" ;;
     "mk/doxygen.conf") CONFIG_FILES="$CONFIG_FILES mk/doxygen.conf" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "src/include/Makefile") CONFIG_FILES="$CONFIG_FILES src/include/Makefile" ;;
-    "src/include/gallus_platform.h") CONFIG_FILES="$CONFIG_FILES src/include/gallus_platform.h" ;;
-    "src/lib/Makefile") CONFIG_FILES="$CONFIG_FILES src/lib/Makefile" ;;
-    "src/lib/test/Makefile") CONFIG_FILES="$CONFIG_FILES src/lib/test/Makefile" ;;
-    "src/lib/check/Makefile") CONFIG_FILES="$CONFIG_FILES src/lib/check/Makefile" ;;
+    "framework/include/Makefile") CONFIG_FILES="$CONFIG_FILES framework/include/Makefile" ;;
+    "framework/include/gallus_platform.h") CONFIG_FILES="$CONFIG_FILES framework/include/gallus_platform.h" ;;
+    "framework/lib/Makefile") CONFIG_FILES="$CONFIG_FILES framework/lib/Makefile" ;;
+    "framework/lib/test/Makefile") CONFIG_FILES="$CONFIG_FILES framework/lib/test/Makefile" ;;
+    "framework/lib/check/Makefile") CONFIG_FILES="$CONFIG_FILES framework/lib/check/Makefile" ;;
+    "app/Makefile") CONFIG_FILES="$CONFIG_FILES app/Makefile" ;;
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
     "mk/initdepend") CONFIG_FILES="$CONFIG_FILES mk/initdepend" ;;
     "mk/changename") CONFIG_FILES="$CONFIG_FILES mk/changename" ;;
@@ -22903,7 +22953,7 @@ fi
 echo ""
 echo "CC:	'${CC}'"
 echo "CFLAGS:	'${OS_CFLAGS}'"
-echo "CPPFLAGS:	'${CPPFLAGS} ${OS_CPPFLAGS}'"
+echo "CPPFLAGS:	'${CPPFLAGS} -D${CPUDEF} -D${OSDEF}'"
 echo "LDFLAGS:	'${LDFLAGS} ${OS_LDFLAGS} ${OS_LIBS}'"
 echo ""
 

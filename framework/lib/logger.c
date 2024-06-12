@@ -107,17 +107,20 @@ s_unlock(void) {
 
 
 static inline void
-s_log_final(void) {
+s_log_final(bool full) {
   if (s_log_dst == GALLUS_LOG_EMIT_TO_FILE) {
     if (s_log_fd != NULL) {
       s_lock_fd(s_log_fd, false);
+      (void)fflush(s_log_fd);
       (void)fclose(s_log_fd);
       s_log_fd = NULL;
     }
   } else if (s_log_dst == GALLUS_LOG_EMIT_TO_SYSLOG) {
     closelog();
   }
-  s_log_dst = GALLUS_LOG_EMIT_TO_UNKNOWN;
+  if (full == true) {
+    s_log_dst = GALLUS_LOG_EMIT_TO_UNKNOWN;
+  }
 }
 
 
@@ -159,7 +162,8 @@ s_log_init(gallus_log_destination_t dst,
            const char *arg,
            bool multi_process,
            bool emit_date,
-           uint16_t debug_level) {
+           uint16_t debug_level,
+           bool full) {
   bool ret = false;
 
   if (s_is_fork_initialized == false) {
@@ -171,7 +175,7 @@ s_log_init(gallus_log_destination_t dst,
       dst == GALLUS_LOG_EMIT_TO_UNKNOWN) {
     int ofd = -INT_MAX;
 
-    s_log_final();
+    s_log_final(full);
 
     if (IS_VALID_STRING(arg) == true &&
         dst == GALLUS_LOG_EMIT_TO_FILE &&
@@ -191,7 +195,7 @@ s_log_init(gallus_log_destination_t dst,
   } else if (dst == GALLUS_LOG_EMIT_TO_SYSLOG) {
     if (IS_VALID_STRING(arg) == true) {
 
-      s_log_final();
+      s_log_final(true);
 
       /*
        * Note that the syslog(3) uses the first argument of openlog(3)
@@ -219,11 +223,11 @@ s_log_init(gallus_log_destination_t dst,
 
 
 static inline bool
-s_log_reinit(void) {
+s_log_reinit(bool full) {
   const char *arg =
     (IS_VALID_STRING(s_log_arg) == true) ? s_log_arg : NULL;
   bool ret = s_log_init(s_log_dst, arg,
-                        s_do_multi_process, s_do_date, s_dbg_level);
+                        s_do_multi_process, s_do_date, s_dbg_level, full);
 
   return ret;
 }
@@ -375,8 +379,9 @@ gallus_log_initialize(gallus_log_destination_t dst,
 
   (void)pthread_mutex_lock(&s_log_lock);
   ret =
-    (s_log_init(dst, arg, multi_process, emit_date, debug_level) == true) ?
-    GALLUS_RESULT_OK : GALLUS_RESULT_ANY_FAILURES;
+      (s_log_init(dst, arg,
+                  multi_process, emit_date, debug_level, true) == true) ?
+      GALLUS_RESULT_OK : GALLUS_RESULT_ANY_FAILURES;
   (void)pthread_mutex_unlock(&s_log_lock);
 
   errno = s_errno;
@@ -393,7 +398,7 @@ gallus_log_reinitialize(void) {
   gallus_msg_debug(10, "Reinitialize the logger.\n");
 
   (void)pthread_mutex_lock(&s_log_lock);
-  ret = (s_log_reinit() == true) ?
+  ret = (s_log_reinit(false) == true) ?
         GALLUS_RESULT_OK : GALLUS_RESULT_ANY_FAILURES;
   (void)pthread_mutex_unlock(&s_log_lock);
 
@@ -410,7 +415,21 @@ gallus_log_finalize(void) {
   gallus_msg_debug(10, "Finalize the logger.\n");
 
   (void)pthread_mutex_lock(&s_log_lock);
-  s_log_final();
+  s_log_final(true);
+  (void)pthread_mutex_unlock(&s_log_lock);
+
+  errno = s_errno;
+}
+
+
+void
+gallus_log_sync_for_fork(void) {
+  int s_errno = errno;
+
+  gallus_msg_debug(10, "Synching the logger.\n");
+
+  (void)pthread_mutex_lock(&s_log_lock);
+  s_log_final(false);
   (void)pthread_mutex_unlock(&s_log_lock);
 
   errno = s_errno;

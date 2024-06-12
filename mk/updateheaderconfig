@@ -4,8 +4,8 @@ if test ! -r ./configure.ac; then
     exit 1
 fi
 
-in=./src/include/gallus_includes.h
-tmpl=./src/include/gallus_config.h.in
+in=./framework/include/gallus_includes.h
+tmpl=./framework/include/gallus_config.h.in
 
 if test $# -ne 0; then
 
@@ -39,7 +39,7 @@ rm -f ${defsOut}.tmp
 
 
 #
-# generate ./src/include/gallus_includes.h
+# generate ./framework/include/gallus_includes.h
 
 if test -f ${in}.bak; then
     chmod 666 ${in}.bak
@@ -75,7 +75,7 @@ rm -f ${out}
 
 
 #
-# generate ./src/include/gallus_config.h.in
+# generate ./framework/include/gallus_config.h.in
 
 if test -f ${tmpl}.bak; then
     chmod 666 ${tmpl}.bak
